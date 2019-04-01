@@ -6,7 +6,7 @@ from flask import Flask, url_for
 app = Flask(__name__)
 app.static_folder = 'static'
 # assets = Environment(app)
-app.secret_key = "beepboopiamrobotbeepboop"
+app.config['SECRET_KEY'] = "beepboopiamrobotbeepboop"
 # scss = Bundle('main.scss', filters='pyscss', output='styles.css')
 # assets.register('scss_all',scss)
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/server'
