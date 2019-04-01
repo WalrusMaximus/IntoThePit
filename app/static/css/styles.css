@@ -1,0 +1,23 @@
+* {
+    margin: 0 auto;
+    padding: 0;
+    border: 1px solid black;
+}
+
+main {
+    display: flex;
+    align-items: center;
+}
+
+.header {
+    height: 100px;
+    width: 100%;
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: center;
+}
+
+main div {
+    height: 500px;
+    width: 40%;
+}
