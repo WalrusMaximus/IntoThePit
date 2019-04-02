@@ -17,8 +17,8 @@
         </div>
         <div class="main-content">
             {% include '/main.html' %}
-            {% include '/register.html' %}
-            {% include '/login.html' %}
+            {% block main %}
+            {% endblock %}
         </div>
     </main>
     <footer>

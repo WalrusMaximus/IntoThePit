@@ -1,10 +1,22 @@
 {% macro render_field(field) %}
     <div class="field">
         {% if field.errors %}
-            {% for error in field.errors %}
-                <div class="notification error">{{ error }}</div>
-            {% endfor %}
+            <div class="notification error">
+                {% for error in field.errors %}
+                    <span>{{ error }}</span>
+                {% endfor %}
+            </div>
         {% endif %}
+        {% if ((field.id == "password") or
+                (field.id == "confirm_password") or
+                (field.id == "email") or
+                (field.id == "username")) %}
+            <p>{{field.label.text}}</p>
+        {% endif %}
+
         {{ field(placeholder=field.label.text) }}
+        {% if field.label.text == "Remember Me" %}
+            <label>{{field.label.text}}</label>
+        {% endif %}
     </div>
 {% endmacro %}

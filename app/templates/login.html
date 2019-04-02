@@ -1,0 +1,16 @@
+{% from 'macros.html' import render_field %}
+
+{% extends "layout.html" %}
+{% block main %}
+
+<form method="POST" action="" class="form">
+    {{ form.hidden_tag() }}
+    {% for field in form %}
+        {{ render_field(field) }}
+    {% endfor %}
+</form>
+<div>
+    <p>Don't have an account? - <a href="{{ url_for('register') }}">Register</a></p>
+</div>
+
+{% endblock %}
