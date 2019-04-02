@@ -1,8 +1,36 @@
-from flask import Flask, url_for
+from flask import Flask, url_for, g
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from app.models import User, Band, Venue, FavBand, Rating, Friend, Event
 
 app = Flask(__name__)
 app.static_folder = 'static'
 app.config['SECRET_KEY'] = "beepboopiamrobotbeepboop"
+
+from app.models import DATABASE
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+@login_manager.user_loader
+def load_user(userid):
+    try:
+        return User.get(User.id == userid)
+    except DoesNotExist:
+        return None
+
+# Connect to database before request
+@app.before_request
+def before_request():
+    """Connect to database before each request """
+    g.db = DATABASE
+    g.db.connect()
+    g.user = current_user
+
+@app.after_request
+def after_request(response):
+    """Close the database connection after each request."""
+    g.db.close()
+    return response
 
 from app import routes

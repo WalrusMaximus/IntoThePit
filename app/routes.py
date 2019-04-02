@@ -1,6 +1,9 @@
 from flask import render_template, url_for, flash, redirect
-from app import app
+from app import app, models
 from app.forms import LoginForm, RegisterForm
+from flask_bcrypt import check_password_hash
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+
 
 @app.route("/", methods=["POST","GET"])
 def index():
@@ -19,22 +22,45 @@ def band():
 def venue():
     return "Venue page Under Construction"
 
-@app.route('/register', methods=["POST","GET"])
+@app.route('/register', methods=('GET', 'POST'))
 def register():
     form = RegisterForm()
     if form.validate_on_submit():
-        flash(f'Created Account - {form.email.data}','success')
+        flash(f"Registered { form.email.data }", 'success')
+        models.User.create_user(
+            username=form.username.data,
+            email=form.email.data,
+            password=form.password.data,
+            city=form.city.data,
+            state=form.state.data,
+            zip=form.zip.data
+        )
         return redirect(url_for('index'))
-    return render_template('register.html', title='Into The Pit - Register', form=form)
+    return render_template('register.html', form=form)
 
-@app.route('/login', methods=["POST","GET"])
+@app.route('/login', methods=('GET', 'POST'))
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        flash(f'Logged in as {form.email.data}','success')
-        return redirect(url_for('index'))
-    return render_template('login.html', title="Into The Pit - Login", form=form)
+        try:
+            user = models.User.get(models.User.email == form.email.data)
+        except DoesNotExist:
+            flash("your email or password doesn't match", "error")
+        else:
+            if check_password_hash(user.password, form.password.data):
+                login_user(user)
+                flash("You've been logged in", "success")
+                return redirect(url_for('index'))
+            else:
+                flash("your email or password doesn't match", "error")
+    return render_template('login.html', form=form)
 
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash("You've been logged out", "success")
+    return redirect(url_for('index'))
 
 
 # @app.route('/404') 
