@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% block sidebar %}
+<h2>Admin!</h2>
+    <div class="user-wrapper">
+        {% for user in users %}
+        <p>{{ user.username }} - {{ user.email}}</p>
+        <a href="#">Edit</a><a href="#">Delete</a> 
+        {% endfor %} 
+    </div>
+
+{% endblock %}

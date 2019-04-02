@@ -1,4 +1,4 @@
-from flask import render_template, url_for, flash, redirect
+from flask import render_template, url_for, flash, redirect, g
 from app import app, models
 from app.forms import LoginForm, RegisterForm
 from flask_bcrypt import check_password_hash
@@ -44,7 +44,7 @@ def login():
     if form.validate_on_submit():
         try:
             user = models.User.get(models.User.email == form.email.data)
-        except DoesNotExist:
+        except models.DoesNotExist:
             flash("your email or password doesn't match", "error")
         else:
             if check_password_hash(user.password, form.password.data):
@@ -62,6 +62,15 @@ def logout():
     flash("You've been logged out", "success")
     return redirect(url_for('index'))
 
+@app.route('/admin')
+def admin():
+    if g.user.user_level != "walrus":
+        flash("Not authorized to access this page")
+        return redirect(url_for('index'))
+    
+    users = models.User.select().where(models.User.user_level == "user")
+
+    return render_template('admin.html', users=users)
 
 # @app.route('/404') 
 # def venue():
