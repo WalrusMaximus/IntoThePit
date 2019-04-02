@@ -38,7 +38,7 @@ class User(UserMixin, Model):
             raise ValueError("User already exists")
 
 class Band(Model):
-    bandname = CharField()
+    name = CharField()
     about = CharField()
     genre = CharField()
     themes = CharField()
@@ -49,10 +49,10 @@ class Band(Model):
         database = DATABASE
 
     @classmethod
-    def create_band(cls, bandname, about, genre, themes, img="default_band.png", bigimg="default_band_bg.png"):
+    def create_band(cls, name, about, genre, themes, img="default_band.png", bigimg="default_band_bg.png"):
         try:
             cls.create(
-                bandname=bandname,
+                name=name,
                 about=about,
                 genre=genre,
                 themes=themes,

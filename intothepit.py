@@ -22,7 +22,7 @@ if __name__ == '__main__':
             zip="94601",
         )
         models.Band.create_band(
-            bandname="The Fantastic Walruses",
+            name="The Fantastic Walruses",
             about="They're a bunch of walruses",
             genre="Heavy Ivory",
             themes="data science is weird"

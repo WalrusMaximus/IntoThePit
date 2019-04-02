@@ -1,6 +1,6 @@
 from flask import render_template, url_for, flash, redirect, g
 from app import app, models
-from app.forms import LoginForm, RegisterForm, AddUserForm, EditUserForm
+from app.forms import LoginForm, RegisterForm, AddUserForm, EditUserForm, AddVenueForm
 from flask_bcrypt import check_password_hash
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 
@@ -69,6 +69,9 @@ def logout():
 
     # ########## ADMIN & MANAGEMENT ########## #
 
+    # ########## USERS ########## #
+
+
 @app.route('/admin')
 @login_required
 def admin():
@@ -77,8 +80,10 @@ def admin():
         return redirect(url_for('index'))
     
     users = models.User.select()
+    venues = models.Venue.select()
+    bands = models.Band.select()
 
-    return render_template('admin.html', users=users)
+    return render_template('admin.html', users=users, venues=venues, bands=bands)
 
 @app.route('/admin/add_user', methods=('GET', 'POST'))
 @login_required
@@ -142,6 +147,29 @@ def delete_user(id):
         flash("Not authorized to access this page", "error")
         return redirect(url_for('index'))
         
+    
+    # ########## VENUES ########## #
+
+@app.route('/admin/add_venue', methods=('GET', 'POST'))
+@login_required
+def add_venue():
+    form = AddVenueForm()
+    venues = models.Venue.select()
+    if current_user.user_level != "walrus":
+        flash("Not authorized to access this page", "error")
+        return redirect(url_for('index'))
+    if form.validate_on_submit():
+        flash(f"Created venue - { form.name.data }", 'success')
+        models.Venue.create_venue(
+            name=form.name.data,
+            about=form.about.data,
+            address=form.address.data,
+            city=form.city.data,
+            state=form.state.data,
+            zip=form.zip.data
+        )
+        return redirect(url_for('add_venue'))
+    return render_template('admin_with_form.html', form=form, venues=venues)
 
 # @app.route('/404') 
 # def venue():

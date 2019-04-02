@@ -7,12 +7,6 @@
                 {% endfor %}
             </div>
         {% endif %}
-        {% if ((field.id == "password") or
-                (field.id == "confirm_password") or
-                (field.id == "email") or
-                (field.id == "username")) %}
-            <p>{{field.label.text}}</p>
-        {% endif %}
 
         {{ field(placeholder=field.label.text) }}
         {% if field.label.text == "Remember Me" %}

@@ -12,6 +12,10 @@ def email_exists(form, field):
     if User.select().where(User.email == field.data).exists():
         raise ValidationError('User with that email already exists.')
 
+def venue_exists(form, field):
+    if Venue.select().where(Venue.name == field.data).exists():
+        raise ValidationError('A venue with that name already exists.')
+
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[
@@ -80,5 +84,21 @@ class EditUserForm(FlaskForm):
     state = StringField("State", validators=[DataRequired()])
     zip = StringField("Zip", validators=[DataRequired()])
     submit = SubmitField('Commit Changes')
+
+class AddVenueForm(FlaskForm):
+    name = StringField('Name', validators=[
+            DataRequired(),  
+            Regexp(r'^[a-zA-Z0-9 ]+$',
+                message=("Name cannot contain symbols or special characters")
+            ),
+            Length(min=2, max=128),
+            venue_exists
+        ])
+    about = StringField("About", validators=[DataRequired()])
+    address = StringField("Address", validators=[DataRequired()])
+    city = StringField("City", validators=[DataRequired()])
+    state = StringField("State", validators=[DataRequired()])
+    zip = StringField("Zip", validators=[DataRequired()])
+    submit = SubmitField('Create')
     
 
