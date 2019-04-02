@@ -16,18 +16,20 @@ class User(UserMixin, Model):
     city = CharField()
     state = CharField()
     zip = CharField()
+    user_level = CharField(default="user")
 
     class Meta:
         database = DATABASE
 
     @classmethod
-    def create_user(cls, username, email, password, city, state, zip, avatar="default.png"):
+    def create_user(cls, username, email, password, city, state, zip, user_level="user", avatar="default.png"):
         try:
             cls.create(
                 username=username,
                 email=email,
                 password=generate_password_hash(password),
                 avatar="default.png",
+                user_level=user_level,
                 city=city,
                 state=state,
                 zip=zip
