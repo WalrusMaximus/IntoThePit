@@ -22,14 +22,13 @@ def load_user(userid):
 # Connect to database before request
 @app.before_request
 def before_request():
-    """Connect to database before each request """
     g.db = DATABASE
     g.db.connect()
     g.user = current_user
 
+# Close database after request
 @app.after_request
 def after_request(response):
-    """Close the database connection after each request."""
     g.db.close()
     return response
 

@@ -17,7 +17,8 @@
             {% endblock %}
         </div>
         <div class="main-content">
-            {% include '/main.html' %}
+            {% block main_header %}
+            {% endblock %}
             {% block main %}
             {% endblock %}
         </div>

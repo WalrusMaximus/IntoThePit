@@ -2,10 +2,27 @@
 {% block sidebar %}
 <h2>Admin!</h2>
     <div class="user-wrapper">
+        <a href="/admin/add_user">Add A User</a>
         {% for user in users %}
-        <p>{{ user.username }} - {{ user.email}}</p>
-        <a href="#">Edit</a><a href="#">Delete</a> 
+        {% if user.user_level == "walrus" %}
+            {% if user == current_user %}
+            <p class="current_admin">UserID: {{user.id }} - {{ user.username }} - {{ user.email}} - User Level: {{ user.user_level }} / Hey, that's you!</p>
+            {% else %}
+            <p class="admin">UserID: {{user.id }} - {{ user.username }} - {{ user.email}} - User Level: {{ user.user_level }}</p>
+            <a href="{{ url_for('admin_edit_user', id=user.id) }}">Edit</a><a href="{{ url_for('delete_user', id=user.id) }}" class="delete_button">Delete</a>
+            {%endif%}
+        {% endif %}
+        {% if user.user_level != "walrus" %}
+        <p>UserID: {{user.id }} - {{ user.username }} - {{ user.email}} - User Level: {{ user.user_level }}</p>
+        <a href="{{ url_for('admin_edit_user', id=user.id) }}">Edit</a><a href="{{ url_for('delete_user', id=user.id) }}" class="delete_button">Delete</a>
+        {% endif %}
         {% endfor %} 
     </div>
 
+{% endblock %}
+
+{% block main_header %}
+    {% if found_user %}
+        <h3>Editing {{ found_user.email }}</h3>
+    {% endif %}
 {% endblock %}

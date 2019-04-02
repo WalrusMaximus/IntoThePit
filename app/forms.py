@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from app.models import User, Band, Venue, FavBand, Rating, Friend, Event
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField
 from wtforms.validators import DataRequired, ValidationError, Length, Email, EqualTo, Regexp
 
 def name_exists(form, field):
@@ -40,4 +40,45 @@ class RegisterForm(FlaskForm):
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Register')
 
+class AddUserForm(FlaskForm):
+    username = StringField('Username', validators=[
+            DataRequired(),  
+            Regexp(r'^[a-zA-Z0-9 ]+$',
+                message=("Name cannot contain symbols or special characters")
+            ),
+            Length(min=2, max=32),
+            name_exists
+        ])
+    email = StringField('Email', validators=[DataRequired(), Length(max=256), Email(), email_exists])
+    user_level = SelectField(
+        'User Level',
+        choices=[("user", 'user'), ("walrus", 'walrus')],
+        default="user"
+    )
+    city = StringField("City", validators=[DataRequired()])
+    state = StringField("State", validators=[DataRequired()])
+    zip = StringField("Zip", validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Create')
+
+class EditUserForm(FlaskForm):
+    username = StringField('Username', validators=[
+            DataRequired(),  
+            Regexp(r'^[a-zA-Z0-9 ]+$',
+                message=("Name cannot contain symbols or special characters")
+            ),
+            Length(min=2, max=32),
+            name_exists
+        ])
+    user_level = SelectField(
+        'User Level',
+        choices=[("user", 'user'), ("walrus", 'walrus')],
+        default="user"
+    )
+    city = StringField("City", validators=[DataRequired()])
+    state = StringField("State", validators=[DataRequired()])
+    zip = StringField("Zip", validators=[DataRequired()])
+    submit = SubmitField('Commit Changes')
+    
 
