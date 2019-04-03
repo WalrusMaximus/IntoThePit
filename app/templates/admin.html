@@ -9,12 +9,12 @@
             <p class="current_admin">UserID: {{user.id }} - {{ user.username }} - {{ user.email}} - User Level: {{ user.user_level }} / Hey, that's you!</p>
             {% else %}
             <p class="admin">UserID: {{user.id }} - {{ user.username }} - {{ user.email}} - User Level: {{ user.user_level }}</p>
-            <a href="{{ url_for('admin_edit_user', id=user.id) }}">Edit</a><a href="{{ url_for('delete_user', id=user.id) }}" class="delete_button">Delete</a>
+            <a href="{{ url_for('admin_edit_user', id=user.id) }}">Edit</a> <a href="{{ url_for('delete_user', id=user.id) }}" class="delete_button">Delete</a>
             {%endif%}
         {% endif %}
         {% if user.user_level != "walrus" %}
         <p>UserID: {{user.id }} - {{ user.username }} - {{ user.email}} - User Level: {{ user.user_level }}</p>
-        <a href="{{ url_for('admin_edit_user', id=user.id) }}">Edit</a><a href="{{ url_for('delete_user', id=user.id) }}" class="delete_button">Delete</a>
+        <a href="{{ url_for('admin_edit_user', id=user.id) }}">Edit</a> <a href="{{ url_for('delete_user', id=user.id) }}" class="delete_button">Delete</a>
         {% endif %}
         {% endfor %} 
     </div>
@@ -23,7 +23,7 @@
         <a href="/admin/add_venue">Add A Venue</a>
         {% for venue in venues %}
         <p>{{ venue.name }}, id: {{ venue.id }}</p>
-        <a href="{{ url_for('admin_edit_venue', id=venue.id) }}">Edit</a><a href="{{ url_for('delete_venue', id=venue.id) }}" class="delete_button">Delete</a>
+        <a href="{{ url_for('admin_edit_venue', id=venue.id) }}">Edit</a> <a href="{{ url_for('delete_venue', id=venue.id) }}" class="delete_button">Delete</a>
         {% endfor %}
     </div>
     <div class="band-wrapper">
@@ -31,7 +31,7 @@
         <a href="/admin/add_band">Add A Band</a>
         {% for band in bands %}
         <p>{{ band.name }}</p>
-        <a href="{{ url_for('admin_edit_band', id=band.id) }}">Edit</a><a href="{{ url_for('delete_band', id=band.id) }}" class="delete_button">Delete</a>
+        <a href="{{ url_for('admin_edit_band', id=band.id) }}">Edit</a> <a href="{{ url_for('delete_band', id=band.id) }}" class="delete_button">Delete</a>
         {% endfor %}
     </div>
 

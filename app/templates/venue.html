@@ -11,18 +11,30 @@
 
 {% block main_header %}
 
+{% if found_rating %}
+<h4>Editing Rating:</h4>
+<p>{{ found_rating.user_fk.username }} says: {{ found_rating.message }}. {{found_rating.rating_type}} {{ found_rating.rating }}/5</p>
+{% else %}
+<h4>Add new Rating:</h4>
+{% endif%}
 <form method="POST" action="" class="form">
     {{ form.hidden_tag() }}
     {% for field in form %}
         {{ render_field(field) }}
     {% endfor %}
 </form>
+{% if found_rating %}
+<a href="{{ url_for('venue', id=found_rating.venue_fk.id)}}">Changed my mind, I don't want to edit</a>
+{% endif%}
 
 {% endblock%}
 
 {% block main %}
 <h4>Ratings</h4>
     {% for rating in ratings %}
-        <p>{{ rating.user_fk.username }} says: {{ rating.message }}</p>
+        <p>{{ rating.user_fk.username }} says: {{ rating.message }}. {{rating.rating_type}} {{ rating.rating }}/5</p>
+        {% if rating.user_fk.id == current_user.id %}
+        <a href="{{ url_for('venue_update_rating', id=rating.id)}}">Edit</a> <a href="{{ url_for('delete_rating', id=rating.id, profile=False)}}">Delete</a>
+        {% endif %}
     {% endfor %}
 {% endblock %}

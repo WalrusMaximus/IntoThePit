@@ -69,6 +69,27 @@ class AddUserForm(FlaskForm):
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Create')
 
+class AdminEditUserForm(FlaskForm):
+    username = StringField('Username', validators=[
+            DataRequired(),  
+            Regexp(r'^[a-zA-Z0-9 ]+$',
+                message=("Name cannot contain symbols or special characters")
+            ),
+            Length(min=2, max=32),
+            name_exists
+        ])
+    user_level = SelectField(
+        'User Level',
+        choices=[("user", 'user'), ("walrus", 'walrus')],
+        default="user"
+    )
+    city = StringField("City", validators=[DataRequired()])
+    state = StringField("State", validators=[DataRequired()])
+    zip = StringField("Zip", validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Commit Changes')
+
 class EditUserForm(FlaskForm):
     username = StringField('Username', validators=[
             DataRequired(),  
@@ -126,6 +147,15 @@ class RatingForm(FlaskForm):
     rating_type = SelectField(
         'What are you Rating?',
         choices=[("overall", 'Overall'), ("pit", 'Mosh Pit'), ("sound", 'Acoustics'), ("facility", 'Facilities')]
+    )
+    message = StringField('Tell us what you think...', validators=[DataRequired(), Length(max=512)])
+    submit = SubmitField("Submit")
+
+class EditRatingForm(FlaskForm):
+    rating = SelectField(
+        'Rating = 1-5',
+        choices=[("1", '1'), ("2", '2'), ("3", '3'), ("4", '4'), ("5", '5')],
+        default="5"
     )
     message = StringField('Tell us what you think...', validators=[DataRequired(), Length(max=512)])
     submit = SubmitField("Submit")

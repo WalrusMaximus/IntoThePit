@@ -1,7 +1,7 @@
-from flask import render_template, url_for, flash, redirect, g
+from flask import render_template, url_for, flash, redirect, g, request
 from app import app, models
-from app.forms import LoginForm, RegisterForm, AddUserForm, EditUserForm, VenueForm, BandForm, RatingForm
-from flask_bcrypt import check_password_hash
+from app.forms import LoginForm, RegisterForm, AddUserForm, EditUserForm, VenueForm, BandForm, RatingForm, AdminEditUserForm, EditRatingForm
+from flask_bcrypt import check_password_hash, generate_password_hash
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 
 
@@ -53,6 +53,68 @@ def venue(id):
             return redirect(url_for('venue', id=found_venue.id))
     return render_template('venue.html', venue=found_venue, venue_img=venue_img, ratings=ratings, form=form)
 
+    # ########## COMMENTS ########## #
+
+@app.route('/user/delete_rating/<id>', methods=('GET', 'POST'))
+def delete_rating(id):
+    profile = request.args.get('profile')
+    found_rating = models.Rating.get(models.Rating.id == id)
+    if found_rating.user_fk.id == current_user.id:
+        rating_deletion = models.Rating.delete().where(models.Rating.id == found_rating.id)
+        rating_deletion.execute()
+        flash(f"Deleted rating on {found_rating.venue_fk.name}")
+        if profile == "True":
+            return redirect(url_for('user', id=current_user.id))
+        return redirect(url_for('venue', id=found_rating.venue_fk.id))
+    else:
+        flash(f"You cannot delete another users comments","error")
+        return redirect(url_for('index'))
+
+@app.route('/user/update_rating/<id>', methods=['GET','POST'])
+@login_required
+def user_update_rating(id):
+    found_user = models.User.get(models.User.id == current_user.id)
+    decoder = found_user.avatar.decode()
+    location = (f'images/{decoder}')
+    avatar = url_for('static', filename=location)
+
+
+    form = EditRatingForm()
+    found_rating = models.Rating.get(models.Rating.id == id)
+    ratings = models.Rating.select().where(models.Rating.user_fk == found_user.id)
+    if form.validate_on_submit():
+        rating_update = models.Rating.update(
+            rating=form.rating.data,
+            message=form.message.data
+        ).where(models.Rating.id == id)
+        rating_update.execute()
+        flash(f"Updated comment on {found_rating.venue_fk.name}.")
+        return redirect(url_for('user',id=current_user.id))
+
+    return render_template('user.html', form=form, found_rating=found_rating, user=found_user, avatar=avatar, ratings=ratings)
+
+
+@app.route('/venue/update_rating/<id>', methods=('GET', 'POST')) # this will need to be a dynamic route
+def venue_update_rating(id):
+    found_rating = models.Rating.get(models.Rating.id == id)
+    found_venue = models.Venue.get(models.Venue.id == found_rating.venue_fk.id)
+    decoder = found_venue.img.decode()
+    location = (f'images/{decoder}')
+    venue_img = url_for('static', filename=location)
+    ratings = models.Rating.select().where(models.Rating.venue_fk == found_venue.id)
+
+    form = EditRatingForm()
+    ratings = models.Rating.select().where(models.Rating.venue_fk == found_venue.id)
+    if form.validate_on_submit():
+        rating_update = models.Rating.update(
+            rating=form.rating.data,
+            message=form.message.data
+        ).where(models.Rating.id == id)
+        rating_update.execute()
+        flash(f"Updated comment on {found_rating.venue_fk.name}.")
+        return redirect(url_for('venue',id=found_venue.id))
+    return render_template('venue.html', venue=found_venue, found_rating=found_rating, venue_img=venue_img, ratings=ratings, form=form)
+
     # ########## LOGIN ########## #
 
 @app.route('/register', methods=('GET', 'POST'))
@@ -98,8 +160,7 @@ def logout():
 
     # ########## ADMIN & MANAGEMENT ########## #
 
-    # ########## USERS ########## #
-
+# ########## USERS ########## #
 
 @app.route('/admin')
 @login_required
@@ -139,7 +200,7 @@ def add_user():
 @app.route('/admin/user/update/<id>', methods=['GET','POST'])
 @login_required
 def admin_edit_user(id):
-    form = EditUserForm()
+    form = AdminEditUserForm()
     users = models.User.select()
     found_user = models.User.get(models.User.id == id)
     if current_user.user_level != "walrus":
@@ -151,6 +212,7 @@ def admin_edit_user(id):
             user_level=form.user_level.data,
             city=form.city.data,
             state=form.state.data,
+            password=generate_password_hash(form.password.data),
             zip=form.zip.data
         ).where(models.User.id == id)
         user_update.execute()
@@ -170,14 +232,15 @@ def delete_user(id):
         else:
             user_deletion = models.User.delete().where(models.User.id == found_user.id)
             user_deletion.execute()
+            ratings_deletion = models.Rating.delete().where(models.Rating.venue_fk == found_user.id)
+            ratings_deletion.execute()
             flash(f"Deleted {found_user.username}")
             return redirect(url_for('admin'))
     else: 
         flash("Not authorized to access this page", "error")
         return redirect(url_for('index'))
         
-    
-    # ########## VENUES ########## #
+# ########## VENUES ########## #
 
 @app.route('/admin/add_venue', methods=('GET', 'POST'))
 @login_required
@@ -239,8 +302,7 @@ def delete_venue(id):
         flash("Not authorized to access this page", "error")
         return redirect(url_for('index'))
 
-
-    # ########## BANDS ########## #
+# ########## BANDS ########## #
 
 @app.route('/admin/add_band', methods=('GET', 'POST'))
 @login_required
