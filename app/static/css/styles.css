@@ -32,3 +32,12 @@ footer {
     height: 500px;
     width: 40%;
 }
+
+.venue_img {
+    max-width: 100%;
+}
+
+.user_profile_avatar {
+    border-radius: 50%;
+    max-width: 50%;
+}

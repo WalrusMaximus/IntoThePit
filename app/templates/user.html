@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+
+{% block sidebar %}
+
+<h4>{{user.username}}</h4>
+<img class="user_profile_avatar" src="{{ avatar }}" alt="">
+
+{% endblock %}
+
+{% block main_header %}
+
+{% endblock%}
+
+{% block main %}
+<h4>Ratings</h4>
+    {% for rating in ratings %}
+        <p>{{ rating.user_fk.username }} says: {{ rating.message }} about the {{ rating.rating_type }} at {{ rating.venue_fk.name }}</p>
+        {% if user == current_user %}
+        <a href="#">Edit</a> <a href="#">Delete</a>
+        {% endif %}
+    {% endfor %}
+{% endblock %}

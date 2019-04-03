@@ -12,9 +12,14 @@ def index():
     venues = models.Venue.select()
     return render_template('index.html', title="Into The Pit", venues=venues)
 
-@app.route("/user") # this will need to be a dynamic route
-def user():
-    return "User Page Under Construction"
+@app.route("/user/<id>") # this will need to be a dynamic route
+def user(id):
+    found_user = models.User.get(models.User.id == id)
+    decoder = found_user.avatar.decode()
+    location = (f'images/{decoder}')
+    avatar = url_for('static', filename=location)
+    ratings = models.Rating.select().where(models.Rating.user_fk == found_user.id)
+    return render_template('user.html', user=found_user, avatar=avatar, ratings=ratings)
 
 @app.route('/band') # this will need to be a dynamic route
 def band():
