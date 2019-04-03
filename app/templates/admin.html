@@ -39,10 +39,25 @@
 {% endblock %}
 
 {% block main_header %}
-    {% if found_user %}
+    {% if users %}
+        {% if found_user %}
         <h3>Editing {{ found_user.email }}</h3>
+        {% else %}
+        <h3>Creating New User</h3>
+        {% endif %}
     {% endif %}
-    {% if found_venue %}
+    {% if venues %}
+        {% if found_venue %}
         <h3>Editing {{ found_venue.name }}</h3>
+        {% else %}
+        <h3>Creating New venue</h3>
+        {% endif %}
+    {% endif %}
+    {% if bands %}
+        {% if found_band %}
+        <h3>Editing {{ found_band.name }}</h3>
+        {% else %}
+        <h3>Creating New band</h3>
+        {% endif %}
     {% endif %}
 {% endblock %}
