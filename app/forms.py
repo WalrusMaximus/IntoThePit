@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from app.models import User, Band, Venue, FavBand, Rating, Friend, Event
+from app.models import User, Band, Venue, Favorite, Rating, Friend, Event
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField
 from wtforms.validators import DataRequired, ValidationError, Length, Email, EqualTo, Regexp
 

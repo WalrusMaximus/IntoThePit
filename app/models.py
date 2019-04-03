@@ -173,7 +173,7 @@ class Friend(Model):
         except IntegrityError:
             raise
 
-class FavBand(Model):
+class Favorite(Model):
     user_fk = ForeignKeyField(
         model=User,
         backref="users"
@@ -183,16 +183,22 @@ class FavBand(Model):
         backref="bands",
         null=True
     )
+    venue_fk = ForeignKeyField(
+        model=User,
+        backref="venues",
+        null=True
+    )
 
     class Meta:
         database = DATABASE
 
     @classmethod
-    def create_favband(cls,user_fk,band_fk):
+    def create_favorite(cls,user_fk, band_fk, venue_fk):
         try:
             cls.create(
                 user_fk=user_fk,
-                band_fk=band_fk
+                band_fk=band_fk,
+                venue_fk=venue_fk
             )
         except IntegrityError:
             raise
@@ -200,7 +206,7 @@ class FavBand(Model):
 
 def initialize():
     DATABASE.connect()
-    DATABASE.create_tables([User, Band, Venue, Event, Friend, FavBand, Rating], safe=True)
+    DATABASE.create_tables([User, Band, Venue, Event, Friend, Favorite, Rating], safe=True)
     DATABASE.close()
 
 

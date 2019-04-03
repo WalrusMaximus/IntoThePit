@@ -1,6 +1,6 @@
 from flask import Flask, url_for, g
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
-from app.models import User, Band, Venue, FavBand, Rating, Friend, Event
+from app.models import User, Band, Venue, Favorite, Rating, Friend, Event
 
 app = Flask(__name__)
 app.static_folder = 'static'
