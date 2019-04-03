@@ -126,7 +126,7 @@ class Rating(Model):
 
 class Event(Model):
     band_fk = ForeignKeyField(
-        model=User,
+        model=Band,
         backref="bands",
         null=True
     )
@@ -135,7 +135,7 @@ class Event(Model):
         backref="venues",
         null=True
     )
-    date = DateTimeField()
+    date = DateField()
 
     class Meta:
         database = DATABASE
@@ -181,12 +181,12 @@ class Favorite(Model):
         backref="users"
     )
     band_fk = ForeignKeyField(
-        model=User,
+        model=Band,
         backref="bands",
         null=True
     )
     venue_fk = ForeignKeyField(
-        model=User,
+        model=Venue,
         backref="venues",
         null=True
     )

@@ -1,6 +1,6 @@
 from flask import render_template, url_for, flash, redirect, g, request
 from app import app, models
-from app.forms import LoginForm, RegisterForm, AddUserForm, EditUserForm, VenueForm, BandForm, RatingForm, AdminEditUserForm, EditRatingForm
+from app.forms import LoginForm, RegisterForm, AddUserForm, EditUserForm, VenueForm, BandForm, RatingForm, AdminEditUserForm, EditRatingForm, AddEventForm
 from flask_bcrypt import check_password_hash, generate_password_hash
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 
@@ -25,7 +25,7 @@ def user(id):
 def band():
     return "Band page Under Construction"
 
-@app.route('/venue/<id>', methods=('GET', 'POST')) # this will need to be a dynamic route
+@app.route('/venue/<id>/ratings', methods=('GET', 'POST')) # this will need to be a dynamic route
 def venue(id):
     found_venue = models.Venue.get(models.Venue.id == id)
     decoder = found_venue.img.decode()
@@ -33,6 +33,7 @@ def venue(id):
     venue_img = url_for('static', filename=location)
     ratings = models.Rating.select().where(models.Rating.venue_fk == found_venue.id)
     form = RatingForm()
+    show_ratings = True
     if form.validate_on_submit():
         locator = models.Rating.select().where(
             (models.Rating.venue_fk == found_venue.id) &
@@ -51,7 +52,37 @@ def venue(id):
         else:
             flash(f"You can only add one comment per category on each venue")
             return redirect(url_for('venue', id=found_venue.id))
-    return render_template('venue.html', venue=found_venue, venue_img=venue_img, ratings=ratings, form=form)
+    return render_template('venue.html', venue=found_venue, venue_img=venue_img, ratings=ratings, form=form, id=id, show_ratings=show_ratings)
+
+# EVENT VIEW
+@app.route('/venue/<id>/events', methods=('GET', 'POST')) # this will need to be a dynamic route
+def venue_events(id):
+    found_venue = models.Venue.get(models.Venue.id == id)
+    decoder = found_venue.img.decode()
+    location = (f'images/{decoder}')
+    venue_img = url_for('static', filename=location)
+    events = models.Event.select().where(models.Event.venue_fk == found_venue.id)
+    form = AddEventForm()
+    show_events = True
+    if form.validate_on_submit():
+        found_band = models.Band.get(models.Band.name == form.band.data)
+        locator = models.Event.select().where(
+            (models.Event.venue_fk == found_venue.id) &
+            (models.Event.band_fk == found_band.id) &
+            (models.Event.date == form.date.data))
+        if locator.count() == 0:
+            flash(f"Added event to {found_venue.name} with {form.band.data}.")
+            models.Event.create_event(
+                band_fk=found_band.id,
+                venue_fk=id,
+                date=form.date.data
+            )
+            return redirect(url_for('venue_events', id=found_venue.id))
+        flash("Can't add duplicate events","error")
+        return redirect(url_for('venue_events', id=found_venue.id))
+
+    # print(events[0].band_fk.name)
+    return render_template('venue.html', venue=found_venue, venue_img=venue_img, events=events, form=form, id=id, show_events=show_events)
 
     # ########## COMMENTS ########## #
 
@@ -356,6 +387,28 @@ def delete_band(id):
     else: 
         flash("Not authorized to access this page", "error")
         return redirect(url_for('index'))
+
+# ########## EVENTS ########## #
+
+@app.route('/add_event/<id>', methods=["POST","GET"])
+@login_required
+def add_event(id):
+    form = AddEventForm()
+    if current_user.user_level != "walrus":
+        flash("Not authorized to access this page", "error")
+        return redirect(url_for('index'))
+    if form.validate_on_submit():
+        found_band = models.Band.get(models.Band.name == form.band.data)
+        flash(f"Created event with { form.name.data }", 'success')
+        models.Event.create_band(
+            date=form.date.data,
+            band_fk=found_band.id,
+            venue_fk=id
+        )
+        return redirect(url_for('add_band'))
+    return render_template('admin_with_form.html', form=form, bands=bands)
+
+
 
 
 # @app.route('/404') 

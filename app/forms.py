@@ -1,6 +1,9 @@
+import datetime, time
+
 from flask_wtf import FlaskForm
 from app.models import User, Band, Venue, Favorite, Rating, Friend, Event
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField
+from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired, ValidationError, Length, Email, EqualTo, Regexp
 
 def name_exists(form, field):
@@ -146,7 +149,7 @@ class RatingForm(FlaskForm):
     )
     rating_type = SelectField(
         'What are you Rating?',
-        choices=[("overall", 'Overall'), ("pit", 'Mosh Pit'), ("sound", 'Acoustics'), ("facility", 'Facilities')]
+        choices=[("Overall", 'Overall'), ("Mosh Pit", 'Mosh Pit'), ("Sound", 'Sound'), ("Facilities", 'Facilities')]
     )
     message = StringField('Tell us what you think...', validators=[DataRequired(), Length(max=512)])
     submit = SubmitField("Submit")
@@ -160,5 +163,9 @@ class EditRatingForm(FlaskForm):
     message = StringField('Tell us what you think...', validators=[DataRequired(), Length(max=512)])
     submit = SubmitField("Submit")
 
-    
+class AddEventForm(FlaskForm):
+    date = DateField("Date", default=datetime.datetime.now, validators=[DataRequired()])
+    band = StringField("Band", validators=[DataRequired()])
+    submit = SubmitField("Submit")
+
 
