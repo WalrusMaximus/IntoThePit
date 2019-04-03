@@ -19,9 +19,13 @@
 {% if found_rating %}
 <h4>Editing Rating:</h4>
 <p>{{ found_rating.user_fk.username }} says: {{ found_rating.message }}. {{found_rating.rating_type}} {{ found_rating.rating }}/5</p>
-{% else %}
+{% elif show_ratings %}
 <h4>Add new Rating:</h4>
-{% endif%}
+{% endif %}
+{% if found_event %}
+{% elif show_events %}
+<h4>Add new Event:</h4>
+{% endif %}
 <form method="POST" action="" class="form">
     {{ form.hidden_tag() }}
     {% for field in form %}
