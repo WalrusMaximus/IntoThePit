@@ -217,6 +217,8 @@ def delete_venue(id):
     if g.user.user_level == "walrus":
         venue_deletion = models.Venue.delete().where(models.Venue.id == found_venue.id)
         venue_deletion.execute()
+        ratings_deletion = models.Rating.delete().where(models.Rating.venue_fk == found_venue.id)
+        ratings_deletion.execute()
         flash(f"Deleted {found_venue.name}")
         return redirect(url_for('admin'))
     else: 
