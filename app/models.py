@@ -40,8 +40,8 @@ class User(UserMixin, Model):
 class Band(Model):
     name = CharField()
     about = CharField()
-    genre = CharField()
-    themes = CharField()
+    genre = CharField(null=True)
+    themes = CharField(null=True, default="music")
     img = BlobField(default="default_band.png")
     bigimg = BlobField(default="default_band_bg.png")
 
@@ -49,13 +49,12 @@ class Band(Model):
         database = DATABASE
 
     @classmethod
-    def create_band(cls, name, about, genre, themes, img="default_band.png", bigimg="default_band_bg.png"):
+    def create_band(cls, name, about, genre, themes="music", img="default_band.png", bigimg="default_band_bg.png"):
         try:
             cls.create(
                 name=name,
                 about=about,
                 genre=genre,
-                themes=themes,
                 img="default_band.png",
                 bigimg="default_band_bg.png"
             )

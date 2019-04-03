@@ -1,6 +1,6 @@
 from flask import render_template, url_for, flash, redirect, g
 from app import app, models
-from app.forms import LoginForm, RegisterForm, AddUserForm, EditUserForm, VenueForm
+from app.forms import LoginForm, RegisterForm, AddUserForm, EditUserForm, VenueForm, BandForm
 from flask_bcrypt import check_password_hash
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 
@@ -207,6 +207,63 @@ def delete_venue(id):
     else: 
         flash("Not authorized to access this page", "error")
         return redirect(url_for('index'))
+
+
+    # ########## BANDS ########## #
+
+@app.route('/admin/add_band', methods=('GET', 'POST'))
+@login_required
+def add_band():
+    form = BandForm()
+    bands = models.Band.select()
+    if current_user.user_level != "walrus":
+        flash("Not authorized to access this page", "error")
+        return redirect(url_for('index'))
+    if form.validate_on_submit():
+        flash(f"Created band - { form.name.data }", 'success')
+        models.Band.create_band(
+            name=form.name.data,
+            about=form.about.data,
+            genre=form.genre.data
+        )
+        return redirect(url_for('add_band'))
+    return render_template('admin_with_form.html', form=form, bands=bands)
+
+
+@app.route('/admin/band/update/<id>', methods=['GET','POST'])
+@login_required
+def admin_edit_band(id):
+    form = BandForm()
+    bands = models.Band.select()
+    found_band = models.Band.get(models.Band.id == id)
+    if current_user.user_level != "walrus":
+        flash("Not authorized to access this page", "error")
+        return redirect(url_for('index'))
+    if form.validate_on_submit():
+        band_update = models.Band.update(
+            name=form.name.data,
+            about=form.about.data,
+            genre=form.genre.data
+        ).where(models.Band.id == id)
+        band_update.execute()
+        flash(f"Updated information for {found_band.name}.")
+        return redirect(url_for('admin'))
+
+    return render_template('admin_with_form.html', form=form, bands=bands, found_band=found_band)
+
+@app.route('/admin/band/delete/<id>')
+@login_required
+def delete_band(id):
+    found_band = models.Band.get(models.Band.id == id)
+    if g.user.user_level == "walrus":
+        band_deletion = models.Band.delete().where(models.Band.id == found_band.id)
+        band_deletion.execute()
+        flash(f"Deleted {found_band.name}")
+        return redirect(url_for('admin'))
+    else: 
+        flash("Not authorized to access this page", "error")
+        return redirect(url_for('index'))
+
 
 # @app.route('/404') 
 # def venue():
