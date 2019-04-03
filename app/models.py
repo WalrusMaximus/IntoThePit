@@ -104,19 +104,21 @@ class Rating(Model):
         null=True
     )
     rating = IntegerField()
+    rating_type = CharField()
     message = CharField(max_length=1024)
 
     class Meta:
         database = DATABASE
 
     @classmethod
-    def create_rating(cls,user_fk, rating, message, venue_fk=None, band_fk=None):
+    def create_rating(cls,user_fk, rating, rating_type, message, venue_fk=None, band_fk=None):
         try:
             cls.create(
                 user_fk=user_fk,
                 venue_fk=venue_fk,
                 band_fk=band_fk,
                 rating=rating,
+                rating_type=rating_type,
                 message=message,
             )
         except IntegrityError:

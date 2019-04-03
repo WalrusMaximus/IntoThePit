@@ -29,14 +29,23 @@ def venue(id):
     ratings = models.Rating.select().where(models.Rating.venue_fk == found_venue.id)
     form = RatingForm()
     if form.validate_on_submit():
-        flash(f"Add comment to {found_venue.name}.")
-        models.Rating.create_rating(
-            user_fk=current_user.id,
-            venue_fk=id,
-            rating=form.rating.data,
-            message=form.message.data
-        )
-        return redirect(url_for('venue', id=found_venue.id))
+        locator = models.Rating.select().where(
+            (models.Rating.venue_fk == found_venue.id) &
+            (models.Rating.user_fk == current_user.id) &
+            (models.Rating.rating_type == form.rating_type.data))
+        if locator.count() == 0:
+            flash(f"Add comment to {found_venue.name}.")
+            models.Rating.create_rating(
+                user_fk=current_user.id,
+                venue_fk=id,
+                rating=form.rating.data,
+                rating_type=form.rating_type.data,
+                message=form.message.data
+            )
+            return redirect(url_for('venue', id=found_venue.id))
+        else:
+            flash(f"You can only add one comment per category on each venue")
+            return redirect(url_for('venue', id=found_venue.id))
     return render_template('venue.html', venue=found_venue, venue_img=venue_img, ratings=ratings, form=form)
 
     # ########## LOGIN ########## #

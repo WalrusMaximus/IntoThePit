@@ -35,12 +35,6 @@ if __name__ == '__main__':
             state="California",
             zip="94104"
         )
-        models.Rating.create_rating(
-            user_fk=1,
-            venue_fk=1,
-            rating=5,
-            message="It's a place."
-        )
     except ValueError:
         pass
         
