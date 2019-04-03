@@ -54,7 +54,8 @@ def venue(id):
             return redirect(url_for('venue', id=found_venue.id))
     return render_template('venue.html', venue=found_venue, venue_img=venue_img, ratings=ratings, form=form, id=id, show_ratings=show_ratings)
 
-# EVENT VIEW
+    # ########## EVENTS ########## #
+
 @app.route('/venue/<id>/events', methods=('GET', 'POST')) # this will need to be a dynamic route
 def venue_events(id):
     found_venue = models.Venue.get(models.Venue.id == id)
@@ -65,23 +66,26 @@ def venue_events(id):
     form = AddEventForm()
     show_events = True
     if form.validate_on_submit():
-        if models.Band.select().where(models.Band.name == form.band.data).exists():
-            found_band = models.Band.get(models.Band.name == form.band.data)
-            locator = models.Event.select().where(
-                (models.Event.venue_fk == found_venue.id) &
-                (models.Event.band_fk == found_band.id) &
-                (models.Event.date == form.date.data))
-            if locator.count() == 0:
-                flash(f"Added event to {found_venue.name} with {form.band.data}.")
-                models.Event.create_event(
-                    band_fk=found_band.id,
-                    venue_fk=id,
-                    date=form.date.data
-                )
+        if current_user.user_level == "walrus":
+            if models.Band.select().where(models.Band.name == form.band.data).exists():
+                found_band = models.Band.get(models.Band.name == form.band.data)
+                locator = models.Event.select().where(
+                    (models.Event.venue_fk == found_venue.id) &
+                    (models.Event.band_fk == found_band.id) &
+                    (models.Event.date == form.date.data))
+                if locator.count() == 0:
+                    flash(f"Added event to {found_venue.name} with {form.band.data}.")
+                    models.Event.create_event(
+                        band_fk=found_band.id,
+                        venue_fk=id,
+                        date=form.date.data
+                    )
+                    return redirect(url_for('venue_events', id=found_venue.id))
+                flash("Can't add duplicate events","error")
                 return redirect(url_for('venue_events', id=found_venue.id))
-            flash("Can't add duplicate events","error")
+            flash("Band does not exist in database","error")
             return redirect(url_for('venue_events', id=found_venue.id))
-        flash("Band does not exist in database","error")
+        flash("Not Authorized to Add Events","error")
         return redirect(url_for('venue_events', id=found_venue.id))
 
     # print(events[0].band_fk.name)
