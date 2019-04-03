@@ -9,8 +9,8 @@ from flask_login import LoginManager, login_user, logout_user, login_required, c
 
 @app.route("/", methods=["POST","GET"])
 def index():
-    form = RegisterForm()
-    return render_template('layout.html', title="Into The Pit", form=form)
+    venues = models.Venue.select()
+    return render_template('index.html', title="Into The Pit", venues=venues)
 
 @app.route("/user") # this will need to be a dynamic route
 def user():
@@ -20,9 +20,13 @@ def user():
 def band():
     return "Band page Under Construction"
 
-@app.route('/venue') # this will need to be a dynamic route
-def venue():
-    return "Venue page Under Construction"
+@app.route('/venue/<id>') # this will need to be a dynamic route
+def venue(id):
+    found_venue = models.Venue.get(models.Venue.id == id)
+    decoder = found_venue.img.decode()
+    location = (f'images/{decoder}')
+    venue_img = url_for('static', filename=location)
+    return render_template('venue.html', venue=found_venue, venue_img=venue_img)
 
     # ########## LOGIN ########## #
 

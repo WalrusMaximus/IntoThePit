@@ -7,6 +7,7 @@
 {% if g.user.user_level == "walrus" %}
 <a href="/admin">ADMIN</a>
 {% endif %}
+<a href="/">HOME</a>
 {% with messages = get_flashed_messages(with_categories=True) %}
     {% if messages %}
         {% for category, message in messages %}
