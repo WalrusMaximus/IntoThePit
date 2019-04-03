@@ -1,4 +1,6 @@
-{% extends "layout.html" %}
+{% extends "layout.html" %}\
+{% from 'macros.html' import render_field %}
+
 {% block sidebar %}
 
 <h4>{{venue.name}}</h4>
@@ -6,6 +8,17 @@
 <img src="{{ venue_img }}" alt="">
 
 {% endblock %}
+
+{% block main_header %}
+
+<form method="POST" action="" class="form">
+    {{ form.hidden_tag() }}
+    {% for field in form %}
+        {{ render_field(field) }}
+    {% endfor %}
+</form>
+
+{% endblock%}
 
 {% block main %}
 <h4>Ratings</h4>

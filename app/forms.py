@@ -117,5 +117,10 @@ class BandForm(FlaskForm):
     genre = StringField("Genre", validators=[DataRequired()])
     submit = SubmitField('Create')
 
+class RatingForm(FlaskForm):
+    rating = StringField('Rate 1 to 5', validators=[DataRequired(), Length(min=1,max=1)])
+    message = StringField('Tell us what you think...', validators=[DataRequired(), Length(max=512)])
+    submit = SubmitField("Add Rating")
+
     
 

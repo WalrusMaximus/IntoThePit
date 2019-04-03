@@ -1,6 +1,6 @@
 from flask import render_template, url_for, flash, redirect, g
 from app import app, models
-from app.forms import LoginForm, RegisterForm, AddUserForm, EditUserForm, VenueForm, BandForm
+from app.forms import LoginForm, RegisterForm, AddUserForm, EditUserForm, VenueForm, BandForm, RatingForm
 from flask_bcrypt import check_password_hash
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 
@@ -20,14 +20,24 @@ def user():
 def band():
     return "Band page Under Construction"
 
-@app.route('/venue/<id>') # this will need to be a dynamic route
+@app.route('/venue/<id>', methods=('GET', 'POST')) # this will need to be a dynamic route
 def venue(id):
     found_venue = models.Venue.get(models.Venue.id == id)
     decoder = found_venue.img.decode()
     location = (f'images/{decoder}')
     venue_img = url_for('static', filename=location)
     ratings = models.Rating.select().where(models.Rating.venue_fk == found_venue.id)
-    return render_template('venue.html', venue=found_venue, venue_img=venue_img, ratings=ratings)
+    form = RatingForm()
+    if form.validate_on_submit():
+        flash(f"Add comment to {found_venue.name}.")
+        models.Rating.create_rating(
+            user_fk=current_user.id,
+            venue_fk=id,
+            rating=form.rating.data,
+            message=form.message.data
+        )
+        return redirect(url_for('venue', id=found_venue.id))
+    return render_template('venue.html', venue=found_venue, venue_img=venue_img, ratings=ratings, form=form)
 
     # ########## LOGIN ########## #
 
