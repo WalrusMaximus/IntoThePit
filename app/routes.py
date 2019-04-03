@@ -26,7 +26,7 @@ def band():
     return "Band page Under Construction"
 
 @app.route('/venue/<id>/ratings', methods=('GET', 'POST')) # this will need to be a dynamic route
-def venue(id):
+def venue_rating(id):
     found_venue = models.Venue.get(models.Venue.id == id)
     decoder = found_venue.img.decode()
     location = (f'images/{decoder}')
@@ -48,10 +48,10 @@ def venue(id):
                 rating_type=form.rating_type.data,
                 message=form.message.data
             )
-            return redirect(url_for('venue', id=found_venue.id))
+            return redirect(url_for('venue_rating', id=found_venue.id))
         else:
             flash(f"You can only add one comment per category on each venue")
-            return redirect(url_for('venue', id=found_venue.id))
+            return redirect(url_for('venue_rating', id=found_venue.id))
     return render_template('venue.html', venue=found_venue, venue_img=venue_img, ratings=ratings, form=form, id=id, show_ratings=show_ratings)
 
     # ########## EVENTS ########## #
@@ -103,7 +103,7 @@ def delete_rating(id):
         flash(f"Deleted rating on {found_rating.venue_fk.name}")
         if profile == "True":
             return redirect(url_for('user', id=current_user.id))
-        return redirect(url_for('venue', id=found_rating.venue_fk.id))
+        return redirect(url_for('venue_rating', id=found_rating.venue_fk.id))
     else:
         flash(f"You cannot delete another users comments","error")
         return redirect(url_for('index'))
@@ -150,7 +150,7 @@ def venue_update_rating(id):
         ).where(models.Rating.id == id)
         rating_update.execute()
         flash(f"Updated comment on {found_rating.venue_fk.name}.")
-        return redirect(url_for('venue',id=found_venue.id))
+        return redirect(url_for('venue_rating',id=found_venue.id))
     return render_template('venue.html', venue=found_venue, found_rating=found_rating, venue_img=venue_img, ratings=ratings, form=form)
 
     # ########## LOGIN ########## #
