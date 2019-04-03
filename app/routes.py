@@ -1,6 +1,6 @@
 from flask import render_template, url_for, flash, redirect, g
 from app import app, models
-from app.forms import LoginForm, RegisterForm, AddUserForm, EditUserForm, AddVenueForm
+from app.forms import LoginForm, RegisterForm, AddUserForm, EditUserForm, VenueForm
 from flask_bcrypt import check_password_hash
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 
@@ -153,7 +153,7 @@ def delete_user(id):
 @app.route('/admin/add_venue', methods=('GET', 'POST'))
 @login_required
 def add_venue():
-    form = AddVenueForm()
+    form = VenueForm()
     venues = models.Venue.select()
     if current_user.user_level != "walrus":
         flash("Not authorized to access this page", "error")
@@ -170,6 +170,43 @@ def add_venue():
         )
         return redirect(url_for('add_venue'))
     return render_template('admin_with_form.html', form=form, venues=venues)
+
+@app.route('/admin/venue/update/<id>', methods=['GET','POST'])
+@login_required
+def admin_edit_venue(id):
+    form = VenueForm()
+    venues = models.Venue.select()
+    found_venue = models.Venue.get(models.Venue.id == id)
+    if current_user.user_level != "walrus":
+        flash("Not authorized to access this page", "error")
+        return redirect(url_for('index'))
+    if form.validate_on_submit():
+        venue_update = models.Venue.update(
+            name=form.name.data,
+            about=form.about.data,
+            address=form.address.data,
+            city=form.city.data,
+            state=form.state.data,
+            zip=form.zip.data
+        ).where(models.Venue.id == id)
+        venue_update.execute()
+        flash(f"Updated information for {found_venue.name}.")
+        return redirect(url_for('admin'))
+
+    return render_template('admin_with_form.html', form=form, venues=venues, found_venue=found_venue)
+
+@app.route('/admin/venue/delete/<id>')
+@login_required
+def delete_venue(id):
+    found_venue = models.Venue.get(models.Venue.id == id)
+    if g.user.user_level == "walrus":
+        venue_deletion = models.Venue.delete().where(models.Venue.id == found_venue.id)
+        venue_deletion.execute()
+        flash(f"Deleted {found_venue.name}")
+        return redirect(url_for('admin'))
+    else: 
+        flash("Not authorized to access this page", "error")
+        return redirect(url_for('index'))
 
 # @app.route('/404') 
 # def venue():

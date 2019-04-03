@@ -1,6 +1,5 @@
 {% extends "layout.html" %}
 {% block sidebar %}
-<h2>Admin!</h2>
     <div class="user-wrapper">
         <h3>USERS</h3>
         <a href="/admin/add_user">Add A User</a>
@@ -23,8 +22,8 @@
         <h3>VENUES</h3>
         <a href="/admin/add_venue">Add A Venue</a>
         {% for venue in venues %}
-        <p>{{ venue.name }}</p>
-        <a href="#">Edit</a><a href="#" class="delete_button">Delete</a>
+        <p>{{ venue.name }}, id: {{ venue.id }}</p>
+        <a href="{{ url_for('admin_edit_venue', id=venue.id) }}">Edit</a><a href="{{ url_for('delete_venue', id=venue.id) }}" class="delete_button">Delete</a>
         {% endfor %}
     </div>
     <div class="band-wrapper">
@@ -36,11 +35,14 @@
         {% endfor %}
     </div>
 
-
+    
 {% endblock %}
 
 {% block main_header %}
     {% if found_user %}
         <h3>Editing {{ found_user.email }}</h3>
+    {% endif %}
+    {% if found_venue %}
+        <h3>Editing {{ found_venue.name }}</h3>
     {% endif %}
 {% endblock %}

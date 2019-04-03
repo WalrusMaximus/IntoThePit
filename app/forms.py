@@ -85,7 +85,7 @@ class EditUserForm(FlaskForm):
     zip = StringField("Zip", validators=[DataRequired()])
     submit = SubmitField('Commit Changes')
 
-class AddVenueForm(FlaskForm):
+class VenueForm(FlaskForm):
     name = StringField('Name', validators=[
             DataRequired(),  
             Regexp(r'^[a-zA-Z0-9 ]+$',
