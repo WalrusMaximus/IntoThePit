@@ -110,7 +110,7 @@ class Rating(Model):
         database = DATABASE
 
     @classmethod
-    def create_rating(cls,user_fk, venue_fk, band_fk, rating, message):
+    def create_rating(cls,user_fk, rating, message, venue_fk=None, band_fk=None):
         try:
             cls.create(
                 user_fk=user_fk,

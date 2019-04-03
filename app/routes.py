@@ -26,7 +26,8 @@ def venue(id):
     decoder = found_venue.img.decode()
     location = (f'images/{decoder}')
     venue_img = url_for('static', filename=location)
-    return render_template('venue.html', venue=found_venue, venue_img=venue_img)
+    ratings = models.Rating.select().where(models.Rating.venue_fk == found_venue.id)
+    return render_template('venue.html', venue=found_venue, venue_img=venue_img, ratings=ratings)
 
     # ########## LOGIN ########## #
 

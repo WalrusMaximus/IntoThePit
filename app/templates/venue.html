@@ -6,3 +6,10 @@
 <img src="{{ venue_img }}" alt="">
 
 {% endblock %}
+
+{% block main %}
+<h4>Ratings</h4>
+    {% for rating in ratings %}
+        <p>{{ rating.user_fk.username }} says: {{ rating.message }}</p>
+    {% endfor %}
+{% endblock %}
