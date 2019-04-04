@@ -57,6 +57,7 @@ def user(id):
 # FAVORITES
 
 @app.route('/band/add_favorite/<id>')
+@login_required
 def add_favorite_band(id):
     found_band = models.Band.get(models.Band.id == id)
     if models.Favorite.select().where(
@@ -71,8 +72,31 @@ def add_favorite_band(id):
             band_fk=found_band
         )
         return redirect(url_for('band',id=id))
+    
+@app.route('/band/delete_favorite/<id>')
+@login_required
+def delete_favorite_band(id):
+    found_band = models.Band.get(models.Band.id == id)
+    found_favorite = models.Favorite.select().where(
+        (models.Favorite.band_fk == found_band.id) &
+        (models.Favorite.user_fk == current_user.id))
+    if found_favorite.exists():
+        delete_favorite = models.Favorite.delete().where(
+        (models.Favorite.band_fk == found_band.id) &
+        (models.Favorite.user_fk == current_user.id))
+        delete_favorite.execute()
+        flash("Deleted from favorites","success")
+        return redirect(url_for('band',id=id))
+    else:
+        flash("This isn't one of your favorite bands","error")
+        models.Favorite.create_favorite(
+            user_fk=current_user.id,
+            band_fk=found_band
+        )
+        return redirect(url_for('band',id=id))
 
 @app.route('/venue/add_favorite/<id>')
+@login_required
 def add_favorite_venue(id):
     found_venue = models.Venue.get(models.Venue.id == id)
     if models.Favorite.select().where(
@@ -87,6 +111,29 @@ def add_favorite_venue(id):
             venue_fk=found_venue
         )
         return redirect(url_for('venue_rating',id=id))
+
+@app.route('/venue/delete_favorite/<id>')
+@login_required
+def delete_favorite_venue(id):
+    found_venue = models.Venue.get(models.Venue.id == id)
+    found_favorite = models.Favorite.select().where(
+        (models.Favorite.venue_fk == found_venue.id) &
+        (models.Favorite.user_fk == current_user.id))
+    if found_favorite.exists():
+        delete_favorite = models.Favorite.delete().where(
+        (models.Favorite.venue_fk == found_venue.id) &
+        (models.Favorite.user_fk == current_user.id))
+        delete_favorite.execute()
+        flash("Deleted from favorites","success")
+        return redirect(url_for('venue_rating',id=id))
+    else:
+        flash("This isn't one of your favorite venues","error")
+        models.Favorite.create_favorite(
+            user_fk=current_user.id,
+            venue_fk=found_venue
+        )
+        return redirect(url_for('venue_rating',id=id))
+        
 
 @app.route("/user/add_friend/<id>")
 @login_required
@@ -465,6 +512,14 @@ def venue_events(id):
     events = models.Event.select().where(models.Event.venue_fk == found_venue.id)
     form = AddEventForm()
     show_events = True
+
+    is_favorite = False
+    if models.Favorite.select().where(
+        (models.Favorite.user_fk == current_user.id) &
+        (models.Favorite.venue_fk == found_venue.id)
+    ):
+        is_favorite = True
+
     if form.validate_on_submit():
         if current_user.user_level == "walrus":
             if models.Band.select().where(models.Band.name == form.band.data).exists():
@@ -488,7 +543,7 @@ def venue_events(id):
         flash("Not Authorized to Add Events","error")
         return redirect(url_for('venue_events', id=found_venue.id))
 
-    return render_template('venue.html', venue=found_venue, venue_img=venue_img, events=events, form=form, id=id, show_events=show_events)
+    return render_template('venue.html', venue=found_venue, venue_img=venue_img, events=events, form=form, id=id, show_events=show_events, is_favorite=is_favorite)
 
 @app.route('/admin/add_event', methods=('GET', 'POST'))
 @login_required

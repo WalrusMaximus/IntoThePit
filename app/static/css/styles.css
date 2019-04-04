@@ -36,7 +36,7 @@ footer {
     width: 40%;
 }
 
-.venue_img {
+.venue_img, .band_img {
     max-width: 100%;
 }
 

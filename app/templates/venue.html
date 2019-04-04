@@ -7,15 +7,16 @@
 <p>{{venue.about}}</p>
 <img class="venue_img" src="{{ url_for('static', filename=venue.img.decode('utf-8'))}}" alt="">
 
+{% if is_favorite %}
+<p>This is one of your favorite venues!</p><a href="{{url_for('delete_favorite_venue',id=venue.id)}}">Unfavorite?</a>
+{% else %}
+<a href="{{url_for('add_favorite_venue', id=venue.id)}}">Add To Favorites</a>
+{% endif %}
+
 {% endblock %}
 
 {% block main_header %}
 
-{% if is_favorite %}
-<p>This is one of your favorite venues!</p>
-{% else %}
-<a href="{{url_for('add_favorite_venue', id=venue.id)}}">Add To Favorites</a>
-{% endif %}
 
 {% if show_ratings %}
 <a href="{{url_for('venue_events', id=id)}}">Go To Events</a>

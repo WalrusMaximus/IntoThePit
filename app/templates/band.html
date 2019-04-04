@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block sidebar %}
 <h2>{{band.name}}</h2>
-<img class="user_profile_avatar" src="{{ url_for('static', filename=band.img.decode('utf-8'))}}" alt="">
+<img class="band_img" src="{{ url_for('static', filename=band.img.decode('utf-8'))}}" alt="">
 <p>{{band.about}}</p>
 
 {% endblock %}
@@ -9,7 +9,7 @@
 
 {% block main_header %}
 {% if is_favorite %}
-<p>This is one of your favorite bands!</p>
+<p>This is one of your favorite bands!</p><a href="{{url_for('delete_favorite_band',id=band.id)}}">Unfavorite?</a>
 {% else %}
 <a href="{{url_for('add_favorite_band', id=band.id)}}">Add To Favorites</a>
 {% endif %} 
