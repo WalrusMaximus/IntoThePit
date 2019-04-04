@@ -169,3 +169,10 @@ class AddEventForm(FlaskForm):
     submit = SubmitField("Submit")
 
 
+class AdminAddEventForm(FlaskForm):
+    date = DateField("Date", default=datetime.datetime.now, validators=[DataRequired()])
+    band = StringField("Band", validators=[DataRequired()])
+    venue = StringField("Venue", validators=[DataRequired()])
+    submit = SubmitField("Submit")
+
+

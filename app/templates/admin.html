@@ -39,7 +39,7 @@
         <a href="/admin/add_event">Add An Event</a>
         {% for event in events %}
         <p><a href="{{url_for('venue_events', id=event.venue_fk.id)}}">{{ event.band_fk.name }} @ {{ event.venue_fk.name }}</a>, id: {{ event.id }}</p>
-        <a href="#">Update</a> <a href="{{ url_for('delete_event', id=event.id)}}" class="delete_button">Delete</a>
+        <a href="{{ url_for('update_event', id=event.id)}}">Update</a> <a href="{{ url_for('delete_event', id=event.id, admin=True)}}" class="delete_button">Delete</a>
         {% endfor %}
     </div>
 
