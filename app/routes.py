@@ -5,7 +5,7 @@ from flask_bcrypt import check_password_hash, generate_password_hash
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 
 
-    # ########## CONTENT PAGES ########## #
+    # ########## MAIN PAGE ########## #
 
 @app.route("/", methods=["POST","GET"])
 def index():
@@ -13,11 +13,64 @@ def index():
     bands = models.Band.select()
     return render_template('index.html', title="Into The Pit", venues=venues, bands=bands)
 
+    # ########## USER PAGES ########## #
+
 @app.route("/user/<id>")
 def user(id):
     found_user = models.User.get(models.User.id == id)
     ratings = models.Rating.select().where(models.Rating.user_fk == found_user.id)
-    return render_template('user.html', user=found_user, ratings=ratings)
+    is_friend = False
+    friend_pending = False
+
+    # friend_check_one = models.Friend.select().where(
+    #     (models.Friend.friender == current_user.id) &
+    #     (models.Friend.friendee == found_user) &
+    #     (models.Friend.accepted == True))
+
+    # Favorite Stuff
+
+    favorite_bands = models.Favorite.select(band_fk).where(models.Favorite.user_fk == id)
+    favorite_venues = models.Favorite.select(venue_fk).where(models.Favorite.user_fk == id)
+
+    # Friend Stuff
+
+    if models.Friend.select().where(
+        (models.Friend.friender == current_user.id) &
+        (models.Friend.friendee == found_user) &
+        (models.Friend.accepted == False)
+        ):
+            friend_pending = True
+
+    if models.Friend.select().where(
+        (models.Friend.friendee == current_user.id) &
+        (models.Friend.friender == found_user) &
+        (models.Friend.accepted == False)
+        ):
+            friend_pending = True
+        
+    return render_template('user.html', user=found_user, ratings=ratings, is_friend=is_friend, friend_pending=friend_pending, favorite_bands=favorite_bands, favorite_venues=favorite_venues)
+
+@app.route("/user/add_friend/<id>")
+@login_required
+def add_friend(id):
+    found_user = models.User.get(models.User.id == id)
+
+
+    if current_user != found_user:
+        locator = models.Friend.select().where(
+            (models.Friend.friender == current_user.id) &
+            (models.Friend.friendee == found_user.id))
+        if locator.count() == 0:
+            flash(f"Friend request sent to {found_user.username}.")
+            models.Friend.create_friend(
+                friender=current_user.id,
+                friendee=id,
+                accepted=False
+            )
+            return redirect(url_for('user', id=id))
+        else:
+            flash(f"You've already sent a request to that user","error")
+            return redirect(url_for('user', id=id))
 
 @app.route('/band/<id>')
 def band(id):

@@ -161,12 +161,13 @@ class Friend(Model):
         backref="friends",
         null=True
     )
+    accepted = BooleanField(default=False)
 
     class Meta:
         database = DATABASE
 
     @classmethod
-    def create_friend(cls,friender,friendee):
+    def create_friend(cls,friender,friendee=None, accepted=False):
         try:
             cls.create(
                 friender=friender,
@@ -188,6 +189,11 @@ class Favorite(Model):
     venue_fk = ForeignKeyField(
         model=Venue,
         backref="venues",
+        null=True
+    )
+    event_fk = ForeignKeyField(
+        model=Event,
+        backref="events",
         null=True
     )
 
