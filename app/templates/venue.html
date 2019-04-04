@@ -5,7 +5,8 @@
 
 <h4>{{venue.name}}</h4>
 <p>{{venue.about}}</p>
-<img class="venue_img" src="{{ venue_img }}" alt="">
+{% set venue_img = venue.img.decode('utf-8') %}
+<img class="venue_img" src="{{ url_for('static', filename=venue_img)}}" alt="">
 
 {% endblock %}
 
@@ -17,7 +18,7 @@
 <a href="{{url_for('venue_rating', id=id)}}">Go To Ratings</a>
 {% endif %}
 {% if found_rating %}
-<h4>Updating</h4>ing Rating:</h4>
+<h4>Updating Rating:</h4>
 <p>{{ found_rating.user_fk.username }} says: {{ found_rating.message }}. {{found_rating.rating_type}} {{ found_rating.rating }}/5</p>
 {% elif show_ratings %}
 <h4>Add new Rating:</h4>
@@ -44,6 +45,8 @@
         {% for rating in ratings %}
             <p>{{ rating.user_fk.username }} says: {{ rating.message }}. {{rating.rating_type}} {{ rating.rating }}/5</p>
             {% if rating.user_fk.id == current_user.id %}
+            {% set img_url = rating.user_fk.avatar.decode('utf-8') %}
+            <img class="inline-avatar" src="{{ url_for('static', filename=img_url)}}" alt="">
             <a href="{{ url_for('venue_update_rating', id=rating.id)}}">Update</a> <a href="{{ url_for('delete_rating', id=rating.id, profile=False)}}">Delete</a>
             {% endif %}
         {% endfor %}

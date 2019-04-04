@@ -15,11 +15,8 @@ def index():
 @app.route("/user/<id>") # this will need to be a dynamic route
 def user(id):
     found_user = models.User.get(models.User.id == id)
-    decoder = found_user.avatar.decode()
-    location = (f'images/{decoder}')
-    avatar = url_for('static', filename=location)
     ratings = models.Rating.select().where(models.Rating.user_fk == found_user.id)
-    return render_template('user.html', user=found_user, avatar=avatar, ratings=ratings)
+    return render_template('user.html', user=found_user, ratings=ratings)
 
 @app.route('/band') # this will need to be a dynamic route
 def band():
@@ -28,9 +25,6 @@ def band():
 @app.route('/venue/<id>/ratings', methods=('GET', 'POST')) # this will need to be a dynamic route
 def venue_rating(id):
     found_venue = models.Venue.get(models.Venue.id == id)
-    decoder = found_venue.img.decode()
-    location = (f'images/{decoder}')
-    venue_img = url_for('static', filename=location)
     ratings = models.Rating.select().where(models.Rating.venue_fk == found_venue.id)
     form = RatingForm()
     show_ratings = True
@@ -52,7 +46,7 @@ def venue_rating(id):
         else:
             flash(f"You can only add one comment per category on each venue")
             return redirect(url_for('venue_rating', id=found_venue.id))
-    return render_template('venue.html', venue=found_venue, venue_img=venue_img, ratings=ratings, form=form, id=id, show_ratings=show_ratings)
+    return render_template('venue.html', venue=found_venue, ratings=ratings, form=form, id=id, show_ratings=show_ratings)
 
     # ########## COMMENTS ########## #
 
@@ -75,12 +69,8 @@ def delete_rating(id):
 @login_required
 def user_update_rating(id):
     found_user = models.User.get(models.User.id == current_user.id)
-    decoder = found_user.avatar.decode()
-    location = (f'images/{decoder}')
-    avatar = url_for('static', filename=location)
 
-
-    form = updateRatingForm()
+    form = UpdateRatingForm()
     found_rating = models.Rating.get(models.Rating.id == id)
     ratings = models.Rating.select().where(models.Rating.user_fk == found_user.id)
     if form.validate_on_submit():
@@ -92,19 +82,16 @@ def user_update_rating(id):
         flash(f"Updated comment on {found_rating.venue_fk.name}.")
         return redirect(url_for('user',id=current_user.id))
 
-    return render_template('user.html', form=form, found_rating=found_rating, user=found_user, avatar=avatar, ratings=ratings)
+    return render_template('user.html', form=form, found_rating=found_rating, user=found_user, ratings=ratings)
 
 
 @app.route('/venue/update_rating/<id>', methods=('GET', 'POST')) # this will need to be a dynamic route
 def venue_update_rating(id):
     found_rating = models.Rating.get(models.Rating.id == id)
     found_venue = models.Venue.get(models.Venue.id == found_rating.venue_fk.id)
-    decoder = found_venue.img.decode()
-    location = (f'images/{decoder}')
-    venue_img = url_for('static', filename=location)
     ratings = models.Rating.select().where(models.Rating.venue_fk == found_venue.id)
 
-    form = updateRatingForm()
+    form = UpdateRatingForm()
     ratings = models.Rating.select().where(models.Rating.venue_fk == found_venue.id)
     if form.validate_on_submit():
         rating_update = models.Rating.update(
@@ -114,7 +101,7 @@ def venue_update_rating(id):
         rating_update.execute()
         flash(f"Updated comment on {found_rating.venue_fk.name}.")
         return redirect(url_for('venue_rating',id=found_venue.id))
-    return render_template('venue.html', venue=found_venue, found_rating=found_rating, venue_img=venue_img, ratings=ratings, form=form)
+    return render_template('venue.html', venue=found_venue, found_rating=found_rating, ratings=ratings, form=form)
 
     # ########## LOGIN ########## #
 
@@ -173,8 +160,9 @@ def admin():
     users = models.User.select()
     venues = models.Venue.select()
     bands = models.Band.select()
+    events = models.Event.select()
 
-    return render_template('admin.html', users=users, venues=venues, bands=bands)
+    return render_template('admin.html', users=users, venues=venues, bands=bands, events=events)
 
 @app.route('/admin/add_user', methods=('GET', 'POST'))
 @login_required
@@ -201,7 +189,7 @@ def add_user():
 @app.route('/admin/user/update/<id>', methods=['GET','POST'])
 @login_required
 def admin_update_user(id):
-    form = AdminupdateUserForm()
+    form = AdminUpdateUserForm()
     users = models.User.select()
     found_user = models.User.get(models.User.id == id)
     if current_user.user_level != "walrus":
@@ -364,9 +352,8 @@ def delete_band(id):
 @app.route('/venue/<id>/events', methods=('GET', 'POST'))
 def venue_events(id):
     found_venue = models.Venue.get(models.Venue.id == id)
-    decoder = found_venue.img.decode()
-    location = (f'images/{decoder}')
-    venue_img = url_for('static', filename=location)
+    venue_img = url_for('static', filename=(f'images/{found_venue.img}'))
+    print(venue_img)
     events = models.Event.select().where(models.Event.venue_fk == found_venue.id)
     form = AddEventForm()
     show_events = True
@@ -413,23 +400,23 @@ def delete_event(id):
 @app.route('/admin/update_event/<id>', methods=['GET','POST'])
 @login_required
 def update_event(id):
-    form = BandForm()
-    bands = models.Band.select()
-    found_band = models.Band.get(models.Band.id == id)
+    form = AddEventForm()
+    events = models.Event.select()
+    found_event = models.Event.get(models.Event.id == id)
     if current_user.user_level != "walrus":
         flash("Not authorized to access this page", "error")
         return redirect(url_for('index'))
     if form.validate_on_submit():
-        band_update = models.Band.update(
+        event_update = models.Event.update(
             name=form.name.data,
             about=form.about.data,
             genre=form.genre.data
-        ).where(models.Band.id == id)
-        band_update.execute()
-        flash(f"Updated information for {found_band.name}.")
+        ).where(models.Event.id == id)
+        event_update.execute()
+        flash(f"Updated information for {found_event.name}.")
         return redirect(url_for('admin'))
 
-    return render_template('admin_with_form.html', form=form, bands=bands, found_band=found_band)
+    return render_template('admin_with_form.html', form=form, events=events, found_event=found_event)
 
 
 

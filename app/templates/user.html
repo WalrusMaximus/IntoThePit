@@ -4,20 +4,24 @@
 {% block sidebar %}
 
 <h4>{{user.username}}</h4>
-<img class="user_profile_avatar" src="{{ avatar }}" alt="">
+{% set img_url = user.avatar.decode('utf-8') %}
+<img class="user_profile_avatar" src="{{ url_for('static', filename=img_url)}}" alt="">
 
 {% endblock %}
 
 {% block main_header %}
+{% if found_rating %}
+<a href="{{ url_for('user', id=found_rating.user_fk.id)}}">Changed my mind, I don't want to Update</a>
+{% endif%}
 
-{% endblock%}
+{% endblock %}
 
 {% block main %}
+{% set img_url = user.avatar.decode('utf-8') %}
 <h4>Ratings</h4>
-
     {% if found_rating %}
-    <h4>Updateing Post:</h4>
-    <p>{{ found_rating.user_fk.username }} says: {{ found_rating.message }} about the {{ found_rating.rating_type }} at {{ found_rating.venue_fk.name }} and gave it a rating of {{ found_rating.rating }}/5</p>
+    <h4>Updating Post:</h4>
+    <img class="inline-avatar" src="{{ url_for('static', filename=img_url)}}" alt=""><p>{{ found_rating.user_fk.username }} says: {{ found_rating.message }} about the {{ found_rating.rating_type }} at {{ found_rating.venue_fk.name }} and gave it a rating of {{ found_rating.rating }}/5</p>
         <form method="POST" action="" class="form">
             {{ form.hidden_tag() }}
             {% for field in form %}
@@ -26,7 +30,7 @@
         </form>
     {% endif %}
     {% for rating in ratings %}
-        <p>{{ rating.user_fk.username }} says: {{ rating.message }} about the {{ rating.rating_type }} at {{ rating.venue_fk.name }} and gave it a rating of {{ rating.rating }}/5</p>
+    <img class="inline-avatar" src="{{ url_for('static', filename=img_url)}}" alt=""><p>{{ rating.user_fk.username }} says: {{ rating.message }} about the {{ rating.rating_type }} at {{ rating.venue_fk.name }} and gave it a rating of {{ rating.rating }}/5</p>
         {% if user == current_user %}
         <a href="{{ url_for('user_update_rating', id=rating.id)}}">Update</a> <a href="{{ url_for('delete_rating', id=rating.id, profile=True)}}">Delete</a>
         {% endif %}
