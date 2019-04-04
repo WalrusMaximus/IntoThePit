@@ -72,7 +72,7 @@ class AddUserForm(FlaskForm):
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Create')
 
-class AdminEditUserForm(FlaskForm):
+class AdminUpdateUserForm(FlaskForm):
     username = StringField('Username', validators=[
             DataRequired(),  
             Regexp(r'^[a-zA-Z0-9 ]+$',
@@ -93,7 +93,7 @@ class AdminEditUserForm(FlaskForm):
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Commit Changes')
 
-class EditUserForm(FlaskForm):
+class UpdateUserForm(FlaskForm):
     username = StringField('Username', validators=[
             DataRequired(),  
             Regexp(r'^[a-zA-Z0-9 ]+$',
@@ -154,7 +154,7 @@ class RatingForm(FlaskForm):
     message = StringField('Tell us what you think...', validators=[DataRequired(), Length(max=512)])
     submit = SubmitField("Submit")
 
-class EditRatingForm(FlaskForm):
+class UpdateRatingForm(FlaskForm):
     rating = SelectField(
         'Rating = 1-5',
         choices=[("1", '1'), ("2", '2'), ("3", '3'), ("4", '4'), ("5", '5')],

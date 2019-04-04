@@ -1,6 +1,6 @@
 from flask import render_template, url_for, flash, redirect, g, request
 from app import app, models
-from app.forms import LoginForm, RegisterForm, AddUserForm, EditUserForm, VenueForm, BandForm, RatingForm, AdminEditUserForm, EditRatingForm, AddEventForm
+from app.forms import LoginForm, RegisterForm, AddUserForm, UpdateUserForm, VenueForm, BandForm, RatingForm, AdminUpdateUserForm, UpdateRatingForm, AddEventForm
 from flask_bcrypt import check_password_hash, generate_password_hash
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 
@@ -54,43 +54,6 @@ def venue_rating(id):
             return redirect(url_for('venue_rating', id=found_venue.id))
     return render_template('venue.html', venue=found_venue, venue_img=venue_img, ratings=ratings, form=form, id=id, show_ratings=show_ratings)
 
-    # ########## EVENTS ########## #
-
-@app.route('/venue/<id>/events', methods=('GET', 'POST')) # this will need to be a dynamic route
-def venue_events(id):
-    found_venue = models.Venue.get(models.Venue.id == id)
-    decoder = found_venue.img.decode()
-    location = (f'images/{decoder}')
-    venue_img = url_for('static', filename=location)
-    events = models.Event.select().where(models.Event.venue_fk == found_venue.id)
-    form = AddEventForm()
-    show_events = True
-    if form.validate_on_submit():
-        if current_user.user_level == "walrus":
-            if models.Band.select().where(models.Band.name == form.band.data).exists():
-                found_band = models.Band.get(models.Band.name == form.band.data)
-                locator = models.Event.select().where(
-                    (models.Event.venue_fk == found_venue.id) &
-                    (models.Event.band_fk == found_band.id) &
-                    (models.Event.date == form.date.data))
-                if locator.count() == 0:
-                    flash(f"Added event to {found_venue.name} with {form.band.data}.")
-                    models.Event.create_event(
-                        band_fk=found_band.id,
-                        venue_fk=id,
-                        date=form.date.data
-                    )
-                    return redirect(url_for('venue_events', id=found_venue.id))
-                flash("Can't add duplicate events","error")
-                return redirect(url_for('venue_events', id=found_venue.id))
-            flash("Band does not exist in database","error")
-            return redirect(url_for('venue_events', id=found_venue.id))
-        flash("Not Authorized to Add Events","error")
-        return redirect(url_for('venue_events', id=found_venue.id))
-
-    # print(events[0].band_fk.name)
-    return render_template('venue.html', venue=found_venue, venue_img=venue_img, events=events, form=form, id=id, show_events=show_events)
-
     # ########## COMMENTS ########## #
 
 @app.route('/user/delete_rating/<id>', methods=('GET', 'POST'))
@@ -117,7 +80,7 @@ def user_update_rating(id):
     avatar = url_for('static', filename=location)
 
 
-    form = EditRatingForm()
+    form = updateRatingForm()
     found_rating = models.Rating.get(models.Rating.id == id)
     ratings = models.Rating.select().where(models.Rating.user_fk == found_user.id)
     if form.validate_on_submit():
@@ -141,7 +104,7 @@ def venue_update_rating(id):
     venue_img = url_for('static', filename=location)
     ratings = models.Rating.select().where(models.Rating.venue_fk == found_venue.id)
 
-    form = EditRatingForm()
+    form = updateRatingForm()
     ratings = models.Rating.select().where(models.Rating.venue_fk == found_venue.id)
     if form.validate_on_submit():
         rating_update = models.Rating.update(
@@ -237,8 +200,8 @@ def add_user():
 
 @app.route('/admin/user/update/<id>', methods=['GET','POST'])
 @login_required
-def admin_edit_user(id):
-    form = AdminEditUserForm()
+def admin_update_user(id):
+    form = AdminupdateUserForm()
     users = models.User.select()
     found_user = models.User.get(models.User.id == id)
     if current_user.user_level != "walrus":
@@ -303,7 +266,7 @@ def add_venue():
 
 @app.route('/admin/venue/update/<id>', methods=['GET','POST'])
 @login_required
-def admin_edit_venue(id):
+def admin_update_venue(id):
     form = VenueForm()
     venues = models.Venue.select()
     found_venue = models.Venue.get(models.Venue.id == id)
@@ -363,7 +326,7 @@ def add_band():
 
 @app.route('/admin/band/update/<id>', methods=['GET','POST'])
 @login_required
-def admin_edit_band(id):
+def admin_update_band(id):
     form = BandForm()
     bands = models.Band.select()
     found_band = models.Band.get(models.Band.id == id)
@@ -397,23 +360,76 @@ def delete_band(id):
 
 # ########## EVENTS ########## #
 
-@app.route('/add_event/<id>', methods=["POST","GET"])
-@login_required
-def add_event(id):
+# VIEW EVENTS / ADD EVENTS AS ADMIN USER
+@app.route('/venue/<id>/events', methods=('GET', 'POST'))
+def venue_events(id):
+    found_venue = models.Venue.get(models.Venue.id == id)
+    decoder = found_venue.img.decode()
+    location = (f'images/{decoder}')
+    venue_img = url_for('static', filename=location)
+    events = models.Event.select().where(models.Event.venue_fk == found_venue.id)
     form = AddEventForm()
+    show_events = True
+    if form.validate_on_submit():
+        if current_user.user_level == "walrus":
+            if models.Band.select().where(models.Band.name == form.band.data).exists():
+                found_band = models.Band.get(models.Band.name == form.band.data)
+                locator = models.Event.select().where(
+                    (models.Event.venue_fk == found_venue.id) &
+                    (models.Event.band_fk == found_band.id) &
+                    (models.Event.date == form.date.data))
+                if locator.count() == 0:
+                    flash(f"Added event to {found_venue.name} with {form.band.data}.")
+                    models.Event.create_event(
+                        band_fk=found_band.id,
+                        venue_fk=id,
+                        date=form.date.data
+                    )
+                    return redirect(url_for('venue_events', id=found_venue.id))
+                flash("Can't add duplicate events","error")
+                return redirect(url_for('venue_events', id=found_venue.id))
+            flash("Band does not exist in database","error")
+            return redirect(url_for('venue_events', id=found_venue.id))
+        flash("Not Authorized to Add Events","error")
+        return redirect(url_for('venue_events', id=found_venue.id))
+
+    return render_template('venue.html', venue=found_venue, venue_img=venue_img, events=events, form=form, id=id, show_events=show_events)
+
+# DELETE EVENT
+@app.route('/admin/delete_event/<id>', methods=('GET', 'POST'))
+def delete_event(id):
+    found_event = models.Event.get(models.Event.id == id)
+    venue_redirect = found_event.venue_fk.id
+    if g.user.user_level == "walrus":
+        event_deletion = models.Event.delete().where(models.Event.id == found_event.id)
+        event_deletion.execute()
+        flash(f"Deleted {found_event.band_fk.name} event from {found_event.venue_fk.name}")
+        return redirect(url_for('venue_events', id=venue_redirect))
+    else: 
+        flash("Not authorized to access this page", "error")
+        return redirect(url_for('index'))
+
+# UPDATE EVENT
+@app.route('/admin/update_event/<id>', methods=['GET','POST'])
+@login_required
+def update_event(id):
+    form = BandForm()
+    bands = models.Band.select()
+    found_band = models.Band.get(models.Band.id == id)
     if current_user.user_level != "walrus":
         flash("Not authorized to access this page", "error")
         return redirect(url_for('index'))
     if form.validate_on_submit():
-        found_band = models.Band.get(models.Band.name == form.band.data)
-        flash(f"Created event with { form.name.data }", 'success')
-        models.Event.create_band(
-            date=form.date.data,
-            band_fk=found_band.id,
-            venue_fk=id
-        )
-        return redirect(url_for('add_band'))
-    return render_template('admin_with_form.html', form=form, bands=bands)
+        band_update = models.Band.update(
+            name=form.name.data,
+            about=form.about.data,
+            genre=form.genre.data
+        ).where(models.Band.id == id)
+        band_update.execute()
+        flash(f"Updated information for {found_band.name}.")
+        return redirect(url_for('admin'))
+
+    return render_template('admin_with_form.html', form=form, bands=bands, found_band=found_band)
 
 
 

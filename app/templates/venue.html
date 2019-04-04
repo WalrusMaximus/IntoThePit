@@ -17,7 +17,7 @@
 <a href="{{url_for('venue_rating', id=id)}}">Go To Ratings</a>
 {% endif %}
 {% if found_rating %}
-<h4>Editing Rating:</h4>
+<h4>Updating</h4>ing Rating:</h4>
 <p>{{ found_rating.user_fk.username }} says: {{ found_rating.message }}. {{found_rating.rating_type}} {{ found_rating.rating }}/5</p>
 {% elif show_ratings %}
 <h4>Add new Rating:</h4>
@@ -33,7 +33,7 @@
     {% endfor %}
 </form>
 {% if found_rating %}
-<a href="{{ url_for('venue_rating', id=found_rating.venue_fk.id)}}">Changed my mind, I don't want to edit</a>
+<a href="{{ url_for('venue_rating', id=found_rating.venue_fk.id)}}">Changed my mind, I don't want to Update</a>
 {% endif%}
 
 {% endblock%}
@@ -44,7 +44,7 @@
         {% for rating in ratings %}
             <p>{{ rating.user_fk.username }} says: {{ rating.message }}. {{rating.rating_type}} {{ rating.rating }}/5</p>
             {% if rating.user_fk.id == current_user.id %}
-            <a href="{{ url_for('venue_update_rating', id=rating.id)}}">Edit</a> <a href="{{ url_for('delete_rating', id=rating.id, profile=False)}}">Delete</a>
+            <a href="{{ url_for('venue_update_rating', id=rating.id)}}">Update</a> <a href="{{ url_for('delete_rating', id=rating.id, profile=False)}}">Delete</a>
             {% endif %}
         {% endfor %}
     {% endif %}
@@ -54,7 +54,7 @@
         {% for event in events %}
             <p>{{ event.band_fk.name }} is playing on {{ event.date }} at {{ event.venue_fk.name}}</p>
             {% if current_user.user_level == "walrus" %}
-            <a href="#">Edit</a> <a href="#">Delete</a>
+            <a href="#">Update</a> <a href="{{ url_for('delete_event', id=event.id)}}">Delete</a>
             {% endif %}
         {% endfor %}
         {% if current_user.user_level == "walrus" %}

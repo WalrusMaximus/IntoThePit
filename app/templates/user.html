@@ -16,7 +16,7 @@
 <h4>Ratings</h4>
 
     {% if found_rating %}
-    <h4>Editing Post:</h4>
+    <h4>Updateing Post:</h4>
     <p>{{ found_rating.user_fk.username }} says: {{ found_rating.message }} about the {{ found_rating.rating_type }} at {{ found_rating.venue_fk.name }} and gave it a rating of {{ found_rating.rating }}/5</p>
         <form method="POST" action="" class="form">
             {{ form.hidden_tag() }}
@@ -28,7 +28,7 @@
     {% for rating in ratings %}
         <p>{{ rating.user_fk.username }} says: {{ rating.message }} about the {{ rating.rating_type }} at {{ rating.venue_fk.name }} and gave it a rating of {{ rating.rating }}/5</p>
         {% if user == current_user %}
-        <a href="{{ url_for('user_update_rating', id=rating.id)}}">Edit</a> <a href="{{ url_for('delete_rating', id=rating.id, profile=True)}}">Delete</a>
+        <a href="{{ url_for('user_update_rating', id=rating.id)}}">Update</a> <a href="{{ url_for('delete_rating', id=rating.id, profile=True)}}">Delete</a>
         {% endif %}
     {% endfor %}
 {% endblock %}

@@ -3,7 +3,7 @@
 
 <h2>Venues</h2>
 {% for venue in venues %}
-<a href="{{ url_for('venue', id=venue.id) }}">{{venue.name}}</a>
+<a href="{{ url_for('venue_rating', id=venue.id) }}">{{venue.name}}</a>
 {% endfor %} 
 
 {% endblock %}
