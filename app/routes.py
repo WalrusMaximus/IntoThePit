@@ -29,8 +29,12 @@ def user(id):
 
     # Favorite Stuff
 
-    favorite_bands = models.Favorite.select(band_fk).where(models.Favorite.user_fk == id)
-    favorite_venues = models.Favorite.select(venue_fk).where(models.Favorite.user_fk == id)
+    favorite_bands = models.Favorite.select().where(
+        (models.Favorite.user_fk == id) &
+        (models.Favorite.band_fk))
+    favorite_venues = models.Favorite.select().where(
+        (models.Favorite.user_fk == id) &
+        (models.Favorite.venue_fk))
 
     # Friend Stuff
 
@@ -50,11 +54,44 @@ def user(id):
         
     return render_template('user.html', user=found_user, ratings=ratings, is_friend=is_friend, friend_pending=friend_pending, favorite_bands=favorite_bands, favorite_venues=favorite_venues)
 
+# FAVORITES
+
+@app.route('/band/add_favorite/<id>')
+def add_favorite_band(id):
+    found_band = models.Band.get(models.Band.id == id)
+    if models.Favorite.select().where(
+        (models.Favorite.band_fk == found_band.id) &
+        (models.Favorite.user_fk == current_user.id)):
+            flash("Can't add a band to your favorites twice","error")
+            return redirect(url_for('band',id=id))
+    else:
+        flash(f"Added {found_band.name} to your favorites!","success")
+        models.Favorite.create_favorite(
+            user_fk=current_user.id,
+            band_fk=found_band
+        )
+        return redirect(url_for('band',id=id))
+
+@app.route('/venue/add_favorite/<id>')
+def add_favorite_venue(id):
+    found_venue = models.Venue.get(models.Venue.id == id)
+    if models.Favorite.select().where(
+        (models.Favorite.venue_fk == found_venue.id) &
+        (models.Favorite.user_fk == current_user.id)):
+            flash("Can't add a venue to your favorites twice","error")
+            return redirect(url_for('venue_rating',id=id))
+    else:
+        flash(f"Added {found_venue.name} to your favorites!","success")
+        models.Favorite.create_favorite(
+            user_fk=current_user.id,
+            venue_fk=found_venue
+        )
+        return redirect(url_for('venue_rating',id=id))
+
 @app.route("/user/add_friend/<id>")
 @login_required
 def add_friend(id):
     found_user = models.User.get(models.User.id == id)
-
 
     if current_user != found_user:
         locator = models.Friend.select().where(
@@ -76,13 +113,29 @@ def add_friend(id):
 def band(id):
     found_band = models.Band.get(models.Band.id == id)
     events = models.Event.select().where(models.Event.band_fk == id)
-    return render_template('band.html', band=found_band, events=events)
+
+    is_favorite = False
+    if models.Favorite.select().where(
+        (models.Favorite.user_fk == current_user.id) &
+        (models.Favorite.band_fk == found_band.id)
+    ):
+        is_favorite = True
+
+    return render_template('band.html', band=found_band, events=events, is_favorite=is_favorite)
 
 @app.route('/venue/<id>/ratings', methods=('GET', 'POST'))
 def venue_rating(id):
     found_venue = models.Venue.get(models.Venue.id == id)
     ratings = models.Rating.select().where(models.Rating.venue_fk == found_venue.id)
     form = RatingForm()
+
+    is_favorite = False
+    if models.Favorite.select().where(
+        (models.Favorite.user_fk == current_user.id) &
+        (models.Favorite.venue_fk == found_venue.id)
+    ):
+        is_favorite = True
+
     show_ratings = True
     if form.validate_on_submit():
         locator = models.Rating.select().where(
@@ -102,7 +155,7 @@ def venue_rating(id):
         else:
             flash(f"You can only add one comment per category on each venue")
             return redirect(url_for('venue_rating', id=found_venue.id))
-    return render_template('venue.html', venue=found_venue, ratings=ratings, form=form, id=id, show_ratings=show_ratings)
+    return render_template('venue.html', venue=found_venue, ratings=ratings, form=form, id=id, show_ratings=show_ratings, is_favorite=is_favorite)
 
     # ########## COMMENTS ########## #
 
@@ -409,7 +462,6 @@ def delete_band(id):
 def venue_events(id):
     found_venue = models.Venue.get(models.Venue.id == id)
     venue_img = url_for('static', filename=(f'images/{found_venue.img}'))
-    print(venue_img)
     events = models.Event.select().where(models.Event.venue_fk == found_venue.id)
     form = AddEventForm()
     show_events = True

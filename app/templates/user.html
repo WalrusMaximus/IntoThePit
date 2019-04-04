@@ -48,4 +48,21 @@
         <a href="{{ url_for('user_update_rating', id=rating.id)}}">Update</a> <a href="{{ url_for('delete_rating', id=rating.id, profile=True)}}">Delete</a>
         {% endif %}
     {% endfor %}
+    <h5>Favorite Bands</h5>
+    {% if favorite_bands %}
+    {% for favorite_band in favorite_bands %}
+    <a href="{{url_for('band',id=favorite_band.band_fk)}}">{{favorite_band.band_fk.name}}</a>
+    {% endfor %}
+    {% else %}
+    <p>Looks like {{ user.username }} doesn't have any favorite bands...</p>
+    {% endif %}
+
+    <h5>Favorite Venues</h5>
+    {% if favorite_venues %}
+    {% for favorite_venue in favorite_venues %}
+    <a href="{{url_for('venue_rating',id=favorite_venue.venue_fk)}}">{{favorite_venue.venue_fk.name}}</a>
+    {% endfor %}
+    {% else %}
+    <p>Looks like {{ user.username }} doesn't have any favorite venues...</p>
+    {% endif %}
 {% endblock %}

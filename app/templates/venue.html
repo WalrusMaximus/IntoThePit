@@ -10,12 +10,21 @@
 {% endblock %}
 
 {% block main_header %}
+
+{% if is_favorite %}
+<p>This is one of your favorite venues!</p>
+{% else %}
+<a href="{{url_for('add_favorite_venue', id=venue.id)}}">Add To Favorites</a>
+{% endif %}
+
 {% if show_ratings %}
 <a href="{{url_for('venue_events', id=id)}}">Go To Events</a>
 {% endif %}
+
 {% if show_events %}
 <a href="{{url_for('venue_rating', id=id)}}">Go To Ratings</a>
 {% endif %}
+
 {% if found_rating %}
 <h4>Updating Rating:</h4>
 <p><a href="{{url_for('user',id=found_rating.user_fk)}}">{{ found_rating.user_fk.username }}</a> says: {{ found_rating.message }}. {{found_rating.rating_type}} {{ found_rating.rating }}/5</p>
@@ -23,10 +32,12 @@
 {% elif show_ratings %}
 <h4>Add new Rating:</h4>
 {% endif %}
+
 {% if found_event %}
 {% elif show_events %}
 <h4>Add new Event:</h4>
 {% endif %}
+
 <form method="POST" action="" class="form">
     {{ form.hidden_tag() }}
     {% for field in form %}
@@ -48,16 +59,19 @@
             {% if rating.user_fk.id == current_user.id %}
             <a href="{{ url_for('venue_update_rating', id=rating.id)}}">Update</a> <a href="{{ url_for('delete_rating', id=rating.id, profile=False)}}">Delete</a>
             {% endif %}
+
         {% endfor %}
     {% endif %}
-    
+
     {% if show_events %}
         <h4>Events</h4>
         {% for event in events %}
+            <img class="inline-avatar" src="{{ url_for('static', filename=event.band_fk.img.decode('utf-8'))}}" alt="">
             <p><a href="{{url_for('band',id=event.band_fk)}}">{{ event.band_fk.name }}</a> is playing on {{ event.date }} at {{ event.venue_fk.name}}</p>
             {% if current_user.user_level == "walrus" %}
             <a href="{{ url_for('update_event', id=event.id)}}">Update</a> <a href="{{ url_for('delete_event', id=event.id)}}">Delete</a>
             {% endif %}
+
         {% endfor %}
         {% if current_user.user_level == "walrus" %}
             <form method="POST" action="" class="form">
@@ -67,7 +81,9 @@
                 {% endfor %}
             </form>
         {% endif%}
+
     {% endif %}
+
 
 
 {% endblock %}

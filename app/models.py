@@ -201,12 +201,13 @@ class Favorite(Model):
         database = DATABASE
 
     @classmethod
-    def create_favorite(cls,user_fk, band_fk, venue_fk):
+    def create_favorite(cls,user_fk, band_fk=None, venue_fk=None,event_fk=None):
         try:
             cls.create(
                 user_fk=user_fk,
                 band_fk=band_fk,
-                venue_fk=venue_fk
+                venue_fk=venue_fk,
+                event_fk=event_fk
             )
         except IntegrityError:
             raise
