@@ -4,8 +4,7 @@
 {% block sidebar %}
 
 <h4>{{user.username}}</h4>
-{% set img_url = user.avatar.decode('utf-8') %}
-<img class="user_profile_avatar" src="{{ url_for('static', filename=img_url)}}" alt="">
+<img class="user_profile_avatar" src="{{ url_for('static', filename=user.avatar.decode('utf-8'))}}" alt="">
 
 {% endblock %}
 

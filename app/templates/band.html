@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block sidebar %}
+<h2>{{band.name}}</h2>
+<img src="{{ url_for('static', filename=band.img.decode('utf-8'))}}" alt="">
+<p>{{band.about}}</p>
+
+{% endblock %}
+
+
+{% block main_header %}
+<h3>Upcoming Events</h3>
+{% endblock %}
+
+{% block main %}
+{% for event in events %}
+    <p>{{ event.band_fk.name }} is playing on {{ event.date }} at {{ event.venue_fk.name}}</p>
+    {% if current_user.user_level == "walrus" %}
+    <a href="{{ url_for('update_event', id=event.id)}}">Update</a> <a href="{{ url_for('delete_event', id=event.id)}}">Delete</a>
+    {% endif %}
+{% endfor %}
+{% endblock %}

@@ -10,19 +10,22 @@ from flask_login import LoginManager, login_user, logout_user, login_required, c
 @app.route("/", methods=["POST","GET"])
 def index():
     venues = models.Venue.select()
-    return render_template('index.html', title="Into The Pit", venues=venues)
+    bands = models.Band.select()
+    return render_template('index.html', title="Into The Pit", venues=venues, bands=bands)
 
-@app.route("/user/<id>") # this will need to be a dynamic route
+@app.route("/user/<id>")
 def user(id):
     found_user = models.User.get(models.User.id == id)
     ratings = models.Rating.select().where(models.Rating.user_fk == found_user.id)
     return render_template('user.html', user=found_user, ratings=ratings)
 
-@app.route('/band') # this will need to be a dynamic route
-def band():
-    return "Band page Under Construction"
+@app.route('/band/<id>')
+def band(id):
+    found_band = models.Band.get(models.Band.id == id)
+    events = models.Event.select().where(models.Event.band_fk == id)
+    return render_template('band.html', band=found_band, events=events)
 
-@app.route('/venue/<id>/ratings', methods=('GET', 'POST')) # this will need to be a dynamic route
+@app.route('/venue/<id>/ratings', methods=('GET', 'POST'))
 def venue_rating(id):
     found_venue = models.Venue.get(models.Venue.id == id)
     ratings = models.Rating.select().where(models.Rating.venue_fk == found_venue.id)
@@ -85,7 +88,7 @@ def user_update_rating(id):
     return render_template('user.html', form=form, found_rating=found_rating, user=found_user, ratings=ratings)
 
 
-@app.route('/venue/update_rating/<id>', methods=('GET', 'POST')) # this will need to be a dynamic route
+@app.route('/venue/update_rating/<id>', methods=('GET', 'POST'))
 def venue_update_rating(id):
     found_rating = models.Rating.get(models.Rating.id == id)
     found_venue = models.Venue.get(models.Venue.id == found_rating.venue_fk.id)

@@ -12,7 +12,7 @@ class User(UserMixin, Model):
     username = CharField(unique=True)
     email = CharField(unique=True, max_length=256)
     password = CharField(max_length=128)
-    avatar = BlobField(default="images/default.png")
+    avatar = BlobField(default="images/user_default.png")
     city = CharField()
     state = CharField()
     zip = CharField()
@@ -22,7 +22,7 @@ class User(UserMixin, Model):
         database = DATABASE
 
     @classmethod
-    def create_user(cls, username, email, password, city, state, zip, user_level="user", avatar="images/default.png"):
+    def create_user(cls, username, email, password, city, state, zip, user_level="user", avatar="images/user_default.png"):
         try:
             cls.create(
                 username=username,
@@ -42,28 +42,28 @@ class Band(Model):
     about = CharField()
     genre = CharField(null=True)
     themes = CharField(null=True, default="music")
-    img = BlobField(default="images/default_band.jpg")
-    bigimg = BlobField(default="images/default_band_bg.jpg")
+    img = BlobField(default="images/band_default.jpg")
+    bg_img = BlobField(default="images/band_bg_default")
 
     class Meta:
         database = DATABASE
 
     @classmethod
-    def create_band(cls, name, about, genre, themes="music", img="images/default_band.jpg", bigimg="images/default_band_bg.jpg"):
+    def create_band(cls, name, about, genre, themes="music", img="images/band_default.jpg", bg_img="images/band_bg_default"):
         try:
             cls.create(
                 name=name,
                 about=about,
                 genre=genre,
-                img="images/default_band.jpg",
-                bigimg="images/default_band_bg.jpg"
+                img=img,
+                bg_img=bg_img
             )
         except IntegrityError:
             raise
 
 class Venue(Model):
     name = CharField()
-    img = BlobField(default="images/default_venue.jpg")
+    img = BlobField(default="images/venue_default.jpg")
     about = CharField()
     address = CharField()
     city = CharField()
@@ -74,11 +74,11 @@ class Venue(Model):
         database = DATABASE
 
     @classmethod
-    def create_venue(cls, name, about, address, city, state, zip, img="images/default_venue.jpg"):
+    def create_venue(cls, name, about, address, city, state, zip, img="images/venue_default.jpg"):
         try:
             cls.create(
                 name=name,
-                img="images/default_venue.jpg",
+                img=img,
                 about=about,
                 address=address,
                 city=city,

@@ -6,4 +6,9 @@
 <a href="{{ url_for('venue_rating', id=venue.id) }}">{{venue.name}}</a>
 {% endfor %} 
 
+<h2>Bands</h2>
+{% for band in bands %}
+<a href="{{ url_for('band', id=band.id) }}">{{band.name}}</a>
+{% endfor %} 
+
 {% endblock %}

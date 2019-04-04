@@ -1,12 +1,11 @@
-{% extends "layout.html" %}\
+{% extends "layout.html" %}
 {% from 'macros.html' import render_field %}
 
 {% block sidebar %}
 
 <h4>{{venue.name}}</h4>
 <p>{{venue.about}}</p>
-{% set venue_img = venue.img.decode('utf-8') %}
-<img class="venue_img" src="{{ url_for('static', filename=venue_img)}}" alt="">
+<img class="venue_img" src="{{ url_for('static', filename=venue.img.decode('utf-8'))}}" alt="">
 
 {% endblock %}
 
@@ -20,6 +19,7 @@
 {% if found_rating %}
 <h4>Updating Rating:</h4>
 <p><a href="{{url_for('user',id=found_rating.user_fk)}}">{{ found_rating.user_fk.username }}</a> says: {{ found_rating.message }}. {{found_rating.rating_type}} {{ found_rating.rating }}/5</p>
+<img class="inline-avatar" src="{{ url_for('static', filename=found_rating.user_fk.avatar.decode('utf-8'))}}" alt="">
 {% elif show_ratings %}
 <h4>Add new Rating:</h4>
 {% endif %}
@@ -54,9 +54,9 @@
     {% if show_events %}
         <h4>Events</h4>
         {% for event in events %}
-            <p>{{ event.band_fk.name }} is playing on {{ event.date }} at {{ event.venue_fk.name}}</p>
+            <p><a href="{{url_for('band',id=event.band_fk)}}">{{ event.band_fk.name }}</a> is playing on {{ event.date }} at {{ event.venue_fk.name}}</p>
             {% if current_user.user_level == "walrus" %}
-            <a href="#">Update</a> <a href="{{ url_for('delete_event', id=event.id)}}">Delete</a>
+            <a href="{{ url_for('update_event', id=event.id)}}">Update</a> <a href="{{ url_for('delete_event', id=event.id)}}">Delete</a>
             {% endif %}
         {% endfor %}
         {% if current_user.user_level == "walrus" %}
