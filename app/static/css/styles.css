@@ -1,7 +1,10 @@
 * {
     margin: 0 auto;
     padding: 0;
-    border: 1px solid black;
+}
+
+div, section, header, footer {
+    border: solid black 1px;
 }
 
 main {

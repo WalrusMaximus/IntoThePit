@@ -11,6 +11,7 @@ if __name__ == '__main__':
             city="Oakland",
             state="California",
             zip="94601",
+            avatar="images/walrus.png",
             user_level="walrus"
         )
         models.User.create_user(

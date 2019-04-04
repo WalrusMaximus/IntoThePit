@@ -28,7 +28,7 @@ class User(UserMixin, Model):
                 username=username,
                 email=email,
                 password=generate_password_hash(password),
-                avatar="images/default.png",
+                avatar=avatar,
                 user_level=user_level,
                 city=city,
                 state=state,
