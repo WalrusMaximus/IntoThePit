@@ -8,9 +8,6 @@ if __name__ == '__main__':
             username='walrus',
             email="wal@rus.com",
             password='password',
-            city="Oakland",
-            state="California",
-            zip="94601",
             avatar="images/user_walrus.png",
             user_level="walrus"
         )
@@ -18,9 +15,6 @@ if __name__ == '__main__':
             username='matt',
             email="ma@tt.com",
             password='password',
-            city="Oakland",
-            state="California",
-            zip="94601",
         )
         models.Band.create_band(
             name="The Fantastic Walruses",

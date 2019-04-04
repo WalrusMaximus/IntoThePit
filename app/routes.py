@@ -13,6 +13,41 @@ def index():
     bands = models.Band.select()
     return render_template('index.html', title="Into The Pit", venues=venues, bands=bands)
 
+    # ########## LOGIN ########## #
+
+@app.route('/register', methods=('GET', 'POST'))
+def register():
+    form = RegisterForm()
+    if form.validate_on_submit():
+        flash(f"Registered { form.email.data }", 'success')
+        models.User.create_user(
+            username=form.username.data,
+            email=form.email.data,
+            password=form.password.data,
+            city=form.city.data,
+            state=form.state.data,
+            zip=form.zip.data
+        )
+        return redirect(url_for('index'))
+    return render_template('register.html', form=form)
+
+@app.route('/login', methods=('GET', 'POST'))
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        try:
+            user = models.User.get(models.User.email == form.email.data)
+        except models.DoesNotExist:
+            flash("your email or password doesn't match", "error")
+        else:
+            if check_password_hash(user.password, form.password.data):
+                login_user(user)
+                flash("You've been logged in", "success")
+                return redirect(url_for('index'))
+            else:
+                flash("your email or password doesn't match", "error")
+    return render_template('login.html', form=form)
+
     # ########## USER PAGES ########## #
 
 @app.route("/user/<id>")
@@ -53,6 +88,21 @@ def user(id):
             friend_pending = True
         
     return render_template('user.html', user=found_user, ratings=ratings, is_friend=is_friend, friend_pending=friend_pending, favorite_bands=favorite_bands, favorite_venues=favorite_venues)
+
+
+@app.route("/user/update/<id>", methods=["POST","GET"])
+def update_user(id):
+    found_user = models.User.get(models.User.id == id)
+    form = UpdateUserForm()
+
+    if form.validate_on_submit():
+        user_update = models.User.update(
+            password=generate_password_hash(form.password.data)
+        ).where(models.User.id == id)
+        user_update.execute()
+        flash(f"Updated your profile information.")
+        
+    return render_template('user.html', user=found_user, form=form)
 
 # FAVORITES
 
@@ -259,40 +309,6 @@ def venue_update_rating(id):
         return redirect(url_for('venue_rating',id=found_venue.id))
     return render_template('venue.html', venue=found_venue, found_rating=found_rating, ratings=ratings, form=form)
 
-    # ########## LOGIN ########## #
-
-@app.route('/register', methods=('GET', 'POST'))
-def register():
-    form = RegisterForm()
-    if form.validate_on_submit():
-        flash(f"Registered { form.email.data }", 'success')
-        models.User.create_user(
-            username=form.username.data,
-            email=form.email.data,
-            password=form.password.data,
-            city=form.city.data,
-            state=form.state.data,
-            zip=form.zip.data
-        )
-        return redirect(url_for('index'))
-    return render_template('register.html', form=form)
-
-@app.route('/login', methods=('GET', 'POST'))
-def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        try:
-            user = models.User.get(models.User.email == form.email.data)
-        except models.DoesNotExist:
-            flash("your email or password doesn't match", "error")
-        else:
-            if check_password_hash(user.password, form.password.data):
-                login_user(user)
-                flash("You've been logged in", "success")
-                return redirect(url_for('index'))
-            else:
-                flash("your email or password doesn't match", "error")
-    return render_template('login.html', form=form)
 
 @app.route('/logout')
 @login_required

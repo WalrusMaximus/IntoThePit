@@ -43,9 +43,6 @@ class RegisterForm(FlaskForm):
             name_exists
         ])
     email = StringField('Email', validators=[DataRequired(), Length(max=256), Email(), email_exists])
-    city = StringField("City", validators=[DataRequired()])
-    state = StringField("State", validators=[DataRequired()])
-    zip = StringField("Zip", validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Register')
@@ -65,9 +62,6 @@ class AddUserForm(FlaskForm):
         choices=[("user", 'user'), ("walrus", 'walrus')],
         default="user"
     )
-    city = StringField("City", validators=[DataRequired()])
-    state = StringField("State", validators=[DataRequired()])
-    zip = StringField("Zip", validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Create')
@@ -86,30 +80,13 @@ class AdminUpdateUserForm(FlaskForm):
         choices=[("user", 'user'), ("walrus", 'walrus')],
         default="user"
     )
-    city = StringField("City", validators=[DataRequired()])
-    state = StringField("State", validators=[DataRequired()])
-    zip = StringField("Zip", validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Commit Changes')
 
 class UpdateUserForm(FlaskForm):
-    username = StringField('Username', validators=[
-            DataRequired(),  
-            Regexp(r'^[a-zA-Z0-9 ]+$',
-                message=("Name cannot contain symbols or special characters")
-            ),
-            Length(min=2, max=32),
-            name_exists
-        ])
-    user_level = SelectField(
-        'User Level',
-        choices=[("user", 'user'), ("walrus", 'walrus')],
-        default="user"
-    )
-    city = StringField("City", validators=[DataRequired()])
-    state = StringField("State", validators=[DataRequired()])
-    zip = StringField("Zip", validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Commit Changes')
 
 class VenueForm(FlaskForm):

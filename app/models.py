@@ -13,26 +13,20 @@ class User(UserMixin, Model):
     email = CharField(unique=True, max_length=256)
     password = CharField(max_length=128)
     avatar = BlobField(default="images/user_default.png")
-    city = CharField()
-    state = CharField()
-    zip = CharField()
     user_level = CharField(default="user")
 
     class Meta:
         database = DATABASE
 
     @classmethod
-    def create_user(cls, username, email, password, city, state, zip, user_level="user", avatar="images/user_default.png"):
+    def create_user(cls, username, email, password, user_level="user", avatar="images/user_default.png"):
         try:
             cls.create(
                 username=username,
                 email=email,
                 password=generate_password_hash(password),
                 avatar=avatar,
-                user_level=user_level,
-                city=city,
-                state=state,
-                zip=zip
+                user_level=user_level
             )
         except IntegrityError:
             raise ValueError("User already exists")
