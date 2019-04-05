@@ -77,15 +77,6 @@ def login():
 def user(id):
     found_user = models.User.get(models.User.id == id)
     ratings = models.Rating.select().where(models.Rating.user_fk == found_user.id)
-    is_friend = False
-    friend_pending = False
-
-    # friend_check_one = models.Friend.select().where(
-    #     (models.Friend.friender == current_user.id) &
-    #     (models.Friend.friendee == found_user) &
-    #     (models.Friend.accepted == True))
-
-    # Favorite Stuff
 
     favorite_bands = models.Favorite.select().where(
         (models.Favorite.user_fk == id) &
@@ -93,24 +84,8 @@ def user(id):
     favorite_venues = models.Favorite.select().where(
         (models.Favorite.user_fk == id) &
         (models.Favorite.venue_fk))
-
-    # Friend Stuff
-
-    if models.Friend.select().where(
-        (models.Friend.friender == current_user.id) &
-        (models.Friend.friendee == found_user) &
-        (models.Friend.accepted == False)
-        ):
-            friend_pending = True
-
-    if models.Friend.select().where(
-        (models.Friend.friendee == current_user.id) &
-        (models.Friend.friender == found_user) &
-        (models.Friend.accepted == False)
-        ):
-            friend_pending = True
         
-    return render_template('user.html', user=found_user, ratings=ratings, is_friend=is_friend, friend_pending=friend_pending, favorite_bands=favorite_bands, favorite_venues=favorite_venues)
+    return render_template('user.html', user=found_user, ratings=ratings, favorite_bands=favorite_bands, favorite_venues=favorite_venues)
 
 
 @app.route("/user/update/<id>", methods=["POST","GET"])

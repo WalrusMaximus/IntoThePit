@@ -5,20 +5,6 @@
 
 <h4>{{user.username}}</h4>
 <img class="user_profile_avatar" src="{{ url_for('static', filename=user.avatar.decode('utf-8'))}}" alt="">
-{% if current_user %}
-    {% if current_user != user %}
-        {% if is_friend %}
-            <p>Hey, this is your friend!</p>
-        {% elif friend_pending %}
-            <p>You've sent a friend request</p>
-        {% else %}
-        <a href="{{url_for('add_friend',id=user.id)}}">Add Friend</a>
-        {% endif %}
-    {% endif %}
-{% endif %}
-
-{% if friend_pending %}
-{% endif %}
 
 {% if form and current_user == user %}
 <form method="POST" enctype="multipart/form-data" action="" class="form">
@@ -28,7 +14,7 @@
     {% endfor %}
 </form>
 {% elif current_user == user %}
-<a href="{{url_for('update_user',id=user.id)}}">Update Profile</a>
+<a href="{{url_for('update_user',id=user.id)}}">Change Profile Image</a>
 {% endif %}
 
 {% endblock %}
