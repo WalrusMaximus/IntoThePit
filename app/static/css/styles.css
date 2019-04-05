@@ -16,8 +16,6 @@ header {
     height: auto;
     width: 100%;
     display: flex;
-    flex-direction: column-reverse;
-    justify-content: center;
 }
 
 footer {
@@ -50,4 +48,8 @@ footer {
     width: 32px;
     height: 32px;
     border-radius: 50%;
+}
+
+.sk_logo {
+    width: 128px;
 }
