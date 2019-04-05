@@ -361,6 +361,7 @@ def add_user():
 @login_required
 def admin_update_user(id):
     form = AdminUpdateUserForm()
+    record = models.User.select().where(id == models.User.id).dicts().get()
     users = models.User.select()
     found_user = models.User.get(models.User.id == id)
     if current_user.user_level != "walrus":
@@ -368,15 +369,13 @@ def admin_update_user(id):
         return redirect(url_for('index'))
     if form.validate_on_submit():
         user_update = models.User.update(
-            username=form.username.data,
             user_level=form.user_level.data,
-            password=generate_password_hash(form.password.data)
         ).where(models.User.id == id)
         user_update.execute()
         flash(f"Updated information for {found_user.email}.")
         return redirect(url_for('admin'))
 
-    return render_template('admin_with_form.html', form=form, users=users, found_user=found_user)
+    return render_template('admin_with_form.html', form=form, users=users, found_user=found_user, record=record)
 
 @app.route('/user/delete/<id>')
 @login_required

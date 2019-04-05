@@ -68,21 +68,11 @@ class AddUserForm(FlaskForm):
     submit = SubmitField('Create')
 
 class AdminUpdateUserForm(FlaskForm):
-    username = StringField('Username', validators=[
-            DataRequired(),  
-            Regexp(r'^[a-zA-Z0-9 ]+$',
-                message=("Name cannot contain symbols or special characters")
-            ),
-            Length(min=2, max=32),
-            name_exists
-        ])
     user_level = SelectField(
         'User Level',
         choices=[("user", 'user'), ("walrus", 'walrus')],
         default="user"
     )
-    password = PasswordField('Password', validators=[DataRequired()])
-    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Commit Changes')
 
 class UpdateUserForm(FlaskForm):
