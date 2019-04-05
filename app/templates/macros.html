@@ -12,6 +12,9 @@
         {% if field.label.text == "Remember Me" %}
             <label>{{field.label.text}}</label>
         {% endif %}
+        {% if field.label.text == "Update Profile Picture" %}
+            <label>{{field.label.text}}</label>
+        {% endif %}
 
         {% if "Rating" in field.label.text %}
         <label>{{field.label.text}}</label>

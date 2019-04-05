@@ -1,9 +1,32 @@
 from flask import render_template, url_for, flash, redirect, g, request
+import os
+from PIL import Image
 from app import app, models
 from app.forms import LoginForm, RegisterForm, AddUserForm, UpdateUserForm, VenueForm, BandForm, RatingForm, AdminUpdateUserForm, UpdateRatingForm, AddEventForm, AdminAddEventForm
 from flask_bcrypt import check_password_hash, generate_password_hash
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 
+# FUNCTIONS
+
+def update_user_img(form_picture, user_name):
+    _, f_ext = os.path.splitext(form_picture.filename)
+    file_path = "images/user_"
+
+    
+
+    picture_save = file_path + user_name + f_ext
+    # full path where image will be saved. full path of project directory
+    picture_path = os.path.join(app.root_path, 'static', picture_save)
+
+     # sets image resize with pillow
+    output_size = (512, 512)
+    # open image we passed into the function
+    i = Image.open(form_picture)
+    i.thumbnail(output_size)
+    #saves at picture_path on file system
+    i.save(picture_path)
+    # return value to user
+    return picture_save
 
     # ########## MAIN PAGE ########## #
 
@@ -96,11 +119,15 @@ def update_user(id):
     form = UpdateUserForm()
 
     if form.validate_on_submit():
+        # breakpoint()
+        # print(form.avatar.data.filename)
+        avatar = update_user_img(form.avatar.data, found_user.username)
         user_update = models.User.update(
-            password=generate_password_hash(form.password.data)
+            avatar=update_user_img(form.avatar.data, found_user.username)
         ).where(models.User.id == id)
         user_update.execute()
         flash(f"Updated your profile information.")
+        return redirect(url_for('user',id=id))
         
     return render_template('user.html', user=found_user, form=form)
 
@@ -350,10 +377,7 @@ def add_user():
             username=form.username.data,
             email=form.email.data,
             user_level=form.user_level.data,
-            password=form.password.data,
-            city=form.city.data,
-            state=form.state.data,
-            zip=form.zip.data
+            password=form.password.data
         )
         return redirect(url_for('add_user'))
     return render_template('admin_with_form.html', form=form, users=users)
@@ -371,10 +395,7 @@ def admin_update_user(id):
         user_update = models.User.update(
             username=form.username.data,
             user_level=form.user_level.data,
-            city=form.city.data,
-            state=form.state.data,
-            password=generate_password_hash(form.password.data),
-            zip=form.zip.data
+            password=generate_password_hash(form.password.data)
         ).where(models.User.id == id)
         user_update.execute()
         flash(f"Updated information for {found_user.email}.")

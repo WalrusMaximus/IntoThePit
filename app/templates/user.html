@@ -20,8 +20,8 @@
 {% if friend_pending %}
 {% endif %}
 
-{% if form %}
-<form method="POST" action="" class="form">
+{% if form and current_user == user %}
+<form method="POST" enctype="multipart/form-data" action="" class="form">
     {{ form.hidden_tag() }}
     {% for field in form %}
         {{ render_field(field) }}

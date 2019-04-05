@@ -4,6 +4,7 @@ from flask_wtf import FlaskForm
 from app.models import User, Band, Venue, Favorite, Rating, Friend, Event
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField
 from wtforms.fields.html5 import DateField
+from flask_wtf.file import FileField, FileAllowed
 from wtforms.validators import DataRequired, ValidationError, Length, Email, EqualTo, Regexp
 
 def name_exists(form, field):
@@ -85,8 +86,9 @@ class AdminUpdateUserForm(FlaskForm):
     submit = SubmitField('Commit Changes')
 
 class UpdateUserForm(FlaskForm):
-    password = PasswordField('Password', validators=[DataRequired()])
-    confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
+    avatar = FileField('Update Profile Picture', validators=[DataRequired(),FileAllowed(['jpg', 'png'])])
+    # password = PasswordField('Password', validators=[DataRequired()])
+    # confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Commit Changes')
 
 class VenueForm(FlaskForm):
