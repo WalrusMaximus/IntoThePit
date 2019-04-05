@@ -1,10 +1,11 @@
 from flask import Flask, url_for, g
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from app.models import User, Band, Venue, Favorite, Rating, Friend, Event
+from config import Config
 
 app = Flask(__name__)
 app.static_folder = 'static'
-app.config['SECRET_KEY'] = "beepboopiamrobotbeepboop"
+app.config.from_object(Config)
 
 from app.models import DATABASE
 

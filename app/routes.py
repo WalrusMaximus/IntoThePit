@@ -219,7 +219,7 @@ def band(id):
         (models.Favorite.band_fk == found_band.id)
     ):
         is_favorite = True
-
+    
     return render_template('band.html', band=found_band, events=events, is_favorite=is_favorite)
 
 @app.route('/venue/<id>/ratings', methods=('GET', 'POST'))
