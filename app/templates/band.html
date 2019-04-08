@@ -14,6 +14,7 @@
 
 {% block main_header %}
 <h3>Upcoming Events</h3>
+<button onclick=apiTest()>api test</button>
 {% endblock %}
 
 {% block main %}
@@ -24,4 +25,7 @@
     <a href="{{ url_for('update_event', id=event.id)}}">Update</a> <a href="{{ url_for('delete_event', id=event.id)}}">Delete</a>
     {% endif %}
 {% endfor %}
+    <div class="band-events">
+        <p>go byebye</p>
+    </div>
 {% endblock %}

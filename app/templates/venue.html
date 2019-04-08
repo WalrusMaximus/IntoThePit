@@ -40,8 +40,8 @@
 {% endif %}
 
 <form method="POST" action="" class="form">
-    {{ form.hidden_tag() }}
-    {% for field in form %}
+    {{ rating_form.hidden_tag() }}
+    {% for field in rating_form %}
         {{ render_field(field) }}
     {% endfor %}
 </form>
@@ -52,7 +52,7 @@
 {% endblock%}
 
 {% block main %}
-    {% if show_ratings %}
+    <div class="venue-ratings">
         <h4>Ratings</h4>
         {% for rating in ratings %}
             <p><a href="{{url_for('user',id=rating.user_fk)}}">{{ rating.user_fk.username }}</a> says: {{ rating.message }}. {{rating.rating_type}} {{ rating.rating }}/5</p>
@@ -62,10 +62,11 @@
             {% endif %}
 
         {% endfor %}
-    {% endif %}
+    </div>
 
-    {% if show_events %}
+    <div class="venue-events">
         <h4>Events</h4>
+        <button onclick=venueApi()>api test</button>
         {% for event in events %}
             <img class="inline-avatar" src="{{ url_for('static', filename=event.band_fk.img.decode('utf-8'))}}" alt="">
             <p><a href="{{url_for('band',id=event.band_fk)}}">{{ event.band_fk.name }}</a> is playing on {{ event.date }} at {{ event.venue_fk.name}}</p>
@@ -74,16 +75,10 @@
             {% endif %}
 
         {% endfor %}
-        {% if current_user.user_level == "walrus" %}
-            <form method="POST" action="" class="form">
-                {{ form.hidden_tag() }}
-                {% for field in event_form %}
-                    {{ render_field(field) }}
-                {% endfor %}
-            </form>
-        {% endif%}
-
-    {% endif %}
+        <div class="venue-events">
+            <p>go byebye</p>
+        </div>
+    </div>
 
 
 

@@ -17,35 +17,19 @@ if __name__ == '__main__':
             password='password',
         )
         models.Band.create_band(
-            name="The Fantastic Walruses",
-            about="They're a bunch of walruses",
-            genre="Heavy Ivory",
+            name="skeletonwitch",
+            about="They are hella metal - Walrus",
+            genre="Hella Metal",
             themes="data science is weird",
-            img="images/band_thefantasticwalruses.jpg",
-            bg_img="images/band_bg_thefantasticwalruses.jpg"
-        )
-        models.Band.create_band(
-            name="Not Walruses",
-            about="They're not walruses",
-            genre="lame",
-            themes="data science is weird"
+            img="images/band_skeletonwitch.jpg",
+            bg_img="images/band_bg_thefantasticwalruses.jpg",
+            skid="527207"
         )
         models.Venue.create_venue(
-            name="The Iceberg",
-            about="It's a venue for arctic creatures",
-            address="225 Bush st",
-            img="images/venue_theiceberg.jpg",
-            city="San Francisco",
-            state="California",
-            zip="94104"
-        )
-        models.Venue.create_venue(
-            name="Lame Venue",
-            about="It's a venue for lame people",
-            address="225 Bush st",
-            city="San Francisco",
-            state="California",
-            zip="94104"
+            name="the independent",
+            about="Been there. It's alright.",
+            img="images/venue_theindependent.jpg",
+            skid="324"
         )
 
     except ValueError:

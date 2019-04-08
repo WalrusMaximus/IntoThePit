@@ -1,0 +1,49 @@
+<script>
+    console.log("Oi")
+
+    var apiKey = "{{ config['SONGKICK_API_KEY'] }}";
+    var bandId = "527207"
+    var bandIdTwo = "1699110"
+    var venueId = "324"
+    var bandQuery = "https://api.songkick.com/api/3.0/artists/" + bandId + "/calendar.json?apikey=" + apiKey
+    var venueQuery = "https://api.songkick.com/api/3.0/venues/" + venueId + "/calendar.json?apikey=" + apiKey
+
+    function apiTest() {
+        $('.band-events').empty();
+        let foundResults = []
+        $.ajax({
+            method: 'GET',
+            url: bandQuery,
+            success: function(res){
+                console.log("Received Data", res.resultsPage.results);
+            },
+            error: function(err) {
+                console.log("Couldn't connect to API", err)
+            }
+        })
+    }
+
+    function venueApi() {
+        $('.venue-events').empty();
+        $.ajax({
+            method: 'GET',
+            url: venueQuery,
+            success: function(res){
+                foundEvents = []
+                console.log("Received Data", res.resultsPage.results);
+                $.each(res.resultsPage.results.event, function(key, val) {
+                    let = val.filter(val.performance, function(key, val) {
+                        if (val.artist.id == bandId || bandIdTwo) {
+                            console.log(val)
+                            foundEvents.push(val.id)
+                        }
+                    })
+
+                })
+            },
+            error: function(err) {
+                console.log("Couldn't connect to API", err)
+            }
+        })
+
+</script>

@@ -77,8 +77,6 @@ class AdminUpdateUserForm(FlaskForm):
 
 class UpdateUserForm(FlaskForm):
     avatar = FileField('Update Profile Picture', validators=[DataRequired(),FileAllowed(['jpg', 'png'])])
-    # password = PasswordField('Password', validators=[DataRequired()])
-    # confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Commit Changes')
 
 class VenueForm(FlaskForm):
@@ -91,10 +89,7 @@ class VenueForm(FlaskForm):
             venue_exists
         ])
     about = StringField("About", validators=[DataRequired()])
-    address = StringField("Address", validators=[DataRequired()])
-    city = StringField("City", validators=[DataRequired()])
-    state = StringField("State", validators=[DataRequired()])
-    zip = StringField("Zip", validators=[DataRequired()])
+    skid = StringField("Songkick ID", validators=[DataRequired()])
     submit = SubmitField('Create')
 
 class BandForm(FlaskForm):
@@ -108,6 +103,7 @@ class BandForm(FlaskForm):
         ])
     about = StringField("About", validators=[DataRequired()])
     genre = StringField("Genre", validators=[DataRequired()])
+    skid = StringField("Songkick ID", validators=[DataRequired()])
     submit = SubmitField('Create')
 
 class RatingForm(FlaskForm):

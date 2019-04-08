@@ -38,19 +38,21 @@ class Band(Model):
     themes = CharField(null=True, default="music")
     img = BlobField(default="images/band_default.jpg")
     bg_img = BlobField(default="images/band_bg_default")
+    skid = CharField()
 
     class Meta:
         database = DATABASE
 
     @classmethod
-    def create_band(cls, name, about, genre, themes="music", img="images/band_default.jpg", bg_img="images/band_bg_default"):
+    def create_band(cls, name, about, genre, skid, themes="music", img="images/band_default.jpg", bg_img="images/band_bg_default"):
         try:
             cls.create(
                 name=name,
                 about=about,
                 genre=genre,
                 img=img,
-                bg_img=bg_img
+                bg_img=bg_img,
+                skid=skid
             )
         except IntegrityError:
             raise
@@ -59,25 +61,19 @@ class Venue(Model):
     name = CharField()
     img = BlobField(default="images/venue_default.jpg")
     about = CharField()
-    address = CharField()
-    city = CharField()
-    state = CharField()
-    zip = CharField()
+    skid = CharField()
 
     class Meta:
         database = DATABASE
 
     @classmethod
-    def create_venue(cls, name, about, address, city, state, zip, img="images/venue_default.jpg"):
+    def create_venue(cls, name, about, skid, img="images/venue_default.jpg"):
         try:
             cls.create(
                 name=name,
                 img=img,
                 about=about,
-                address=address,
-                city=city,
-                state=state,
-                zip=zip
+                skid=skid
             )
         except IntegrityError:
             raise
