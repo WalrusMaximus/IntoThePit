@@ -3,11 +3,20 @@
 
 {% block main %}
 
+{% if img_updating %}
+<form method="POST" enctype="multipart/form-data" action="" class="form">
+    {{ form.hidden_tag() }}
+    {% for field in form %}
+        {{ render_field(field) }}
+    {% endfor %}
+</form>
+{% else %}
 <form method="POST" action="" class="form">
     {{ form.hidden_tag() }}
     {% for field in form %}
         {{ render_field(field) }}
     {% endfor %}
 </form>
+{% endif %}
 
 {% endblock %}

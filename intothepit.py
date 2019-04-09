@@ -22,19 +22,26 @@ if __name__ == '__main__':
             genre="Hella Metal",
             themes="data science is weird",
             img="images/band_skeletonwitch.jpg",
-            bg_img="images/band_bg_thefantasticwalruses.jpg",
             skid="527207"
+        )
+        models.Band.create_band(
+            name="hypocrisy",
+            about="Swedes make pretty solid metal",
+            genre="Swedish Death Metal",
+            themes="metal",
+            img="images/band_hypocrisy.jpg",
+            skid="433483"
         )
         models.Venue.create_venue(
             name="the independent",
             about="Been there. It's alright.",
-            img="images/venue_theindependent.jpg",
+            img="images/venue_the_independent.jpg",
             skid="324"
         )
         models.Venue.create_venue(
             name="oakland metro operahouse",
             about="Best venue ever",
-            img="images/venue_oaklandmetrooperahouse.jpg",
+            img="images/venue_oakland_metro_operahouse.jpg",
             skid="9809"
         )
 

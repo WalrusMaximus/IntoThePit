@@ -37,7 +37,6 @@ class Band(Model):
     genre = CharField(null=True)
     themes = CharField(null=True, default="music")
     img = BlobField(default="images/band_default.jpg")
-    bg_img = BlobField(default="images/band_bg_default")
     skid = CharField()
 
     class Meta:

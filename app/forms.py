@@ -141,3 +141,6 @@ class AdminAddEventForm(FlaskForm):
     submit = SubmitField("Submit")
 
 
+class VenueImgForm(FlaskForm):
+    img = FileField('Update Profile Picture', validators=[DataRequired(),FileAllowed(['jpg', 'png'])])
+    submit = SubmitField('Commit Changes')

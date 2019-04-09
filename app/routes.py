@@ -2,30 +2,32 @@ from flask import render_template, url_for, flash, redirect, g, request
 import os
 from PIL import Image
 from app import app, models
-from app.forms import LoginForm, RegisterForm, AddUserForm, UpdateUserForm, VenueForm, BandForm, RatingForm, AdminUpdateUserForm, UpdateRatingForm, AddEventForm, AdminAddEventForm
+from app.forms import LoginForm, RegisterForm, AddUserForm, UpdateUserForm, VenueForm, BandForm, RatingForm, AdminUpdateUserForm, UpdateRatingForm, AddEventForm, AdminAddEventForm, VenueImgForm
 from flask_bcrypt import check_password_hash, generate_password_hash
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 
 # FUNCTIONS
 
-def update_user_img(form_picture, user_name):
+def user_img(form_picture, user_name):
     _, f_ext = os.path.splitext(form_picture.filename)
     file_path = "images/user_"
-
-    
-
     picture_save = file_path + user_name + f_ext
-    # full path where image will be saved. full path of project directory
     picture_path = os.path.join(app.root_path, 'static', picture_save)
-
-     # sets image resize with pillow
     output_size = (512, 512)
-    # open image we passed into the function
     i = Image.open(form_picture)
     i.thumbnail(output_size)
-    #saves at picture_path on file system
     i.save(picture_path)
-    # return value to user
+    return picture_save
+
+def venue_img(form_picture, venue_name):
+    _, f_ext = os.path.splitext(form_picture.filename)
+    file_path = "images/venue_"
+    picture_save = file_path + venue_name.replace(" ", "_") + f_ext
+    picture_path = os.path.join(app.root_path, 'static', picture_save)
+    output_size = (512, 512)
+    i = Image.open(form_picture)
+    i.thumbnail(output_size)
+    i.save(picture_path)
     return picture_save
 
     # ########## MAIN PAGE ########## #
@@ -93,9 +95,9 @@ def update_user(id):
     if form.validate_on_submit():
         # breakpoint()
         # print(form.avatar.data.filename)
-        avatar = update_user_img(form.avatar.data, found_user.username)
+        avatar = user_img(form.avatar.data, found_user.username)
         user_update = models.User.update(
-            avatar=update_user_img(form.avatar.data, found_user.username)
+            avatar=user_img(form.avatar.data, found_user.username)
         ).where(models.User.id == id)
         user_update.execute()
         flash(f"Updated your profile information.")
@@ -152,14 +154,14 @@ def add_favorite_venue(id):
         (models.Favorite.venue_fk == found_venue.id) &
         (models.Favorite.user_fk == current_user.id)):
             flash("Can't add a venue to your favorites twice","error")
-            return redirect(url_for('venue_rating',id=id))
+            return redirect(url_for('venue',id=id))
     else:
         flash(f"Added {found_venue.name} to your favorites!","success")
         models.Favorite.create_favorite(
             user_fk=current_user.id,
             venue_fk=found_venue
         )
-        return redirect(url_for('venue_rating',id=id))
+        return redirect(url_for('venue',id=id))
 
 @app.route('/venue/delete_favorite/<id>')
 @login_required
@@ -174,14 +176,14 @@ def delete_favorite_venue(id):
         (models.Favorite.user_fk == current_user.id))
         delete_favorite.execute()
         flash("Deleted from favorites","success")
-        return redirect(url_for('venue_rating',id=id))
+        return redirect(url_for('venue',id=id))
     else:
         flash("This isn't one of your favorite venues","error")
         models.Favorite.create_favorite(
             user_fk=current_user.id,
             venue_fk=found_venue
         )
-        return redirect(url_for('venue_rating',id=id))
+        return redirect(url_for('venue',id=id))
         
 
 @app.route("/user/add_friend/<id>")
@@ -220,8 +222,8 @@ def band(id):
     
     return render_template('band.html', band=found_band, events=events, is_favorite=is_favorite, bandskid=bandskid)
 
-@app.route('/venue/<id>/ratings', methods=('GET', 'POST'))
-def venue_rating(id):
+@app.route('/venue/<id>', methods=('GET', 'POST'))
+def venue(id):
     found_venue = models.Venue.get(models.Venue.id == id)
     events = models.Event.select().where(models.Event.venue_fk == found_venue.id)
     ratings = models.Rating.select().where(models.Rating.venue_fk == found_venue.id)
@@ -234,29 +236,6 @@ def venue_rating(id):
         (models.Favorite.venue_fk == found_venue.id)
     ):
         is_favorite = True
-
-    # if event_form.validate_on_submit():
-    #     if current_user.user_level == "walrus":
-    #         if models.Band.select().where(models.Band.name == event_form.band.data).exists():
-    #             found_band = models.Band.get(models.Band.name == event_form.band.data)
-    #             locator = models.Event.select().where(
-    #                 (models.Event.venue_fk == found_venue.id) &
-    #                 (models.Event.band_fk == found_band.id) &
-    #                 (models.Event.date == event_form.date.data))
-    #             if locator.count() == 0:
-    #                 flash(f"Added event to {found_venue.name} with {event_form.band.data}.")
-    #                 models.Event.create_event(
-    #                     band_fk=found_band.id,
-    #                     venue_fk=id,
-    #                     date=event_form.date.data
-    #                 )
-    #                 return redirect(url_for('venue_events', id=found_venue.id))
-    #             flash("Can't add duplicate events","error")
-    #             return redirect(url_for('venue_events', id=found_venue.id))
-    #         flash("Band does not exist in database","error")
-    #         return redirect(url_for('venue_events', id=found_venue.id))
-    #     flash("Not Authorized to Add Events","error")
-    #     return redirect(url_for('venue_events', id=found_venue.id))
 
     if rating_form.validate_on_submit():
         locator = models.Rating.select().where(
@@ -272,10 +251,10 @@ def venue_rating(id):
                 rating_type=rating_form.rating_type.data,
                 message=rating_form.message.data
             )
-            return redirect(url_for('venue_rating', id=found_venue.id))
+            return redirect(url_for('venue', id=found_venue.id))
         else:
             flash(f"You can only add one comment per category on each venue")
-            return redirect(url_for('venue_rating', id=found_venue.id))
+            return redirect(url_for('venue', id=found_venue.id))
     return render_template('venue.html', venue=found_venue, ratings=ratings, rating_form=rating_form, id=id, is_favorite=is_favorite, venueskid=venueskid)
 
     # ########## COMMENTS ########## #
@@ -290,7 +269,7 @@ def delete_rating(id):
         flash(f"Deleted rating on {found_rating.venue_fk.name}")
         if profile == "True":
             return redirect(url_for('user', id=current_user.id))
-        return redirect(url_for('venue_rating', id=found_rating.venue_fk.id))
+        return redirect(url_for('venue', id=found_rating.venue_fk.id))
     else:
         flash(f"You cannot delete another users comments","error")
         return redirect(url_for('index'))
@@ -330,7 +309,7 @@ def venue_update_rating(id):
         ).where(models.Rating.id == id)
         rating_update.execute()
         flash(f"Updated comment on {found_rating.venue_fk.name}.")
-        return redirect(url_for('venue_rating',id=found_venue.id))
+        return redirect(url_for('venue',id=found_venue.id))
     return render_template('venue.html', venue=found_venue, found_rating=found_rating, ratings=ratings, form=form)
 
 
@@ -433,11 +412,41 @@ def add_venue():
         models.Venue.create_venue(
             name=form.name.data,
             about=form.about.data,
-            address=form.address.data,
             skid=form.skid.data
         )
         return redirect(url_for('add_venue'))
     return render_template('admin_with_form.html', form=form, venues=venues)
+
+
+    if form.validate_on_submit():
+        # breakpoint()
+        # print(form.avatar.data.filename)
+        user_update = models.User.update(
+        ).where(models.User.id == id)
+        user_update.execute()
+        flash(f"Updated your profile information.")
+        return redirect(url_for('user',id=id))
+
+@app.route('/admin/venue_img/<id>', methods=('GET','POST'))
+@login_required
+def update_venue_img(id):
+    form = VenueImgForm()
+    venues = models.Venue.select()
+    img_updating = True
+    found_venue = models.Venue.get(models.Venue.id == id)
+    if current_user.user_level != "walrus":
+        flash("Not authorized to access this page", "error")
+        return redirect(url_for('index'))
+    if form.validate_on_submit():
+        flash(f"Image for venue updated","success")
+        img = venue_img(form.img.data, found_venue.name)
+        venue_img_update = models.Venue.update(
+            img=venue_img(form.img.data, found_venue.name)
+        ).where(models.Venue.id == id)
+        venue_img_update.execute()
+        return redirect(url_for('admin'))
+    return render_template('admin_with_form.html', form=form, venues=venues, found_venue=found_venue, img_updating=img_updating)
+    
 
 @app.route('/admin/venue/update/<id>', methods=['GET','POST'])
 @login_required
@@ -497,6 +506,25 @@ def add_band():
         return redirect(url_for('add_band'))
     return render_template('admin_with_form.html', form=form, bands=bands)
 
+@app.route('/admin/band_img/<id>', methods=('GET','POST'))
+@login_required
+def update_band_img(id):
+    form = VenueImgForm()
+    venues = models.Venue.select()
+    img_updating = True
+    found_venue = models.Venue.get(models.Venue.id == id)
+    if current_user.user_level != "walrus":
+        flash("Not authorized to access this page", "error")
+        return redirect(url_for('index'))
+    if form.validate_on_submit():
+        flash(f"Image for venue updated","success")
+        img = band_img(form.img.data, found_venue.name)
+        band_img_update = models.Venue.update(
+            img=band_img(form.img.data, found_venue.name)
+        ).where(models.Venue.id == id)
+        band_img_update.execute()
+        return redirect(url_for('admin'))
+    return render_template('admin_with_form.html', form=form, venues=venues, found_venue=found_venue, img_updating=img_updating)
 
 @app.route('/admin/band/update/<id>', methods=['GET','POST'])
 @login_required

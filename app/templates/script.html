@@ -27,7 +27,7 @@
                 console.log(bandEvents)
                 console.log(bandEvents)
                 for(let i=0;i<bandEvents.length;i++){
-                    $('#band-events').append(`<p>${bandEvents[i].displayName}</p>`)
+                    $('#band-events').append(`<div class="event"><p>${bandEvents[i].displayName}</p><a href=${bandEvents[i].uri}>More Info</a></div>`)
                 }
             },
             error: function(err) {

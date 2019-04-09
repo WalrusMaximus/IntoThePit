@@ -13,18 +13,10 @@
 <a href="{{url_for('add_favorite_venue', id=venue.id)}}">Add To Favorites</a>
 {% endif %}
 
+
 {% endblock %}
 
 {% block main_header %}
-
-
-{% if show_ratings %}
-<a href="{{url_for('venue_events', id=id)}}">Go To Events</a>
-{% endif %}
-
-{% if show_events %}
-<a href="{{url_for('venue_rating', id=id)}}">Go To Ratings</a>
-{% endif %}
 
 {% if found_rating %}
 <h4>Updating Rating:</h4>
@@ -46,7 +38,7 @@
     {% endfor %}
 </form>
 {% if found_rating %}
-<a href="{{ url_for('venue_rating', id=found_rating.venue_fk.id)}}">Changed my mind, I don't want to Update</a>
+<a href="{{ url_for('venue', id=found_rating.venue_fk.id)}}">Changed my mind, I don't want to Update</a>
 {% endif%}
 
 {% endblock%}

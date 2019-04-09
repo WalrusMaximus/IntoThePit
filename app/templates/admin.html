@@ -22,8 +22,8 @@
         <h3>VENUES</h3>
         <a href="/admin/add_venue">Add A Venue</a>
         {% for venue in venues %}
-        <p><a href="{{url_for('venue_rating',id=venue.id)}}">{{ venue.name }}</a>, id: {{ venue.id }}</p>
-        <a href="{{ url_for('admin_update_venue', id=venue.id) }}">Update</a> <a href="{{ url_for('delete_venue', id=venue.id) }}" class="delete_button">Delete</a>
+        <p><a href="{{url_for('venue',id=venue.id)}}">{{ venue.name }}</a>, id: {{ venue.id }}</p>
+        <a href="{{ url_for('admin_update_venue', id=venue.id) }}">Update</a> <a href="{{ url_for('delete_venue', id=venue.id) }}" class="delete_button">Delete</a> <a href="{{ url_for('update_venue_img', id=venue.id)}}">Img</a>
         {% endfor %}
     </div>
     <div class="band-wrapper">
@@ -32,14 +32,6 @@
         {% for band in bands %}
         <p><a href="{{url_for('band',id=band.id)}}">{{ band.name }}</a>, id: {{ band.id }}</p>
         <a href="{{ url_for('admin_update_band', id=band.id) }}">Update</a> <a href="{{ url_for('delete_band', id=band.id) }}" class="delete_button">Delete</a>
-        {% endfor %}
-    </div>
-    <div class="event-wrapper">
-        <h3>EVENTS</h3>
-        <a href="/admin/add_event">Add An Event</a>
-        {% for event in events %}
-        <p><a href="{{url_for('venue_events', id=event.venue_fk.id)}}">{{ event.band_fk.name }} @ {{ event.venue_fk.name }}</a>, id: {{ event.id }}</p>
-        <a href="{{ url_for('update_event', id=event.id)}}">Update</a> <a href="{{ url_for('delete_event', id=event.id, admin=True)}}" class="delete_button">Delete</a>
         {% endfor %}
     </div>
 
