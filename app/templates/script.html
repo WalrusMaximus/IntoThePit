@@ -1,16 +1,14 @@
 <script>
 
     var apiKey = "{{ config['SONGKICK_API_KEY'] }}";
-    let bands = ["527207","3964006","3063401","2473151","433483","208746","209511"]
+    let bands = ["527207","3964006","2473151","433483","208746","209511"]
     var venueId = "324"
     let metro = "26330"
     var bandQuery = "https://api.songkick.com/api/3.0/artists/" + {{bandskid}} + "/calendar.json?apikey=" + apiKey
     var venueQuery = "https://api.songkick.com/api/3.0/venues/" + {{venueskid}} + "/calendar.json?apikey=" + apiKey
 
 
-    function apiTest() {
-        $('.band-events').empty();
-        let foundResults = []
+    function bandApi() {
         $.ajax({
             method: 'GET',
             url: bandQuery,
@@ -27,6 +25,7 @@
                 })
                 let bandEvents = Array.from(result)
                 console.log(bandEvents)
+                console.log(bandEvents)
                 for(let i=0;i<bandEvents.length;i++){
                     $('#band-events').append(`<p>${bandEvents[i].displayName}</p>`)
                 }
@@ -38,7 +37,6 @@
     }
 
     function venueApi() {
-        $('.venue-events').empty();
         $.ajax({
             method: 'GET',
             url: venueQuery,
@@ -56,8 +54,9 @@
                 })
             }
                 let event = Array.from(result)
+                console.log(event)
                 for(let i=0;i<event.length;i++){
-                    $('#venue-events').append(`<p>${event[i].displayName}</p>`)
+                    $('#venue-events').append(`<div class="event"><p>${event[i].displayName}</p><a href=${event[i].uri}>More Info</a></div>`)
             }
             },
             error: function(err) {
@@ -65,6 +64,5 @@
             }
         })
     }
-
 
 </script>

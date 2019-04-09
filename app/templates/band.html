@@ -1,4 +1,6 @@
 {% extends "layout.html" %}
+
+
 {% block sidebar %}
 <h2>{{band.name}}</h2>
 <img class="band_img" src="{{ url_for('static', filename=band.img.decode('utf-8'))}}" alt="">
@@ -14,7 +16,6 @@
 
 {% block main_header %}
 <h3>Upcoming Events</h3>
-<button onclick=apiTest()>api test</button>
 {% endblock %}
 
 {% block main %}
@@ -26,6 +27,12 @@
     {% endif %}
 {% endfor %}
     <div class="band-events" id="band-events">
-        <p>go byebye</p>
     </div>
+{% endblock %}
+
+
+{% block script %}
+<script>
+        bandApi()
+</script>
 {% endblock %}
