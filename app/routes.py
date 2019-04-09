@@ -209,6 +209,7 @@ def add_friend(id):
 def band(id):
     found_band = models.Band.get(models.Band.id == id)
     events = models.Event.select().where(models.Event.band_fk == id)
+    bandskid = found_band.skid
 
     is_favorite = False
     if models.Favorite.select().where(
@@ -217,7 +218,7 @@ def band(id):
     ):
         is_favorite = True
     
-    return render_template('band.html', band=found_band, events=events, is_favorite=is_favorite)
+    return render_template('band.html', band=found_band, events=events, is_favorite=is_favorite, bandskid=bandskid)
 
 @app.route('/venue/<id>/ratings', methods=('GET', 'POST'))
 def venue_rating(id):
@@ -225,6 +226,7 @@ def venue_rating(id):
     events = models.Event.select().where(models.Event.venue_fk == found_venue.id)
     ratings = models.Rating.select().where(models.Rating.venue_fk == found_venue.id)
     rating_form = RatingForm()
+    venueskid = found_venue.skid
 
     is_favorite = False
     if models.Favorite.select().where(
@@ -274,7 +276,7 @@ def venue_rating(id):
         else:
             flash(f"You can only add one comment per category on each venue")
             return redirect(url_for('venue_rating', id=found_venue.id))
-    return render_template('venue.html', venue=found_venue, ratings=ratings, rating_form=rating_form, id=id, is_favorite=is_favorite)
+    return render_template('venue.html', venue=found_venue, ratings=ratings, rating_form=rating_form, id=id, is_favorite=is_favorite, venueskid=venueskid)
 
     # ########## COMMENTS ########## #
 

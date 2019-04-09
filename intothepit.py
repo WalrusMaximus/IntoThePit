@@ -31,6 +31,12 @@ if __name__ == '__main__':
             img="images/venue_theindependent.jpg",
             skid="324"
         )
+        models.Venue.create_venue(
+            name="oakland metro operahouse",
+            about="Best venue ever",
+            img="images/venue_oaklandmetrooperahouse.jpg",
+            skid="9809"
+        )
 
     except ValueError:
         pass

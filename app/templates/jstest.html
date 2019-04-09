@@ -1,12 +1,12 @@
 <script>
-    console.log("Oi")
 
     var apiKey = "{{ config['SONGKICK_API_KEY'] }}";
-    var bandId = "527207"
-    var bandIdTwo = "1699110"
+    let bands = ["527207","3964006","3063401","2473151","433483","208746","209511"]
     var venueId = "324"
-    var bandQuery = "https://api.songkick.com/api/3.0/artists/" + bandId + "/calendar.json?apikey=" + apiKey
-    var venueQuery = "https://api.songkick.com/api/3.0/venues/" + venueId + "/calendar.json?apikey=" + apiKey
+    let metro = "26330"
+    var bandQuery = "https://api.songkick.com/api/3.0/artists/" + {{bandskid}} + "/calendar.json?apikey=" + apiKey
+    var venueQuery = "https://api.songkick.com/api/3.0/venues/" + {{venueskid}} + "/calendar.json?apikey=" + apiKey
+
 
     function apiTest() {
         $('.band-events').empty();
@@ -15,7 +15,21 @@
             method: 'GET',
             url: bandQuery,
             success: function(res){
+                var result = new Set()
                 console.log("Received Data", res.resultsPage.results);
+                let foundEvents = res.resultsPage.results.event
+
+                foundEvents.filter(event => {
+                    if (event.venue.metroArea.id == metro) {
+                        console.log(event)
+                        result.add(event)
+                    }
+                })
+                let bandEvents = Array.from(result)
+                console.log(bandEvents)
+                for(let i=0;i<bandEvents.length;i++){
+                    $('#band-events').append(`<p>${bandEvents[i].displayName}</p>`)
+                }
             },
             error: function(err) {
                 console.log("Couldn't connect to API", err)
@@ -29,21 +43,28 @@
             method: 'GET',
             url: venueQuery,
             success: function(res){
-                foundEvents = []
-                console.log("Received Data", res.resultsPage.results);
-                $.each(res.resultsPage.results.event, function(key, val) {
-                    let = val.filter(val.performance, function(key, val) {
-                        if (val.artist.id == bandId || bandIdTwo) {
-                            console.log(val)
-                            foundEvents.push(val.id)
-                        }
-                    })
+                var result = new Set()
+                let foundEvents = res.resultsPage.results.event
 
+                for(let i=0;i<foundEvents.length;i++){
+                    foundEvents[i].performance.filter(perf => {
+                        let artistId = perf.artist.id
+                        let idFound = bands.includes(artistId.toString())
+                        if (idFound) {
+                            result.add(foundEvents[i])
+                        }
                 })
+            }
+                let event = Array.from(result)
+                for(let i=0;i<event.length;i++){
+                    $('#venue-events').append(`<p>${event[i].displayName}</p>`)
+            }
             },
             error: function(err) {
                 console.log("Couldn't connect to API", err)
             }
         })
+    }
+
 
 </script>
