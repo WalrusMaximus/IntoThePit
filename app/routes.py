@@ -95,8 +95,20 @@ def user(id):
     favorite_venues = models.Favorite.select().where(
         (models.Favorite.user_fk == id) &
         (models.Favorite.venue_fk))
+
+    bands_query = []
+    venues_query = []
+
+    if favorite_bands:
+        for favorite in favorite_bands:
+            bands_query.append(favorite.band_fk.skid)
+
+    if favorite_venues:
+        for favorite in favorite_venues:
+            venues_query.append(favorite.venue_fk.skid)
         
-    return render_template('user.html', user=user, ratings=ratings, favorite_bands=favorite_bands, favorite_venues=favorite_venues, show_ratings=show_ratings)
+
+    return render_template('user.html', user=user, ratings=ratings, favorite_bands=favorite_bands, favorite_venues=favorite_venues, show_ratings=show_ratings, bands_query=bands_query, venues_query=venues_query)
 
 
 @app.route("/user/update_img/<id>", methods=["POST","GET"])

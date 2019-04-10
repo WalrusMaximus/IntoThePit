@@ -69,4 +69,31 @@
     {% else %}
     <p>Looks like {{ user.username }} doesn't have any favorite venues...</p>
     {% endif %}
+    <h4>Upcoming Events by Favorite Artists...</h4>
+    <div id="favorite-band-events">
+
+    </div>
+    <h4>Upcoming Events at Favorite Venues...</h4>
+    <div id="favorite-venue-events">
+        
+    </div>
+
+{% endblock %}
+
+
+{% block script %}
+{% if bands_query %}
+    {% for band in bands_query %}
+        <script>
+            favBand({{band}})
+        </script>
+    {% endfor %}
+{% endif %}
+{% if venues_query %}
+    {% for venue in venues_query %}
+        <script>
+            favVenue({{venue}})
+        </script>
+    {% endfor %}
+{% endif %}
 {% endblock %}

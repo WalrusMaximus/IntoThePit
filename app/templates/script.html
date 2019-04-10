@@ -24,11 +24,67 @@
                     }
                 })
                 let bandEvents = Array.from(result)
-                console.log(bandEvents)
-                console.log(bandEvents)
                 for(let i=0;i<bandEvents.length;i++){
                     $('#band-events').append(`<div class="event"><p>${bandEvents[i].displayName}</p><a href=${bandEvents[i].uri}>More Info</a></div>`)
                 }
+            },
+            error: function(err) {
+                console.log("Couldn't connect to API", err)
+            }
+        })
+    }
+        function favBand(favorite) {
+            query = "https://api.songkick.com/api/3.0/artists/" + favorite + "/calendar.json?apikey=" + apiKey
+            $.ajax({
+                method: 'GET',
+                url: query,
+                success: function(res){
+                    var result = new Set()
+                    console.log("Received Data", res.resultsPage.results);
+                    let foundEvents = res.resultsPage.results.event
+    
+                    foundEvents.filter(event => {
+                        if (event.venue.metroArea.id == metro) {
+                            if (event)
+                            
+                            console.log(event)
+                            result.add(event)
+                        }
+                    })
+                    let bandEvents = Array.from(result)
+                    for(let i=0;i<bandEvents.length;i++){
+                        $('#favorite-band-events').append(`<div class="event"><p>${bandEvents[i].displayName}</p><a href=${bandEvents[i].uri}>More Info</a></div>`)
+                    }
+                },
+                error: function(err) {
+                    console.log("Couldn't connect to API", err)
+                }
+            })
+        }
+
+    function favVenue(favorite) {
+        query = "https://api.songkick.com/api/3.0/venues/" + favorite + "/calendar.json?apikey=" + apiKey
+        $.ajax({
+            method: 'GET',
+            url: query,
+            success: function(res){
+                var result = new Set()
+                let foundEvents = res.resultsPage.results.event
+
+                for(let i=0;i<foundEvents.length;i++){
+                    foundEvents[i].performance.filter(perf => {
+                        let artistId = perf.artist.id
+                        let idFound = bands.includes(artistId.toString())
+                        if (idFound) {
+                            result.add(foundEvents[i])
+                        }
+                })
+            }
+                let event = Array.from(result)
+                console.log(event)
+                for(let i=0;i<event.length;i++){
+                    $('#favorite-venue-events').append(`<div class="event"><p>${event[i].displayName}</p><a href=${event[i].uri}>More Info</a></div>`)
+            }
             },
             error: function(err) {
                 console.log("Couldn't connect to API", err)
