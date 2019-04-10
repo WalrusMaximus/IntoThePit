@@ -31,7 +31,7 @@
         <a href="/admin/add_band">Add A Band</a>
         {% for band in bands %}
         <p><a href="{{url_for('band',id=band.id)}}">{{ band.name }}</a>, id: {{ band.id }}</p>
-        <a href="{{ url_for('admin_update_band', id=band.id) }}">Update</a> <a href="{{ url_for('delete_band', id=band.id) }}" class="delete_button">Delete</a>
+        <a href="{{ url_for('admin_update_band', id=band.id) }}">Update</a> <a href="{{ url_for('delete_band', id=band.id) }}" class="delete_button">Delete</a> <a href="{{ url_for('update_band_img', id=band.id)}}">Img</a>
         {% endfor %}
     </div>
 

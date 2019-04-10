@@ -520,16 +520,16 @@ def update_band_img(id):
     form = ImgForm()
     bands = models.Band.select()
     img_updating = True
-    band = models.Venue.get(models.Venue.id == id)
+    band = models.Band.get(models.Band.id == id)
     if current_user.user_level != "walrus":
         flash("Not authorized to access this page", "error")
         return redirect(url_for('index'))
     if form.validate_on_submit():
         flash(f"Image for {band.name} updated","success")
         img = band_img(form.img.data, band.name)
-        band_img_update = models.Venue.update(
+        band_img_update = models.Band.update(
             img=band_img(form.img.data, band.name)
-        ).where(models.Venue.id == id)
+        ).where(models.Band.id == id)
         band_img_update.execute()
         return redirect(url_for('admin'))
     return render_template('admin_with_form.html', form=form, bands=bands, band=band, img_updating=img_updating)
