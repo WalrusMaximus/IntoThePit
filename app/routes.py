@@ -232,6 +232,46 @@ def venue(id):
     form = RatingForm()
     venueskid = venue.skid
 
+    overall_rating = 0
+    overall_num = 0
+    pit_rating = 0
+    pit_num = 0
+    sound_rating = 0
+    sound_num = 0
+    facility_rating = 0
+    facility_num = 0
+
+    for rating in ratings:
+        if rating.rating_type == "Overall":
+            overall_rating = overall_rating + int(rating.rating)
+            overall_num = overall_num + 1
+        if rating.rating_type == "Mosh Pit":
+            pit_rating = pit_rating + int(rating.rating)
+            pit_num = pit_num + 1
+        if rating.rating_type == "Sound":
+            sound_rating = sound_rating + int(rating.rating)
+            sound_num = sound_num + 1
+        if rating.rating_type == "Facility":
+            facility_rating = facility_rating + int(rating.rating)
+            facility_num = facility_num + 1
+
+    if overall_num == 0:
+        overall_rating = "Not Rated"
+    else: 
+        overall_rating = overall_rating / overall_num
+    if pit_num == 0:
+        pit_rating = "Not Rated"
+    else: 
+        pit_rating = pit_rating / pit_num
+    if sound_num == 0:
+        sound_rating = "Not Rated"
+    else: 
+        sound_rating = sound_rating / sound_num
+    if facility_num == 0:
+        facility_rating = "Not Rated"
+    else: 
+        facility_rating = facility_rating / facility_num
+
     is_favorite = False
     if models.Favorite.select().where(
         (models.Favorite.user_fk == current_user.id) &
@@ -257,7 +297,7 @@ def venue(id):
         else:
             flash(f"You can only add one comment per category on each venue")
             return redirect(url_for('venue', id=venue.id))
-    return render_template('venue.html', venue=venue, ratings=ratings, form=form, id=id, is_favorite=is_favorite, venueskid=venueskid)
+    return render_template('venue.html', venue=venue, ratings=ratings, form=form, id=id, is_favorite=is_favorite, venueskid=venueskid, overall_rating=overall_rating, pit_rating=pit_rating, sound_rating=sound_rating, facility_rating=facility_rating)
 
     # ########## COMMENTS ########## #
 

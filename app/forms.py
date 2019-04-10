@@ -106,7 +106,7 @@ class BandForm(FlaskForm):
 class RatingForm(FlaskForm):
     rating = SelectField(
         'Rating = 1-5',
-        choices=[(1, '1'), (2, '2'), (3, '3'), (4, '4'), (5, '5')],
+        choices=[('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'), ('5', '5')],
         default="5"
     )
     rating_type = SelectField(
