@@ -13,13 +13,11 @@
             method: 'GET',
             url: bandQuery,
             success: function(res){
-                var result = new Set()
-                console.log("Received Data", res.resultsPage.results);
+                var result = new Set()                
                 let foundEvents = res.resultsPage.results.event
 
                 foundEvents.filter(event => {
-                    if (event.venue.metroArea.id == metro) {
-                        console.log(event)
+                    if (event.venue.metroArea.id == metro) {                        
                         result.add(event)
                     }
                 })
@@ -28,8 +26,7 @@
                     $('#band-events').append(`<div class="event"><p>${bandEvents[i].displayName}</p><a href=${bandEvents[i].uri}>More Info</a></div>`)
                 }
             },
-            error: function(err) {
-                console.log("Couldn't connect to API", err)
+            error: function(err) {                
             }
         })
     }
@@ -39,15 +36,13 @@
                 method: 'GET',
                 url: query,
                 success: function(res){
-                    var result = new Set()
-                    console.log("Received Data", res.resultsPage.results);
+                    var result = new Set()                    
                     let foundEvents = res.resultsPage.results.event
     
                     foundEvents.filter(event => {
                         if (event.venue.metroArea.id == metro) {
                             if (event)
-                            
-                            console.log(event)
+                                                        
                             result.add(event)
                         }
                     })
@@ -56,8 +51,7 @@
                         $('#favorite-band-events').append(`<div class="event"><p>${bandEvents[i].displayName}</p><a href=${bandEvents[i].uri}>More Info</a></div>`)
                     }
                 },
-                error: function(err) {
-                    console.log("Couldn't connect to API", err)
+                error: function(err) {                    
                 }
             })
         }
@@ -80,14 +74,12 @@
                         }
                 })
             }
-                let event = Array.from(result)
-                console.log(event)
+                let event = Array.from(result)                
                 for(let i=0;i<event.length;i++){
                     $('#favorite-venue-events').append(`<div class="event"><p>${event[i].displayName}</p><a href=${event[i].uri}>More Info</a></div>`)
             }
             },
-            error: function(err) {
-                console.log("Couldn't connect to API", err)
+            error: function(err) {                
             }
         })
     }
@@ -109,14 +101,12 @@
                         }
                 })
             }
-                let event = Array.from(result)
-                console.log(event)
+                let event = Array.from(result)                
                 for(let i=0;i<event.length;i++){
                     $('#venue-events').append(`<div class="event"><p>${event[i].displayName}</p><a href=${event[i].uri}>More Info</a></div>`)
             }
             },
-            error: function(err) {
-                console.log("Couldn't connect to API", err)
+            error: function(err) {                
             }
         })
     }

@@ -1,7 +1,7 @@
 import datetime, time
 
 from flask_wtf import FlaskForm
-from app.models import User, Band, Venue, Favorite, Rating, Friend, Event
+from app.models import User, Band, Venue, Favorite, Rating
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField
 from wtforms.fields.html5 import DateField
 from flask_wtf.file import FileField, FileAllowed
@@ -106,7 +106,7 @@ class BandForm(FlaskForm):
 class RatingForm(FlaskForm):
     rating = SelectField(
         'Rating = 1-5',
-        choices=[("1", '1'), ("2", '2'), ("3", '3'), ("4", '4'), ("5", '5')],
+        choices=[(1, '1'), (2, '2'), (3, '3'), (4, '4'), (5, '5')],
         default="5"
     )
     rating_type = SelectField(
@@ -123,18 +123,6 @@ class UpdateRatingForm(FlaskForm):
         default="5"
     )
     message = StringField('Tell us what you think...', validators=[DataRequired(), Length(max=512)])
-    submit = SubmitField("Submit")
-
-class AddEventForm(FlaskForm):
-    date = DateField("Date", default=datetime.datetime.now, validators=[DataRequired()])
-    band = StringField("Band", validators=[DataRequired()])
-    submit = SubmitField("Submit")
-
-
-class AdminAddEventForm(FlaskForm):
-    date = DateField("Date", default=datetime.datetime.now, validators=[DataRequired()])
-    band = StringField("Band", validators=[DataRequired()])
-    venue = StringField("Venue", validators=[DataRequired()])
     submit = SubmitField("Submit")
 
 class ImgForm(FlaskForm):

@@ -2,7 +2,7 @@ from flask import render_template, url_for, flash, redirect, g, request
 import os
 from PIL import Image
 from app import app, models
-from app.forms import LoginForm, RegisterForm, AddUserForm, UpdateUserForm, VenueForm, BandForm, RatingForm, AdminUpdateUserForm, UpdateRatingForm, AddEventForm, AdminAddEventForm, ImgForm
+from app.forms import LoginForm, RegisterForm, AddUserForm, UpdateUserForm, VenueForm, BandForm, RatingForm, AdminUpdateUserForm, UpdateRatingForm, ImgForm
 from flask_bcrypt import check_password_hash, generate_password_hash
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 
@@ -211,31 +211,9 @@ def delete_favorite_venue(id):
         return redirect(url_for('venue',id=id))
         
 
-@app.route("/user/add_friend/<id>")
-@login_required
-def add_friend(id):
-    user = models.User.get(models.User.id == id)
-
-    if current_user != user:
-        locator = models.Friend.select().where(
-            (models.Friend.friender == current_user.id) &
-            (models.Friend.friendee == user.id))
-        if locator.count() == 0:
-            flash(f"Friend request sent to {user.username}.")
-            models.Friend.create_friend(
-                friender=current_user.id,
-                friendee=id,
-                accepted=False
-            )
-            return redirect(url_for('user', id=id))
-        else:
-            flash(f"You've already sent a request to that user","error")
-            return redirect(url_for('user', id=id))
-
 @app.route('/band/<id>')
 def band(id):
     band = models.Band.get(models.Band.id == id)
-    events = models.Event.select().where(models.Event.band_fk == id)
     bandskid = band.skid
 
     is_favorite = False
@@ -245,12 +223,11 @@ def band(id):
     ):
         is_favorite = True
     
-    return render_template('band.html', band=band, events=events, is_favorite=is_favorite, bandskid=bandskid)
+    return render_template('band.html', band=band, is_favorite=is_favorite, bandskid=bandskid)
 
 @app.route('/venue/<id>', methods=('GET', 'POST'))
 def venue(id):
     venue = models.Venue.get(models.Venue.id == id)
-    events = models.Event.select().where(models.Event.venue_fk == venue.id)
     ratings = models.Rating.select().where(models.Rating.venue_fk == venue.id)
     form = RatingForm()
     venueskid = venue.skid
@@ -326,6 +303,7 @@ def venue_update_rating(id):
     venue = models.Venue.get(models.Venue.id == rating.venue_fk.id)
     ratings = models.Rating.select().where(models.Rating.venue_fk == venue.id)
     record = models.Rating.select().where(id == models.Rating.id).dicts().get()
+    venueskid = venue.skid
 
     form = UpdateRatingForm()
     ratings = models.Rating.select().where(models.Rating.venue_fk == venue.id)
@@ -337,7 +315,7 @@ def venue_update_rating(id):
         rating_update.execute()
         flash(f"Updated comment on {rating.venue_fk.name}.")
         return redirect(url_for('venue',id=venue.id))
-    return render_template('venue.html', venue=venue, rating=rating, ratings=ratings, form=form, record=record)
+    return render_template('venue.html', venue=venue, rating=rating, ratings=ratings, form=form, record=record, venueskid=venueskid)
 
 
 @app.route('/logout')
@@ -362,9 +340,8 @@ def admin():
     users = models.User.select()
     venues = models.Venue.select()
     bands = models.Band.select()
-    events = models.Event.select()
 
-    return render_template('admin.html', users=users, venues=venues, bands=bands, events=events)
+    return render_template('admin.html', users=users, venues=venues, bands=bands)
 
 @app.route('/admin/add_user', methods=('GET', 'POST'))
 @login_required
@@ -581,89 +558,6 @@ def delete_band(id):
     else: 
         flash("Not authorized to access this page", "error")
         return redirect(url_for('index'))
-
-# ########## EVENTS ########## #
-
-@app.route('/admin/add_event', methods=('GET', 'POST'))
-@login_required
-def admin_add_event():
-    form = AdminAddEventForm()
-    events = models.Event.select()
-    if current_user.user_level != "walrus":
-        flash("Not authorized to access this page", "error")
-        return redirect(url_for('index'))
-    if form.validate_on_submit():
-        if models.Band.select().where(models.Band.name == form.band.data).exists():
-            if models.Venue.select().where(models.Venue.name == form.venue.data).exists():
-                band_key = models.Band.get(models.Band.name == form.band.data)
-                venue_key = models.Venue.get(models.Venue.name == form.venue.data)
-                locator = models.Event.select().where(
-                    (models.Event.venue_fk == venue_key.id) &
-                    (models.Event.band_fk == band_key.id) &
-                    (models.Event.date == form.date.data))
-                if locator.count() == 0:
-                    flash(f"Created event - { form.band.name } @ { form.venue.name }", 'success')
-                    models.Event.create_event(
-                        date=form.date.data,
-                        venue_fk=venue_key,
-                        band_fk=band_key
-                    )
-                    return redirect(url_for('admin'))
-                flash(f"Can't add a duplicate event","error")
-                return redirect(url_for('admin'))
-            flash(f"That venue doesn't exist in the database","error")
-            return redirect(url_for('admin'))
-        flash(f"That band doesn't exist in the database","error")
-        return redirect(url_for('admin'))
-    return render_template('admin_with_form.html', form=form, events=events)
-
-# DELETE EVENT
-@app.route('/admin/delete_event/<id>', methods=('GET', 'POST'))
-@login_required
-def delete_event(id):
-    profile = request.args.get('admin')
-    event = models.Event.get(models.Event.id == id)
-    venue_redirect = event.venue_fk.id
-    if g.user.user_level == "walrus":
-        event_deletion = models.Event.delete().where(models.Event.id == event.id)
-        event_deletion.execute()
-        flash(f"Deleted {event.band_fk.name} event from {event.venue_fk.name}")
-        if profile == "True":
-            return redirect(url_for('admin'))
-        return redirect(url_for('venue_events', id=venue_redirect))
-    else: 
-        flash("Not authorized to access this page", "error")
-        return redirect(url_for('index'))
-
-# UPDATE EVENT
-@app.route('/admin/update_event/<id>', methods=['GET','POST'])
-@login_required
-def update_event(id):
-    form = AdminAddEventForm()
-    events = models.Event.select()
-    event = models.Event.get(models.Event.id == id)
-    if current_user.user_level != "walrus":
-        flash("Not authorized to access this page", "error")
-        return redirect(url_for('index'))
-    if form.validate_on_submit():
-        if models.Band.select().where(models.Band.name == form.band.data).exists():
-            if models.Venue.select().where(models.Venue.name == form.venue.data).exists():
-                band_key = models.Band.select().where(models.Band.name == form.band.data)
-                venue_key = models.Venue.select().where(models.Venue.name == form.venue.data)
-                event_update = models.Event.update(
-                    date=form.date.data,
-                    venue_fk=venue_key,
-                    band_fk=band_key
-                ).where(models.Event.id == id)
-                event_update.execute()
-                flash(f"Updated {event.band_fk.name} event at {event.venue_fk.name}.")
-                return redirect(url_for('admin'))
-            flash(f"That venue doesn't exist in the database","error")
-            return redirect(url_for('admin'))
-        flash(f"That band doesn't exist in the database","error")
-        return redirect(url_for('admin'))
-
-    return render_template('admin_with_form.html', form=form, events=events, event=event, id=id)
 
 
 

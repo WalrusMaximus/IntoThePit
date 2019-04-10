@@ -113,58 +113,6 @@ class Rating(Model):
         except IntegrityError:
             raise
 
-class Event(Model):
-    band_fk = ForeignKeyField(
-        model=Band,
-        backref="bands",
-        null=True
-    )
-    venue_fk = ForeignKeyField(
-        model=Venue,
-        backref="venues",
-        null=True
-    )
-    date = DateField()
-
-    class Meta:
-        database = DATABASE
-
-    @classmethod
-    def create_event(cls,band_fk,venue_fk,date):
-        try:
-            cls.create(
-                band_fk=band_fk,
-                venue_fk=venue_fk,
-                date=date
-            )
-        except IntegrityError:
-            raise
-
-class Friend(Model):
-    friender = ForeignKeyField(
-        model=User,
-        backref="friends"
-    )
-    friendee = ForeignKeyField(
-        model=User,
-        backref="friends",
-        null=True
-    )
-    accepted = BooleanField(default=False)
-
-    class Meta:
-        database = DATABASE
-
-    @classmethod
-    def create_friend(cls,friender,friendee=None, accepted=False):
-        try:
-            cls.create(
-                friender=friender,
-                friendee=friendee
-            )
-        except IntegrityError:
-            raise
-
 class Favorite(Model):
     user_fk = ForeignKeyField(
         model=User,
@@ -180,23 +128,17 @@ class Favorite(Model):
         backref="venues",
         null=True
     )
-    event_fk = ForeignKeyField(
-        model=Event,
-        backref="events",
-        null=True
-    )
 
     class Meta:
         database = DATABASE
 
     @classmethod
-    def create_favorite(cls,user_fk, band_fk=None, venue_fk=None,event_fk=None):
+    def create_favorite(cls,user_fk, band_fk=None, venue_fk=None):
         try:
             cls.create(
                 user_fk=user_fk,
                 band_fk=band_fk,
                 venue_fk=venue_fk,
-                event_fk=event_fk
             )
         except IntegrityError:
             raise
@@ -204,7 +146,7 @@ class Favorite(Model):
 
 def initialize():
     DATABASE.connect()
-    DATABASE.create_tables([User, Band, Venue, Event, Friend, Favorite, Rating], safe=True)
+    DATABASE.create_tables([User, Band, Venue, Favorite, Rating], safe=True)
     DATABASE.close()
 
 
