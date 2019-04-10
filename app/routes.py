@@ -2,7 +2,7 @@ from flask import render_template, url_for, flash, redirect, g, request
 import os
 from PIL import Image
 from app import app, models
-from app.forms import LoginForm, RegisterForm, AddUserForm, UpdateUserForm, VenueForm, BandForm, RatingForm, AdminUpdateUserForm, UpdateRatingForm, AddEventForm, AdminAddEventForm, VenueImgForm
+from app.forms import LoginForm, RegisterForm, AddUserForm, UpdateUserForm, VenueForm, BandForm, RatingForm, AdminUpdateUserForm, UpdateRatingForm, AddEventForm, AdminAddEventForm, ImgForm
 from flask_bcrypt import check_password_hash, generate_password_hash
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 
@@ -22,7 +22,18 @@ def user_img(form_picture, user_name):
 def venue_img(form_picture, venue_name):
     _, f_ext = os.path.splitext(form_picture.filename)
     file_path = "images/venue_"
-    picture_save = file_path + venue_name.replace(" ", "_") + f_ext
+    picture_save = file_path + venue_name.lower().replace(" ", "_") + f_ext
+    picture_path = os.path.join(app.root_path, 'static', picture_save)
+    output_size = (512, 512)
+    i = Image.open(form_picture)
+    i.thumbnail(output_size)
+    i.save(picture_path)
+    return picture_save
+
+def band_img(form_picture, band_name):
+    _, f_ext = os.path.splitext(form_picture.filename)
+    file_path = "images/band_"
+    picture_save = file_path + band_name.lower().replace(" ", "_") + f_ext
     picture_path = os.path.join(app.root_path, 'static', picture_save)
     output_size = (512, 512)
     i = Image.open(form_picture)
@@ -300,17 +311,17 @@ def venue_update_rating(id):
     found_venue = models.Venue.get(models.Venue.id == found_rating.venue_fk.id)
     ratings = models.Rating.select().where(models.Rating.venue_fk == found_venue.id)
 
-    form = UpdateRatingForm()
+    rating_form = UpdateRatingForm()
     ratings = models.Rating.select().where(models.Rating.venue_fk == found_venue.id)
-    if form.validate_on_submit():
+    if rating_form.validate_on_submit():
         rating_update = models.Rating.update(
-            rating=form.rating.data,
-            message=form.message.data
+            rating=rating_form.rating.data,
+            message=rating_form.message.data
         ).where(models.Rating.id == id)
         rating_update.execute()
         flash(f"Updated comment on {found_rating.venue_fk.name}.")
         return redirect(url_for('venue',id=found_venue.id))
-    return render_template('venue.html', venue=found_venue, found_rating=found_rating, ratings=ratings, form=form)
+    return render_template('venue.html', venue=found_venue, found_rating=found_rating, ratings=ratings, rating_form=rating_form)
 
 
 @app.route('/logout')
@@ -362,9 +373,9 @@ def add_user():
 @login_required
 def admin_update_user(id):
     form = AdminUpdateUserForm()
-    record = models.User.select().where(id == models.User.id).dicts().get()
     users = models.User.select()
     found_user = models.User.get(models.User.id == id)
+
     if current_user.user_level != "walrus":
         flash("Not authorized to access this page", "error")
         return redirect(url_for('index'))
@@ -376,7 +387,7 @@ def admin_update_user(id):
         flash(f"Updated information for {found_user.email}.")
         return redirect(url_for('admin'))
 
-    return render_template('admin_with_form.html', form=form, users=users, found_user=found_user, record=record)
+    return render_template('admin_with_form.html', form=form, users=users, found_user=found_user)
 
 @app.route('/user/delete/<id>')
 @login_required
@@ -430,7 +441,7 @@ def add_venue():
 @app.route('/admin/venue_img/<id>', methods=('GET','POST'))
 @login_required
 def update_venue_img(id):
-    form = VenueImgForm()
+    form = ImgForm()
     venues = models.Venue.select()
     img_updating = True
     found_venue = models.Venue.get(models.Venue.id == id)
@@ -438,7 +449,7 @@ def update_venue_img(id):
         flash("Not authorized to access this page", "error")
         return redirect(url_for('index'))
     if form.validate_on_submit():
-        flash(f"Image for venue updated","success")
+        flash(f"Image for {found_venue.name} updated","success")
         img = venue_img(form.img.data, found_venue.name)
         venue_img_update = models.Venue.update(
             img=venue_img(form.img.data, found_venue.name)
@@ -454,17 +465,24 @@ def admin_update_venue(id):
     form = VenueForm()
     venues = models.Venue.select()
     found_venue = models.Venue.get(models.Venue.id == id)
+
+    form.name.data = found_venue.name
+    form.about.data = found_venue.about
+    form.skid.data = found_venue.skid
+
     if current_user.user_level != "walrus":
         flash("Not authorized to access this page", "error")
         return redirect(url_for('index'))
     if form.validate_on_submit():
-        venue_update = models.Venue.update(
-            name=form.name.data,
-            about=form.about.data,
-            address=form.address.data,
-            skid=form.skid.data
-        ).where(models.Venue.id == id)
-        venue_update.execute()
+        # venue_update = models.Venue.update(
+        #     name=form.name.data,
+        #     about=form.about.data,
+        #     skid=form.skid.data
+        # ).where(models.Venue.id == id)
+        # venue_update.execute()
+
+        
+
         flash(f"Updated information for {found_venue.name}.")
         return redirect(url_for('admin'))
 
@@ -509,22 +527,22 @@ def add_band():
 @app.route('/admin/band_img/<id>', methods=('GET','POST'))
 @login_required
 def update_band_img(id):
-    form = VenueImgForm()
-    venues = models.Venue.select()
+    form = ImgForm()
+    bands = models.Band.select()
     img_updating = True
-    found_venue = models.Venue.get(models.Venue.id == id)
+    found_band = models.Venue.get(models.Venue.id == id)
     if current_user.user_level != "walrus":
         flash("Not authorized to access this page", "error")
         return redirect(url_for('index'))
     if form.validate_on_submit():
-        flash(f"Image for venue updated","success")
-        img = band_img(form.img.data, found_venue.name)
+        flash(f"Image for {found_band.name} updated","success")
+        img = band_img(form.img.data, found_band.name)
         band_img_update = models.Venue.update(
-            img=band_img(form.img.data, found_venue.name)
+            img=band_img(form.img.data, found_band.name)
         ).where(models.Venue.id == id)
         band_img_update.execute()
         return redirect(url_for('admin'))
-    return render_template('admin_with_form.html', form=form, venues=venues, found_venue=found_venue, img_updating=img_updating)
+    return render_template('admin_with_form.html', form=form, bands=bands, found_band=found_band, img_updating=img_updating)
 
 @app.route('/admin/band/update/<id>', methods=['GET','POST'])
 @login_required

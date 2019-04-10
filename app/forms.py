@@ -140,7 +140,7 @@ class AdminAddEventForm(FlaskForm):
     venue = StringField("Venue", validators=[DataRequired()])
     submit = SubmitField("Submit")
 
-
-class VenueImgForm(FlaskForm):
+class ImgForm(FlaskForm):
     img = FileField('Update Profile Picture', validators=[DataRequired(),FileAllowed(['jpg', 'png'])])
     submit = SubmitField('Commit Changes')
+    

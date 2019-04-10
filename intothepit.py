@@ -17,7 +17,7 @@ if __name__ == '__main__':
             password='password',
         )
         models.Band.create_band(
-            name="skeletonwitch",
+            name="Skeletonwitch",
             about="They are hella metal - Walrus",
             genre="Hella Metal",
             themes="data science is weird",
@@ -25,7 +25,7 @@ if __name__ == '__main__':
             skid="527207"
         )
         models.Band.create_band(
-            name="hypocrisy",
+            name="Hypocrisy",
             about="Swedes make pretty solid metal",
             genre="Swedish Death Metal",
             themes="metal",
@@ -33,13 +33,13 @@ if __name__ == '__main__':
             skid="433483"
         )
         models.Venue.create_venue(
-            name="the independent",
+            name="The Independent",
             about="Been there. It's alright.",
             img="images/venue_the_independent.jpg",
             skid="324"
         )
         models.Venue.create_venue(
-            name="oakland metro operahouse",
+            name="Oakland Metro Operahouse",
             about="Best venue ever",
             img="images/venue_oakland_metro_operahouse.jpg",
             skid="9809"
