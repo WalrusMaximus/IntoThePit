@@ -1,9 +1,8 @@
 <script>
 
     var apiKey = "{{ config['SONGKICK_API_KEY'] }}";
-    let bands = ["527207","3964006","2473151","433483","208746","209511"]
-    var venueId = "324"
     let metro = "26330"
+    var bands = []
     var bandQuery = "https://api.songkick.com/api/3.0/artists/" + {{bandskid}} + "/calendar.json?apikey=" + apiKey
     var venueQuery = "https://api.songkick.com/api/3.0/venues/" + {{venueskid}} + "/calendar.json?apikey=" + apiKey
 

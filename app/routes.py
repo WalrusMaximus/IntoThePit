@@ -217,11 +217,14 @@ def band(id):
     bandskid = band.skid
 
     is_favorite = False
-    if models.Favorite.select().where(
-        (models.Favorite.user_fk == current_user.id) &
-        (models.Favorite.band_fk == band.id)
-    ):
-        is_favorite = True
+
+    if current_user.is_anonymous == False:
+
+        if models.Favorite.select().where(
+            (models.Favorite.user_fk == current_user.id) &
+            (models.Favorite.band_fk == band.id)
+        ):
+            is_favorite = True
     
     return render_template('band.html', band=band, is_favorite=is_favorite, bandskid=bandskid)
 
@@ -231,6 +234,12 @@ def venue(id):
     ratings = models.Rating.select().where(models.Rating.venue_fk == venue.id)
     form = RatingForm()
     venueskid = venue.skid
+    bands_to_approve = models.Band.select()
+    approved_bands = []
+
+    for bands in bands_to_approve:
+        approved_bands.append(bands.skid)
+    print(approved_bands)
 
     overall_rating = 0
     overall_num = 0
@@ -276,13 +285,15 @@ def venue(id):
         facility_rating = facility_rating / facility_num
         facility_rating = round(facility_rating, 1)
 
-
     is_favorite = False
-    if models.Favorite.select().where(
-        (models.Favorite.user_fk == current_user.id) &
-        (models.Favorite.venue_fk == venue.id)
-    ):
-        is_favorite = True
+
+    if current_user.is_anonymous == False:
+
+        if models.Favorite.select().where(
+            (models.Favorite.user_fk == current_user.id) &
+            (models.Favorite.venue_fk == venue.id)
+        ):
+            is_favorite = True
 
     if form.validate_on_submit():
         locator = models.Rating.select().where(
@@ -302,7 +313,7 @@ def venue(id):
         else:
             flash(f"You can only add one comment per category on each venue")
             return redirect(url_for('venue', id=venue.id))
-    return render_template('venue.html', venue=venue, ratings=ratings, form=form, id=id, is_favorite=is_favorite, venueskid=venueskid, overall_rating=overall_rating, pit_rating=pit_rating, sound_rating=sound_rating, facility_rating=facility_rating)
+    return render_template('venue.html', venue=venue, approved_bands=approved_bands, ratings=ratings, form=form, id=id, is_favorite=is_favorite, venueskid=venueskid, overall_rating=overall_rating, pit_rating=pit_rating, sound_rating=sound_rating, facility_rating=facility_rating)
 
     # ########## COMMENTS ########## #
 
@@ -350,6 +361,60 @@ def venue_update_rating(id):
     record = models.Rating.select().where(id == models.Rating.id).dicts().get()
     venueskid = venue.skid
 
+    overall_rating = 0
+    overall_num = 0
+    pit_rating = 0
+    pit_num = 0
+    sound_rating = 0
+    sound_num = 0
+    facility_rating = 0
+    facility_num = 0
+
+    for rating in ratings:
+        if rating.rating_type == "Overall":
+            overall_rating = overall_rating + int(rating.rating)
+            overall_num = overall_num + 1
+        if rating.rating_type == "Mosh Pit":
+            pit_rating = pit_rating + int(rating.rating)
+            pit_num = pit_num + 1
+        if rating.rating_type == "Sound":
+            sound_rating = sound_rating + int(rating.rating)
+            sound_num = sound_num + 1
+        if rating.rating_type == "Facility":
+            facility_rating = facility_rating + int(rating.rating)
+            facility_num = facility_num + 1
+
+    if overall_num == 0:
+        overall_rating = "N/A"
+    else: 
+        overall_rating = overall_rating / overall_num
+        overall_rating = round(overall_rating, 1)
+    if pit_num == 0:
+        pit_rating = "N/A"
+    else: 
+        pit_rating = pit_rating / pit_num
+        pit_rating = round(pit_rating, 1)
+    if sound_num == 0:
+        sound_rating = "N/A"
+    else: 
+        sound_rating = sound_rating / sound_num
+        sound_rating = round(sound_rating, 1)
+    if facility_num == 0:
+        facility_rating = "N/A"
+    else: 
+        facility_rating = facility_rating / facility_num
+        facility_rating = round(facility_rating, 1)
+
+    is_favorite = False
+
+    if current_user.is_anonymous == False:
+
+        if models.Favorite.select().where(
+            (models.Favorite.user_fk == current_user.id) &
+            (models.Favorite.venue_fk == venue.id)
+        ):
+            is_favorite = True
+
     form = UpdateRatingForm()
     ratings = models.Rating.select().where(models.Rating.venue_fk == venue.id)
     if form.validate_on_submit():
@@ -360,7 +425,7 @@ def venue_update_rating(id):
         rating_update.execute()
         flash(f"Updated comment on {rating.venue_fk.name}.")
         return redirect(url_for('venue',id=venue.id))
-    return render_template('venue.html', venue=venue, rating=rating, ratings=ratings, form=form, record=record, venueskid=venueskid)
+    return render_template('venue.html', venue=venue, rating=rating, is_favorite=is_favorite, ratings=ratings, form=form, record=record, venueskid=venueskid, overall_rating=overall_rating, pit_rating=pit_rating, sound_rating=sound_rating, facility_rating=facility_rating)
 
 
 @app.route('/logout')
