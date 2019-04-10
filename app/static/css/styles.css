@@ -53,3 +53,16 @@ footer {
 .sk_logo {
     width: 128px;
 }
+
+.rating-container {
+    display: flex;
+}
+
+.rating-container div {
+    width: 22.5%;
+    text-align: center;
+}
+
+div p {
+    text-align: center;
+}

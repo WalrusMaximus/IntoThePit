@@ -256,21 +256,26 @@ def venue(id):
             facility_num = facility_num + 1
 
     if overall_num == 0:
-        overall_rating = "Not Rated"
+        overall_rating = "N/A"
     else: 
         overall_rating = overall_rating / overall_num
+        overall_rating = round(overall_rating, 1)
     if pit_num == 0:
-        pit_rating = "Not Rated"
+        pit_rating = "N/A"
     else: 
         pit_rating = pit_rating / pit_num
+        pit_rating = round(pit_rating, 1)
     if sound_num == 0:
-        sound_rating = "Not Rated"
+        sound_rating = "N/A"
     else: 
         sound_rating = sound_rating / sound_num
+        sound_rating = round(sound_rating, 1)
     if facility_num == 0:
-        facility_rating = "Not Rated"
+        facility_rating = "N/A"
     else: 
         facility_rating = facility_rating / facility_num
+        facility_rating = round(facility_rating, 1)
+
 
     is_favorite = False
     if models.Favorite.select().where(
