@@ -1,5 +1,5 @@
 {% extends "admin.html" %}
-{% from 'macros.html' import render_field %}
+{% from 'macros.html' import render_field, render_edit_field %}
 
 {% block main %}
 
@@ -9,6 +9,14 @@
     {% for field in form %}
         {{ render_field(field) }}
     {% endfor %}
+</form>
+{% elif record %}
+<form method="POST" action="" class="form">
+    {{ form.hidden_tag() }}
+    {% for field in form %}
+        {{ render_edit_field(field, record) }}
+    {% endfor %}
+    <input type="submit" name="submit" placeholder="Submit">
 </form>
 {% else %}
 <form method="POST" action="" class="form">

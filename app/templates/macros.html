@@ -21,3 +21,27 @@
         {% endif %}
     </div>
 {% endmacro %}
+
+{% macro render_edit_field(field,record) %}
+<div class="field control">
+  {% for key, value in record.items() %}
+    {% if key == field.id %}
+      {% if field.errors %}
+        {% for error in field.errors %}
+          <div class="notification error">{{ error }}</div>
+        {% endfor %}
+      {% endif %}
+      {% if field.type == 'SelectField' %}
+        <label for="{{ field.id }}">{{field.label.text}}:</label>
+        {{ field(class='select', value=value)}}
+      {% elif field.type == 'DateField' %}
+        <label for="{{ field.id }}">{{field.label.text}}:</label>
+        {{ field(type='date',value=value) }}
+      {% else %}
+        <label for="{{ field.id }}">{{field.label.text}}:</label>
+        {{ field(class='input', placeholder=field.label.text, value=value) }}
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+</div>
+{% endmacro %}}

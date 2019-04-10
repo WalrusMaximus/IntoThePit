@@ -86,7 +86,6 @@ class VenueForm(FlaskForm):
                 message=("Name cannot contain symbols or special characters")
             ),
             Length(min=2, max=128),
-            venue_exists
         ])
     about = StringField("About", validators=[DataRequired()])
     skid = StringField("Songkick ID", validators=[DataRequired()])
@@ -98,8 +97,6 @@ class BandForm(FlaskForm):
             Regexp(r'^[a-zA-Z0-9 ]+$',
                 message=("Name cannot contain symbols or special characters")
             ),
-            Length(min=2, max=128),
-            band_exists
         ])
     about = StringField("About", validators=[DataRequired()])
     genre = StringField("Genre", validators=[DataRequired()])

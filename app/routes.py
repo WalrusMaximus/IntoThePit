@@ -85,8 +85,9 @@ def login():
 
 @app.route("/user/<id>")
 def user(id):
-    found_user = models.User.get(models.User.id == id)
-    ratings = models.Rating.select().where(models.Rating.user_fk == found_user.id)
+    user = models.User.get(models.User.id == id)
+    ratings = models.Rating.select().where(models.Rating.user_fk == user.id)
+    show_ratings = True
 
     favorite_bands = models.Favorite.select().where(
         (models.Favorite.user_fk == id) &
@@ -95,56 +96,57 @@ def user(id):
         (models.Favorite.user_fk == id) &
         (models.Favorite.venue_fk))
         
-    return render_template('user.html', user=found_user, ratings=ratings, favorite_bands=favorite_bands, favorite_venues=favorite_venues)
+    return render_template('user.html', user=user, ratings=ratings, favorite_bands=favorite_bands, favorite_venues=favorite_venues, show_ratings=show_ratings)
 
 
-@app.route("/user/update/<id>", methods=["POST","GET"])
+@app.route("/user/update_img/<id>", methods=["POST","GET"])
 def update_user(id):
-    found_user = models.User.get(models.User.id == id)
+    user = models.User.get(models.User.id == id)
     form = UpdateUserForm()
+    img_updating = True
 
     if form.validate_on_submit():
         # breakpoint()
         # print(form.avatar.data.filename)
-        avatar = user_img(form.avatar.data, found_user.username)
+        avatar = user_img(form.avatar.data, user.username)
         user_update = models.User.update(
-            avatar=user_img(form.avatar.data, found_user.username)
+            avatar=user_img(form.avatar.data, user.username)
         ).where(models.User.id == id)
         user_update.execute()
         flash(f"Updated your profile information.")
         return redirect(url_for('user',id=id))
         
-    return render_template('user.html', user=found_user, form=form)
+    return render_template('user.html', user=user, form=form, img_updating=img_updating)
 
 # FAVORITES
 
 @app.route('/band/add_favorite/<id>')
 @login_required
 def add_favorite_band(id):
-    found_band = models.Band.get(models.Band.id == id)
+    band = models.Band.get(models.Band.id == id)
     if models.Favorite.select().where(
-        (models.Favorite.band_fk == found_band.id) &
+        (models.Favorite.band_fk == band.id) &
         (models.Favorite.user_fk == current_user.id)):
             flash("Can't add a band to your favorites twice","error")
             return redirect(url_for('band',id=id))
     else:
-        flash(f"Added {found_band.name} to your favorites!","success")
+        flash(f"Added {band.name} to your favorites!","success")
         models.Favorite.create_favorite(
             user_fk=current_user.id,
-            band_fk=found_band
+            band_fk=band
         )
         return redirect(url_for('band',id=id))
     
 @app.route('/band/delete_favorite/<id>')
 @login_required
 def delete_favorite_band(id):
-    found_band = models.Band.get(models.Band.id == id)
-    found_favorite = models.Favorite.select().where(
-        (models.Favorite.band_fk == found_band.id) &
+    band = models.Band.get(models.Band.id == id)
+    favorite = models.Favorite.select().where(
+        (models.Favorite.band_fk == band.id) &
         (models.Favorite.user_fk == current_user.id))
-    if found_favorite.exists():
+    if favorite.exists():
         delete_favorite = models.Favorite.delete().where(
-        (models.Favorite.band_fk == found_band.id) &
+        (models.Favorite.band_fk == band.id) &
         (models.Favorite.user_fk == current_user.id))
         delete_favorite.execute()
         flash("Deleted from favorites","success")
@@ -153,37 +155,37 @@ def delete_favorite_band(id):
         flash("This isn't one of your favorite bands","error")
         models.Favorite.create_favorite(
             user_fk=current_user.id,
-            band_fk=found_band
+            band_fk=band
         )
         return redirect(url_for('band',id=id))
 
 @app.route('/venue/add_favorite/<id>')
 @login_required
 def add_favorite_venue(id):
-    found_venue = models.Venue.get(models.Venue.id == id)
+    venue = models.Venue.get(models.Venue.id == id)
     if models.Favorite.select().where(
-        (models.Favorite.venue_fk == found_venue.id) &
+        (models.Favorite.venue_fk == venue.id) &
         (models.Favorite.user_fk == current_user.id)):
             flash("Can't add a venue to your favorites twice","error")
             return redirect(url_for('venue',id=id))
     else:
-        flash(f"Added {found_venue.name} to your favorites!","success")
+        flash(f"Added {venue.name} to your favorites!","success")
         models.Favorite.create_favorite(
             user_fk=current_user.id,
-            venue_fk=found_venue
+            venue_fk=venue
         )
         return redirect(url_for('venue',id=id))
 
 @app.route('/venue/delete_favorite/<id>')
 @login_required
 def delete_favorite_venue(id):
-    found_venue = models.Venue.get(models.Venue.id == id)
-    found_favorite = models.Favorite.select().where(
-        (models.Favorite.venue_fk == found_venue.id) &
+    venue = models.Venue.get(models.Venue.id == id)
+    favorite = models.Favorite.select().where(
+        (models.Favorite.venue_fk == venue.id) &
         (models.Favorite.user_fk == current_user.id))
-    if found_favorite.exists():
+    if favorite.exists():
         delete_favorite = models.Favorite.delete().where(
-        (models.Favorite.venue_fk == found_venue.id) &
+        (models.Favorite.venue_fk == venue.id) &
         (models.Favorite.user_fk == current_user.id))
         delete_favorite.execute()
         flash("Deleted from favorites","success")
@@ -192,7 +194,7 @@ def delete_favorite_venue(id):
         flash("This isn't one of your favorite venues","error")
         models.Favorite.create_favorite(
             user_fk=current_user.id,
-            venue_fk=found_venue
+            venue_fk=venue
         )
         return redirect(url_for('venue',id=id))
         
@@ -200,14 +202,14 @@ def delete_favorite_venue(id):
 @app.route("/user/add_friend/<id>")
 @login_required
 def add_friend(id):
-    found_user = models.User.get(models.User.id == id)
+    user = models.User.get(models.User.id == id)
 
-    if current_user != found_user:
+    if current_user != user:
         locator = models.Friend.select().where(
             (models.Friend.friender == current_user.id) &
-            (models.Friend.friendee == found_user.id))
+            (models.Friend.friendee == user.id))
         if locator.count() == 0:
-            flash(f"Friend request sent to {found_user.username}.")
+            flash(f"Friend request sent to {user.username}.")
             models.Friend.create_friend(
                 friender=current_user.id,
                 friendee=id,
@@ -220,67 +222,67 @@ def add_friend(id):
 
 @app.route('/band/<id>')
 def band(id):
-    found_band = models.Band.get(models.Band.id == id)
+    band = models.Band.get(models.Band.id == id)
     events = models.Event.select().where(models.Event.band_fk == id)
-    bandskid = found_band.skid
+    bandskid = band.skid
 
     is_favorite = False
     if models.Favorite.select().where(
         (models.Favorite.user_fk == current_user.id) &
-        (models.Favorite.band_fk == found_band.id)
+        (models.Favorite.band_fk == band.id)
     ):
         is_favorite = True
     
-    return render_template('band.html', band=found_band, events=events, is_favorite=is_favorite, bandskid=bandskid)
+    return render_template('band.html', band=band, events=events, is_favorite=is_favorite, bandskid=bandskid)
 
 @app.route('/venue/<id>', methods=('GET', 'POST'))
 def venue(id):
-    found_venue = models.Venue.get(models.Venue.id == id)
-    events = models.Event.select().where(models.Event.venue_fk == found_venue.id)
-    ratings = models.Rating.select().where(models.Rating.venue_fk == found_venue.id)
-    rating_form = RatingForm()
-    venueskid = found_venue.skid
+    venue = models.Venue.get(models.Venue.id == id)
+    events = models.Event.select().where(models.Event.venue_fk == venue.id)
+    ratings = models.Rating.select().where(models.Rating.venue_fk == venue.id)
+    form = RatingForm()
+    venueskid = venue.skid
 
     is_favorite = False
     if models.Favorite.select().where(
         (models.Favorite.user_fk == current_user.id) &
-        (models.Favorite.venue_fk == found_venue.id)
+        (models.Favorite.venue_fk == venue.id)
     ):
         is_favorite = True
 
-    if rating_form.validate_on_submit():
+    if form.validate_on_submit():
         locator = models.Rating.select().where(
-            (models.Rating.venue_fk == found_venue.id) &
+            (models.Rating.venue_fk == venue.id) &
             (models.Rating.user_fk == current_user.id) &
-            (models.Rating.rating_type == rating_form.rating_type.data))
+            (models.Rating.rating_type == form.rating_type.data))
         if locator.count() == 0:
-            flash(f"Add comment to {found_venue.name}.")
+            flash(f"Add comment to {venue.name}.")
             models.Rating.create_rating(
                 user_fk=current_user.id,
                 venue_fk=id,
-                rating=rating_form.rating.data,
-                rating_type=rating_form.rating_type.data,
-                message=rating_form.message.data
+                rating=form.rating.data,
+                rating_type=form.rating_type.data,
+                message=form.message.data
             )
-            return redirect(url_for('venue', id=found_venue.id))
+            return redirect(url_for('venue', id=venue.id))
         else:
             flash(f"You can only add one comment per category on each venue")
-            return redirect(url_for('venue', id=found_venue.id))
-    return render_template('venue.html', venue=found_venue, ratings=ratings, rating_form=rating_form, id=id, is_favorite=is_favorite, venueskid=venueskid)
+            return redirect(url_for('venue', id=venue.id))
+    return render_template('venue.html', venue=venue, ratings=ratings, form=form, id=id, is_favorite=is_favorite, venueskid=venueskid)
 
     # ########## COMMENTS ########## #
 
 @app.route('/user/delete_rating/<id>', methods=('GET', 'POST'))
 def delete_rating(id):
     profile = request.args.get('profile')
-    found_rating = models.Rating.get(models.Rating.id == id)
-    if found_rating.user_fk.id == current_user.id:
-        rating_deletion = models.Rating.delete().where(models.Rating.id == found_rating.id)
+    rating = models.Rating.get(models.Rating.id == id)
+    if rating.user_fk.id == current_user.id:
+        rating_deletion = models.Rating.delete().where(models.Rating.id == rating.id)
         rating_deletion.execute()
-        flash(f"Deleted rating on {found_rating.venue_fk.name}")
+        flash(f"Deleted rating on {rating.venue_fk.name}")
         if profile == "True":
             return redirect(url_for('user', id=current_user.id))
-        return redirect(url_for('venue', id=found_rating.venue_fk.id))
+        return redirect(url_for('venue', id=rating.venue_fk.id))
     else:
         flash(f"You cannot delete another users comments","error")
         return redirect(url_for('index'))
@@ -288,40 +290,42 @@ def delete_rating(id):
 @app.route('/user/update_rating/<id>', methods=['GET','POST'])
 @login_required
 def user_update_rating(id):
-    found_user = models.User.get(models.User.id == current_user.id)
+    user = models.User.get(models.User.id == current_user.id)
 
     form = UpdateRatingForm()
-    found_rating = models.Rating.get(models.Rating.id == id)
-    ratings = models.Rating.select().where(models.Rating.user_fk == found_user.id)
+    rating = models.Rating.get(models.Rating.id == id)
+    ratings = models.Rating.select().where(models.Rating.user_fk == user.id)
+    record = models.Rating.select().where(id == models.Rating.id).dicts().get()
     if form.validate_on_submit():
         rating_update = models.Rating.update(
             rating=form.rating.data,
             message=form.message.data
         ).where(models.Rating.id == id)
         rating_update.execute()
-        flash(f"Updated comment on {found_rating.venue_fk.name}.")
+        flash(f"Updated comment on {rating.venue_fk.name}.")
         return redirect(url_for('user',id=current_user.id))
 
-    return render_template('user.html', form=form, found_rating=found_rating, user=found_user, ratings=ratings)
+    return render_template('user.html', form=form, rating=rating, user=user, ratings=ratings, record=record)
 
 
 @app.route('/venue/update_rating/<id>', methods=('GET', 'POST'))
 def venue_update_rating(id):
-    found_rating = models.Rating.get(models.Rating.id == id)
-    found_venue = models.Venue.get(models.Venue.id == found_rating.venue_fk.id)
-    ratings = models.Rating.select().where(models.Rating.venue_fk == found_venue.id)
+    rating = models.Rating.get(models.Rating.id == id)
+    venue = models.Venue.get(models.Venue.id == rating.venue_fk.id)
+    ratings = models.Rating.select().where(models.Rating.venue_fk == venue.id)
+    record = models.Rating.select().where(id == models.Rating.id).dicts().get()
 
-    rating_form = UpdateRatingForm()
-    ratings = models.Rating.select().where(models.Rating.venue_fk == found_venue.id)
-    if rating_form.validate_on_submit():
+    form = UpdateRatingForm()
+    ratings = models.Rating.select().where(models.Rating.venue_fk == venue.id)
+    if form.validate_on_submit():
         rating_update = models.Rating.update(
-            rating=rating_form.rating.data,
-            message=rating_form.message.data
+            rating=form.rating.data,
+            message=form.message.data
         ).where(models.Rating.id == id)
         rating_update.execute()
-        flash(f"Updated comment on {found_rating.venue_fk.name}.")
-        return redirect(url_for('venue',id=found_venue.id))
-    return render_template('venue.html', venue=found_venue, found_rating=found_rating, ratings=ratings, rating_form=rating_form)
+        flash(f"Updated comment on {rating.venue_fk.name}.")
+        return redirect(url_for('venue',id=venue.id))
+    return render_template('venue.html', venue=venue, rating=rating, ratings=ratings, form=form, record=record)
 
 
 @app.route('/logout')
@@ -374,7 +378,7 @@ def add_user():
 def admin_update_user(id):
     form = AdminUpdateUserForm()
     users = models.User.select()
-    found_user = models.User.get(models.User.id == id)
+    user = models.User.get(models.User.id == id)
 
     if current_user.user_level != "walrus":
         flash("Not authorized to access this page", "error")
@@ -384,25 +388,25 @@ def admin_update_user(id):
             user_level=form.user_level.data,
         ).where(models.User.id == id)
         user_update.execute()
-        flash(f"Updated information for {found_user.email}.")
+        flash(f"Updated information for {user.email}.")
         return redirect(url_for('admin'))
 
-    return render_template('admin_with_form.html', form=form, users=users, found_user=found_user)
+    return render_template('admin_with_form.html', form=form, users=users, user=user)
 
 @app.route('/user/delete/<id>')
 @login_required
 def delete_user(id):
-    found_user = models.User.get(models.User.id == id)
+    user = models.User.get(models.User.id == id)
     if g.user.user_level == "walrus":
-        if g.user == found_user:
+        if g.user == user:
             flash("We don't condone seppuku here, get someone else to kill your account","error")
             return redirect(url_for('admin'))
         else:
-            user_deletion = models.User.delete().where(models.User.id == found_user.id)
+            user_deletion = models.User.delete().where(models.User.id == user.id)
             user_deletion.execute()
-            ratings_deletion = models.Rating.delete().where(models.Rating.venue_fk == found_user.id)
+            ratings_deletion = models.Rating.delete().where(models.Rating.venue_fk == user.id)
             ratings_deletion.execute()
-            flash(f"Deleted {found_user.username}")
+            flash(f"Deleted {user.username}")
             return redirect(url_for('admin'))
     else: 
         flash("Not authorized to access this page", "error")
@@ -428,76 +432,62 @@ def add_venue():
         return redirect(url_for('add_venue'))
     return render_template('admin_with_form.html', form=form, venues=venues)
 
-
-    if form.validate_on_submit():
-        # breakpoint()
-        # print(form.avatar.data.filename)
-        user_update = models.User.update(
-        ).where(models.User.id == id)
-        user_update.execute()
-        flash(f"Updated your profile information.")
-        return redirect(url_for('user',id=id))
-
 @app.route('/admin/venue_img/<id>', methods=('GET','POST'))
 @login_required
 def update_venue_img(id):
     form = ImgForm()
     venues = models.Venue.select()
     img_updating = True
-    found_venue = models.Venue.get(models.Venue.id == id)
+    venue = models.Venue.get(models.Venue.id == id)
     if current_user.user_level != "walrus":
         flash("Not authorized to access this page", "error")
         return redirect(url_for('index'))
     if form.validate_on_submit():
-        flash(f"Image for {found_venue.name} updated","success")
-        img = venue_img(form.img.data, found_venue.name)
+        flash(f"Image for {venue.name} updated","success")
+        img = venue_img(form.img.data, venue.name)
         venue_img_update = models.Venue.update(
-            img=venue_img(form.img.data, found_venue.name)
+            img=venue_img(form.img.data, venue.name)
         ).where(models.Venue.id == id)
         venue_img_update.execute()
         return redirect(url_for('admin'))
-    return render_template('admin_with_form.html', form=form, venues=venues, found_venue=found_venue, img_updating=img_updating)
-    
+    return render_template('admin_with_form.html', form=form, venues=venues, venue=venue, img_updating=img_updating)
 
 @app.route('/admin/venue/update/<id>', methods=['GET','POST'])
 @login_required
 def admin_update_venue(id):
     form = VenueForm()
     venues = models.Venue.select()
-    found_venue = models.Venue.get(models.Venue.id == id)
+    venue = models.Venue.get(models.Venue.id == id)
 
-    form.name.data = found_venue.name
-    form.about.data = found_venue.about
-    form.skid.data = found_venue.skid
+    form.name.data = venue.name
+    form.about.data = venue.about
+    form.skid.data = venue.skid
 
     if current_user.user_level != "walrus":
         flash("Not authorized to access this page", "error")
         return redirect(url_for('index'))
     if form.validate_on_submit():
-        # venue_update = models.Venue.update(
-        #     name=form.name.data,
-        #     about=form.about.data,
-        #     skid=form.skid.data
-        # ).where(models.Venue.id == id)
-        # venue_update.execute()
-
-        
-
-        flash(f"Updated information for {found_venue.name}.")
+        venue_update = models.Venue.update(
+            name=form.name.data,
+            about=form.about.data,
+            skid=form.skid.data
+        ).where(models.Venue.id == id)
+        venue_update.execute()
+        flash(f"Updated information for {venue.name}.")
         return redirect(url_for('admin'))
 
-    return render_template('admin_with_form.html', form=form, venues=venues, found_venue=found_venue)
+    return render_template('admin_with_form.html', form=form, venues=venues, venue=venue)
 
 @app.route('/admin/venue/delete/<id>')
 @login_required
 def delete_venue(id):
-    found_venue = models.Venue.get(models.Venue.id == id)
+    venue = models.Venue.get(models.Venue.id == id)
     if g.user.user_level == "walrus":
-        venue_deletion = models.Venue.delete().where(models.Venue.id == found_venue.id)
+        venue_deletion = models.Venue.delete().where(models.Venue.id == venue.id)
         venue_deletion.execute()
-        ratings_deletion = models.Rating.delete().where(models.Rating.venue_fk == found_venue.id)
+        ratings_deletion = models.Rating.delete().where(models.Rating.venue_fk == venue.id)
         ratings_deletion.execute()
-        flash(f"Deleted {found_venue.name}")
+        flash(f"Deleted {venue.name}")
         return redirect(url_for('admin'))
     else: 
         flash("Not authorized to access this page", "error")
@@ -530,26 +520,27 @@ def update_band_img(id):
     form = ImgForm()
     bands = models.Band.select()
     img_updating = True
-    found_band = models.Venue.get(models.Venue.id == id)
+    band = models.Venue.get(models.Venue.id == id)
     if current_user.user_level != "walrus":
         flash("Not authorized to access this page", "error")
         return redirect(url_for('index'))
     if form.validate_on_submit():
-        flash(f"Image for {found_band.name} updated","success")
-        img = band_img(form.img.data, found_band.name)
+        flash(f"Image for {band.name} updated","success")
+        img = band_img(form.img.data, band.name)
         band_img_update = models.Venue.update(
-            img=band_img(form.img.data, found_band.name)
+            img=band_img(form.img.data, band.name)
         ).where(models.Venue.id == id)
         band_img_update.execute()
         return redirect(url_for('admin'))
-    return render_template('admin_with_form.html', form=form, bands=bands, found_band=found_band, img_updating=img_updating)
+    return render_template('admin_with_form.html', form=form, bands=bands, band=band, img_updating=img_updating)
 
 @app.route('/admin/band/update/<id>', methods=['GET','POST'])
 @login_required
 def admin_update_band(id):
     form = BandForm()
     bands = models.Band.select()
-    found_band = models.Band.get(models.Band.id == id)
+    band = models.Band.get(models.Band.id == id)
+    record = models.Band.select().where(id == models.Band.id).dicts().get()
     if current_user.user_level != "walrus":
         flash("Not authorized to access this page", "error")
         return redirect(url_for('index'))
@@ -561,19 +552,19 @@ def admin_update_band(id):
             skid=form.skid.data
         ).where(models.Band.id == id)
         band_update.execute()
-        flash(f"Updated information for {found_band.name}.")
+        flash(f"Updated information for {band.name}.")
         return redirect(url_for('admin'))
 
-    return render_template('admin_with_form.html', form=form, bands=bands, found_band=found_band)
+    return render_template('admin_with_form.html', form=form, bands=bands, band=band, record=record)
 
 @app.route('/admin/band/delete/<id>')
 @login_required
 def delete_band(id):
-    found_band = models.Band.get(models.Band.id == id)
+    band = models.Band.get(models.Band.id == id)
     if g.user.user_level == "walrus":
-        band_deletion = models.Band.delete().where(models.Band.id == found_band.id)
+        band_deletion = models.Band.delete().where(models.Band.id == band.id)
         band_deletion.execute()
-        flash(f"Deleted {found_band.name}")
+        flash(f"Deleted {band.name}")
         return redirect(url_for('admin'))
     else: 
         flash("Not authorized to access this page", "error")
@@ -619,12 +610,12 @@ def admin_add_event():
 @login_required
 def delete_event(id):
     profile = request.args.get('admin')
-    found_event = models.Event.get(models.Event.id == id)
-    venue_redirect = found_event.venue_fk.id
+    event = models.Event.get(models.Event.id == id)
+    venue_redirect = event.venue_fk.id
     if g.user.user_level == "walrus":
-        event_deletion = models.Event.delete().where(models.Event.id == found_event.id)
+        event_deletion = models.Event.delete().where(models.Event.id == event.id)
         event_deletion.execute()
-        flash(f"Deleted {found_event.band_fk.name} event from {found_event.venue_fk.name}")
+        flash(f"Deleted {event.band_fk.name} event from {event.venue_fk.name}")
         if profile == "True":
             return redirect(url_for('admin'))
         return redirect(url_for('venue_events', id=venue_redirect))
@@ -638,7 +629,7 @@ def delete_event(id):
 def update_event(id):
     form = AdminAddEventForm()
     events = models.Event.select()
-    found_event = models.Event.get(models.Event.id == id)
+    event = models.Event.get(models.Event.id == id)
     if current_user.user_level != "walrus":
         flash("Not authorized to access this page", "error")
         return redirect(url_for('index'))
@@ -653,14 +644,14 @@ def update_event(id):
                     band_fk=band_key
                 ).where(models.Event.id == id)
                 event_update.execute()
-                flash(f"Updated {found_event.band_fk.name} event at {found_event.venue_fk.name}.")
+                flash(f"Updated {event.band_fk.name} event at {event.venue_fk.name}.")
                 return redirect(url_for('admin'))
             flash(f"That venue doesn't exist in the database","error")
             return redirect(url_for('admin'))
         flash(f"That band doesn't exist in the database","error")
         return redirect(url_for('admin'))
 
-    return render_template('admin_with_form.html', form=form, events=events, found_event=found_event, id=id)
+    return render_template('admin_with_form.html', form=form, events=events, event=event, id=id)
 
 
 
