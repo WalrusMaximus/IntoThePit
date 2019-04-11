@@ -1,3 +1,4 @@
+@import url(//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);
 
 
 .flash-messages {
@@ -13,7 +14,9 @@
 }
 
 .column {
-    border: solid 1px rgba(0,0,0.5)
+    border: solid 1px rgba(0,0,0.5);
+    overflow: scroll;
+    margin-top: 5%;
 }
 
 footer {
@@ -25,12 +28,6 @@ footer {
     bottom: 0;
     margin: 0 auto;
     text-align: center;
-}
-
-.sidebar,
-.main-content {
-    height: 500px;
-    width: 40%;
 }
 
 .venue_img, .band_img {

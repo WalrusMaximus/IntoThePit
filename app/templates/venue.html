@@ -40,7 +40,10 @@
 <h4>Add new Event:</h4>
 {% endif %}
 
+
+
 {% if current_user.is_anonymous == false %}
+    {# include 'rating_form.html' #}
     {% if record %}
     <form method="POST" action="" class="form">
         {{ form.hidden_tag() }}
@@ -57,10 +60,11 @@
         {% endfor %}
     </form>
     {% endif %}
+    
 {% endif %}
 {% if rating %}
-<a href="{{ url_for('venue', id=rating.venue_fk.id)}}">Changed my mind, I don't want to Update</a>
-{% endif%}
+<a href="{{ url_for('venue', id=rating.venue_fk.id)}}">Changed my mind, I don't want to Update</a> %}
+{% endif %}
 
 {% endblock%}
 
@@ -68,11 +72,32 @@
     <div class="venue-ratings">
         <h4>Ratings</h4>
         {% for rating in ratings %}
-            <p><a href="{{url_for('user',id=rating.user_fk)}}">{{ rating.user_fk.username }}</a> says: {{ rating.message }}. {{rating.rating_type}} {{ rating.rating }}/5</p>
-            <img class="inline-avatar" src="{{ url_for('static', filename=rating.user_fk.avatar.decode('utf-8'))}}" alt="">
-            {% if rating.user_fk.id == current_user.id %}
-            <a href="{{ url_for('venue_update_rating', id=rating.id)}}">Update</a> <a href="{{ url_for('delete_rating', id=rating.id, profile=False)}}">Delete</a>
-            {% endif %}
+
+        <!-- Main container -->
+        <nav class="level">
+                <!-- Left side -->
+                <div class="level-left">
+                <div class="level-item">
+                    <img class="inline-avatar" src="{{ url_for('static', filename=rating.user_fk.avatar.decode('utf-8'))}}" alt="">
+                </div>
+                <div class="level-item">
+                    <p class="level-text"><a href="{{url_for('user',id=rating.user_fk)}}">{{ rating.user_fk.username }}</a> says: {{ rating.message }}.</p>
+                </div>
+                </div>
+            
+                <!-- Right side -->
+                <div class="level-right">
+                    <div class="level-item">
+                        <p>{{rating.rating_type}} {{ rating.rating }}/5</p>
+                    </div>
+                    <div class="level-item">
+                    {% if rating.user_fk.id == current_user.id %}
+                    <a href="{{ url_for('venue_update_rating', id=rating.id)}}">Update</a> <a href="{{ url_for('delete_rating', id=rating.id, profile=False)}}">Delete</a>
+                    {% endif %}
+                    </div> 
+                </div>
+            </nav>
+        
 
         {% endfor %}
     </div>
