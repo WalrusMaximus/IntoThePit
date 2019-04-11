@@ -1,22 +1,19 @@
-* {
-    margin: 0 auto;
-    padding: 0;
-    text-align: center;
+
+
+.flash-messages {
+    height: 32px;
+    width: 20%;
+    background-color: white;
+    border-radius: 16px;
 }
 
-div, section, header, footer {
-    border: solid black 1px;
+#headline-logo {
+    font-size: 48px;
+    width: auto;
 }
 
-main {
-    display: flex;
-    align-items: center;
-}
-
-header {
-    height: auto;
-    width: 100%;
-    display: flex;
+.column {
+    border: solid 1px rgba(0,0,0.5)
 }
 
 footer {
@@ -27,6 +24,7 @@ footer {
     left: 0;
     bottom: 0;
     margin: 0 auto;
+    text-align: center;
 }
 
 .sidebar,
@@ -51,19 +49,11 @@ footer {
     border-radius: 50%;
 }
 
-.sk_logo {
-    width: 128px;
-}
-
 .rating-container {
     display: flex;
 }
 
 .rating-container div {
     width: 22.5%;
-    text-align: center;
-}
-
-div p {
     text-align: center;
 }

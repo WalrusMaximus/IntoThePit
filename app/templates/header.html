@@ -1,21 +1,17 @@
 {% block header %}
 <nav>
 {% if g.user.is_authenticated %}
-<a  href="/logout">LOGOUT</a>
-<a href="/user/{{current_user.id}}">PROFILE</a>
+<a  href={{url_for('logout')}}>LOGOUT</a>
+<a href={{url_for('user',id=current_user.id)}}>PROFILE</a>
 {% else %}
-<a  href="/login">LOGIN</a>
+<a  href={{url_for('login')}}>LOGIN</a>
+<a href={{url_for('register')}}>REGISTER</a>
 {% endif %}
 {% if g.user.user_level == "walrus" %}
-<a href="/admin">ADMIN</a>
+<a href={{url_for('admin')}}>ADMIN</a>
 {% endif %}
-<a href="/">HOME</a>
-{% with messages = get_flashed_messages(with_categories=True) %}
-    {% if messages %}
-        {% for category, message in messages %}
-            <div class={{category}}>{{ message }}</div>
-        {% endfor %}
-    {% endif %}
-{% endwith %}
+<a href={{url_for('index')}}>VENUES</a>
+
+
 </nav>
 {% endblock %}

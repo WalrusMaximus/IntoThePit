@@ -67,6 +67,10 @@ def register():
 @app.route('/login', methods=('GET', 'POST'))
 def login():
     form = LoginForm()
+
+    if current_user.is_anonymous == False:
+        return redirect(url_for('user',id=current_user.id))
+
     if form.validate_on_submit():
         try:
             user = models.User.get(models.User.email == form.email.data)
@@ -139,8 +143,6 @@ def user_update_rating(id):
         return redirect(url_for('user',id=current_user.id))
 
     return render_template('user.html', user=user, form=form, record=record, rating=rating, ratings=ratings, show_ratings=show_ratings, no_favorites=no_favorites)
-
-
 
 @app.route("/user/update_img/<id>", methods=["POST","GET"])
 def update_user(id):

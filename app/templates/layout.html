@@ -5,22 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Into The Pit</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
     <header>
+        {% include '/header-test.html' %}
+        <!-- <div class="logo-wrapper">
+            <h1 id="headline-logo">INTO THE PIT</h1>
+        </div>
         <div>
-            <h1>INTO THE PIT</h1>
             <img class="sk_logo" src="{{url_for('static',filename='api_attribution/powered-by-songkick-black.png')}}" alt="">
         </div>
-        {% include '/header.html' %}
+        <div class="flash-messages"> -->
+        {# with messages = get_flashed_messages(with_categories=True) #}
+        {# if messages #}
+            {# for category, message in messages #}
+                <!-- <div class={{category}}>{{ message }}</div> -->
+            {# endfor #}
+        {# endif #}
+        {# endwith #}
+        <!-- </div>
+        <div> -->
+        {# include '/header.html' #}
+        <!-- </div> -->
     </header>
-    <main>
-        <div class="sidebar">
+    <main class="columns">
+        <div class="column">
             {% block sidebar %}
             {% endblock %}
         </div>
-        <div class="main-content">
+        <div class="column">
             {% block main_header %}
             {% endblock %}
             {% block main %}
