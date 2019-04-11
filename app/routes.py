@@ -99,6 +99,12 @@ def user(id):
     bands_query = []
     venues_query = []
 
+    bands_to_approve = models.Band.select()
+    approved_bands = []
+
+    for bands in bands_to_approve:
+        approved_bands.append(bands.skid)
+
     if favorite_bands:
         for favorite in favorite_bands:
             bands_query.append(favorite.band_fk.skid)
@@ -108,14 +114,65 @@ def user(id):
             venues_query.append(favorite.venue_fk.skid)
         
 
-    return render_template('user.html', user=user, ratings=ratings, favorite_bands=favorite_bands, favorite_venues=favorite_venues, show_ratings=show_ratings, bands_query=bands_query, venues_query=venues_query)
+    return render_template('user.html', user=user, ratings=ratings, favorite_bands=favorite_bands, favorite_venues=favorite_venues, show_ratings=show_ratings, bands_query=bands_query, venues_query=venues_query, approved_bands=approved_bands)
+
+
+@app.route('/user/update_rating/<id>', methods=['GET','POST'])
+@login_required
+def user_update_rating(id):
+    user = models.User.get(models.User.id == current_user.id)
+    ratings = models.Rating.select().where(models.Rating.user_fk == user.id)
+    show_ratings = True
+    no_favorites = True
+
+    form = UpdateRatingForm()
+    rating = models.Rating.get(models.Rating.id == id)
+    ratings = models.Rating.select().where(models.Rating.user_fk == user.id)
+    record = models.Rating.select().where(id == models.Rating.id).dicts().get()
+    if form.validate_on_submit():
+        rating_update = models.Rating.update(
+            rating=form.rating.data,
+            message=form.message.data
+        ).where(models.Rating.id == id)
+        rating_update.execute()
+        flash(f"Updated comment on {rating.venue_fk.name}.")
+        return redirect(url_for('user',id=current_user.id))
+
+    return render_template('user.html', user=user, form=form, record=record, rating=rating, ratings=ratings, show_ratings=show_ratings, no_favorites=no_favorites)
+
 
 
 @app.route("/user/update_img/<id>", methods=["POST","GET"])
 def update_user(id):
     user = models.User.get(models.User.id == id)
+    ratings = models.Rating.select().where(models.Rating.user_fk == user.id)
     form = UpdateUserForm()
     img_updating = True
+    show_ratings = True
+
+    favorite_bands = models.Favorite.select().where(
+        (models.Favorite.user_fk == id) &
+        (models.Favorite.band_fk))
+    favorite_venues = models.Favorite.select().where(
+        (models.Favorite.user_fk == id) &
+        (models.Favorite.venue_fk))
+
+    bands_query = []
+    venues_query = []
+
+    bands_to_approve = models.Band.select()
+    approved_bands = []
+
+    for bands in bands_to_approve:
+        approved_bands.append(bands.skid)
+
+    if favorite_bands:
+        for favorite in favorite_bands:
+            bands_query.append(favorite.band_fk.skid)
+
+    if favorite_venues:
+        for favorite in favorite_venues:
+            venues_query.append(favorite.venue_fk.skid)
 
     if form.validate_on_submit():
         # breakpoint()
@@ -128,7 +185,7 @@ def update_user(id):
         flash(f"Updated your profile information.")
         return redirect(url_for('user',id=id))
         
-    return render_template('user.html', user=user, form=form, img_updating=img_updating)
+    return render_template('user.html', user=user, form=form, img_updating=img_updating, ratings=ratings, favorite_bands=favorite_bands, favorite_venues=favorite_venues, show_ratings=show_ratings, bands_query=bands_query, venues_query=venues_query, approved_bands=approved_bands)
 
 # FAVORITES
 
@@ -239,7 +296,6 @@ def venue(id):
 
     for bands in bands_to_approve:
         approved_bands.append(bands.skid)
-    print(approved_bands)
 
     overall_rating = 0
     overall_num = 0
@@ -260,7 +316,7 @@ def venue(id):
         if rating.rating_type == "Sound":
             sound_rating = sound_rating + int(rating.rating)
             sound_num = sound_num + 1
-        if rating.rating_type == "Facility":
+        if rating.rating_type == "Facilities":
             facility_rating = facility_rating + int(rating.rating)
             facility_num = facility_num + 1
 
@@ -332,27 +388,6 @@ def delete_rating(id):
         flash(f"You cannot delete another users comments","error")
         return redirect(url_for('index'))
 
-@app.route('/user/update_rating/<id>', methods=['GET','POST'])
-@login_required
-def user_update_rating(id):
-    user = models.User.get(models.User.id == current_user.id)
-
-    form = UpdateRatingForm()
-    rating = models.Rating.get(models.Rating.id == id)
-    ratings = models.Rating.select().where(models.Rating.user_fk == user.id)
-    record = models.Rating.select().where(id == models.Rating.id).dicts().get()
-    if form.validate_on_submit():
-        rating_update = models.Rating.update(
-            rating=form.rating.data,
-            message=form.message.data
-        ).where(models.Rating.id == id)
-        rating_update.execute()
-        flash(f"Updated comment on {rating.venue_fk.name}.")
-        return redirect(url_for('user',id=current_user.id))
-
-    return render_template('user.html', form=form, rating=rating, user=user, ratings=ratings, record=record)
-
-
 @app.route('/venue/update_rating/<id>', methods=('GET', 'POST'))
 def venue_update_rating(id):
     rating = models.Rating.get(models.Rating.id == id)
@@ -380,7 +415,7 @@ def venue_update_rating(id):
         if rating.rating_type == "Sound":
             sound_rating = sound_rating + int(rating.rating)
             sound_num = sound_num + 1
-        if rating.rating_type == "Facility":
+        if rating.rating_type == "Facilities":
             facility_rating = facility_rating + int(rating.rating)
             facility_num = facility_num + 1
 
