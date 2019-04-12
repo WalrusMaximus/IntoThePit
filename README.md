@@ -8,7 +8,7 @@ Mosh pits are inherently dangerous enough without throwing in poorly designed fa
 Enter "Into The Pit". Into The Pit is a venue review and concert discovery platform for the San Francisco Bay Area that uses a curated database of verified bands and venues and delivers upcoming live events to users interested in them. It also provides a place to place and read reviews on specific elements of venues that are critical for a good moshing experience. The application allows reviewing of 4 key elements: Moshpit Friendliness, Facilities, Sound Quality, and Overall Vibe. Just create an account, favorite some venues or bands and get Into the Pit.
 
 ## Technologies Used
-Flask, SQLite DB, jQuery, BulmaCSS, Songkick API
+Flask, Peewee, SQLite DB, jQuery, BulmaCSS, Songkick API
 
 ## Challenges Faced
 By far the hardest challenge of the entire production of his application was the complexity of the database. Many hours were spent literally just staring at my screen wondering what the hell I got myself into. Over time, the models all started to make sense and I found myself writing code that ran correctly on the first go without errors. A very good experience all around.
