@@ -6,6 +6,7 @@
 {% endblock %}
 {% block main %}
 
+<div class="box little-more-padding">
 <form method="POST" action="" class="form">
     {{ form.hidden_tag() }}
     {% for field in form %}
@@ -13,7 +14,8 @@
     {% endfor %}
 </form>
 <div>
-    <p>Don't have an account? - <a href="{{ url_for('register') }}">Register</a></p>
+    <p class="has-text-centered">Don't have an account? - <a href="{{ url_for('register') }}">Register</a></p>
+</div>
 </div>
 
 {% endblock %}

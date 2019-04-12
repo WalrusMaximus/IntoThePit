@@ -7,7 +7,7 @@
 <div class="venue-img-wrapper">
     <img class="user_profile_avatar" src="{{ url_for('static', filename=user.avatar.decode('utf-8'))}}" alt="profile image">
 </div>
-
+<br>
 {% if img_updating and current_user == user %}
 <p class="has-text-centered"><a href="{{url_for('user',id=user.id)}}">Nevermind, don't change my image</a></p>
 {% elif current_user == user %}

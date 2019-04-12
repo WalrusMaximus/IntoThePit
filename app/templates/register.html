@@ -6,15 +6,19 @@
 {% endblock %}
 {% block main %}
 
+<div class="box little-more-padding">
 <form method="POST" action="" class="form">
     {{ form.hidden_tag() }}
     {% for field in form %}
         {{ render_field(field) }}
     {% endfor %}
 </form>
+<br>
 <div>
-    <p>Already Registered? - <a href="{{ url_for('login') }}">Login</a></p>
-    <p>Selling user data isn't metal. You can rest assured we will ask you only for function critical information to deliver you an exceptional product, and, that we work hard to keep your information safe from prying eyes and unscrupulous hands.</p>
+    <p class="has-text-centered">Already Registered? - <a href="{{ url_for('login') }}">Login</a></p>
+    <br>
+    <p class="has-text-centered">Selling user data isn't metal. You can rest assured we will ask you only for function critical information to deliver you an exceptional product, and, that we work hard to keep your information safe from prying eyes and unscrupulous hands.</p>
+</div>
 </div>
 
 {% endblock %}

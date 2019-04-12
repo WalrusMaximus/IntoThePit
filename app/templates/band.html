@@ -15,7 +15,7 @@
     {% if is_favorite %}
     <p class="has-text-centered">This is one of your favorite bands! <a href="{{url_for('delete_favorite_band',id=band.id)}}">Unfavorite?</a></p>
     {% else %}
-    <a href="{{url_for('add_favorite_band', id=band.id)}}">Add To Favorites</a>
+    <p class="has-text-centered"><a href="{{url_for('add_favorite_band', id=band.id)}}">Add To Favorites</a></p>
     {% endif %} 
 {% endif %}
 

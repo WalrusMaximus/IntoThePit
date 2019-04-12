@@ -31,7 +31,6 @@ class LoginForm(FlaskForm):
             Email()
         ])
     password = PasswordField('Password', validators=[DataRequired()])
-    remember_me = BooleanField('Remember Me')
     submit = SubmitField('Login')
 
 class RegisterForm(FlaskForm):
@@ -112,15 +111,6 @@ class RatingForm(FlaskForm):
     rating_type = SelectField(
         'What are you Rating?',
         choices=[("Overall", 'Overall'), ("Mosh Pit", 'Mosh Pit'), ("Sound", 'Sound'), ("Facilities", 'Facilities')]
-    )
-    message = StringField('Tell us what you think...', validators=[DataRequired(), Length(max=512)])
-    submit = SubmitField("Submit")
-
-class UpdateRatingForm(FlaskForm):
-    rating = SelectField(
-        'Rating = 1-5',
-        choices=[("1", '1'), ("2", '2'), ("3", '3'), ("4", '4'), ("5", '5')],
-        default="5"
     )
     message = StringField('Tell us what you think...', validators=[DataRequired(), Length(max=512)])
     submit = SubmitField("Submit")

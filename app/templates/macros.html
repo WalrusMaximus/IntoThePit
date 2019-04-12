@@ -1,26 +1,26 @@
 {% macro render_field(field) %}
-    <div class="field">
-        {% if field.errors %}
-            <div class="notification error">
-                {% for error in field.errors %}
-                    <span>{{ error }}</span>
-                {% endfor %}
-            </div>
-        {% endif %}
-
-        {{ field(placeholder=field.label.text) }}
-        {% if field.label.text == "Remember Me" %}
-            <label>{{field.label.text}}</label>
-        {% endif %}
-        {% if field.label.text == "Update Profile Picture" %}
-            <label>{{field.label.text}}</label>
-        {% endif %}
-
-        {% if "Rating" in field.label.text %}
-        <label>{{field.label.text}}</label>
-        {% endif %}
-    </div>
-{% endmacro %}
+<div class="field control">
+      {% if field.errors %}
+        {% for error in field.errors %}
+          <div class="notification error">{{ error }}</div>
+        {% endfor %}
+      {% endif %}
+      {% if field.type == 'SelectField' %}
+        <label for="{{ field.id }}">{{field.label.text}}:</label>
+        {{ field(class='select', placeholder=field.label.text)}}
+      {% elif field.type == 'DateField' %}
+        <label for="{{ field.id }}">{{field.label.text}}:</label>
+        {{ field(type='date',placeholder=field.label.text) }}
+      {% elif field.id == 'csrf_token' %}
+      {% elif field.type == "SubmitField" %}
+      <div class="control">
+        <button class="button is-link">Submit</button>
+      </div>
+      {% else %}
+        {{ field(class='input', placeholder=field.label.text, placeholder=field.label.text) }}
+      {% endif %}
+</div>
+{% endmacro %}}
 
 {% macro render_edit_field(field,record) %}
 <div class="field control">

@@ -3,6 +3,7 @@
 
 {% block main %}
 
+<div class="box little-more-padding">
 {% if img_updating %}
 <form method="POST" enctype="multipart/form-data" action="" class="form">
     {{ form.hidden_tag() }}
@@ -26,5 +27,6 @@
     {% endfor %}
 </form>
 {% endif %}
+</div>
 
 {% endblock %}

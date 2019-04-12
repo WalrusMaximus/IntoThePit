@@ -2,7 +2,7 @@ from flask import render_template, url_for, flash, redirect, g, request
 import os
 from PIL import Image
 from app import app, models
-from app.forms import LoginForm, RegisterForm, AddUserForm, UpdateUserForm, VenueForm, BandForm, RatingForm, AdminUpdateUserForm, UpdateRatingForm, ImgForm
+from app.forms import LoginForm, RegisterForm, AddUserForm, UpdateUserForm, VenueForm, BandForm, RatingForm, AdminUpdateUserForm, ImgForm
 from flask_bcrypt import check_password_hash, generate_password_hash
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 
@@ -45,8 +45,8 @@ def band_img(form_picture, band_name):
 
 @app.route("/", methods=["POST","GET"])
 def index():
-    venues = models.Venue.select()
-    bands = models.Band.select()
+    venues = models.Venue.select().order_by(models.Venue.name)
+    bands = models.Band.select().order_by(models.Band.name)
     return render_template('index.html', title="Into The Pit", venues=venues, bands=bands)
 
     # ########## LOGIN ########## #
@@ -129,7 +129,7 @@ def user_update_rating(id):
     show_ratings = True
     no_favorites = True
 
-    form = UpdateRatingForm()
+    form = RatingForm()
     rating = models.Rating.get(models.Rating.id == id)
     ratings = models.Rating.select().where(models.Rating.user_fk == user.id)
     record = models.Rating.select().where(id == models.Rating.id).dicts().get()
@@ -452,7 +452,7 @@ def venue_update_rating(id):
         ):
             is_favorite = True
 
-    form = UpdateRatingForm()
+    form = RatingForm()
     ratings = models.Rating.select().where(models.Rating.venue_fk == venue.id)
     if form.validate_on_submit():
         rating_update = models.Rating.update(
@@ -485,8 +485,8 @@ def admin():
         return redirect(url_for('index'))
     
     users = models.User.select()
-    venues = models.Venue.select()
-    bands = models.Band.select()
+    venues = models.Venue.select().order_by(models.Venue.name)
+    bands = models.Band.select().order_by(models.Band.name)
 
     return render_template('admin.html', users=users, venues=venues, bands=bands)
 

@@ -1,73 +1,67 @@
 {% extends "layout.html" %}
 {% block sidebar %}
-    <div class="user-wrapper">
-        <h3>USERS</h3>
-        <a href="/admin/add_user">Add A User</a>
+    <p class="has-text-centered">USERS - <a href="/admin/add_user">Add A User</a></p>
         {% for user in users %}
         {% if user.user_level == "walrus" %}
             {% if user == current_user %}
-            <p class="current_admin">UserID: {{user.id }} - <a href="{{url_for('user',id=user.id)}}">{{ user.username }}</a> - {{ user.email}} - User Level: {{ user.user_level }} / Hey, that's you!</p>
+            <div class="box">
+            <p class="current_admin">UserID: {{user.id }} - <a href="{{url_for('user',id=user.id)}}">{{ user.username }} </a> - {{ user.email}} - User Level: {{ user.user_level }} / Hey, that's you!</p>
+            </div>
             {% else %}
-            <p class="admin">UserID: {{user.id }} - <a href="{{url_for('user',id=user.id)}}">{{ user.username }}</a> - {{ user.email}} - User Level: {{ user.user_level }}</p>
-            <a href="{{ url_for('admin_update_user', id=user.id) }}">Update</a> <a href="{{ url_for('delete_user', id=user.id) }}" class="delete_button">Delete</a>
+            <div class="box">
+            <p class="admin">UserID: {{user.id }} - <a href="{{url_for('user',id=user.id)}}">{{ user.username }} </a> - {{ user.email}} - User Level: {{ user.user_level }} <a href="{{ url_for('admin_update_user', id=user.id) }}">Update</a> <a href="{{ url_for('delete_user', id=user.id) }}" class="delete_button">Delete</a></p>
+            </div>
             {%endif%}
         {% endif %}
         {% if user.user_level != "walrus" %}
-        <p>UserID: {{user.id }} - <a href="{{url_for('user',id=user.id)}}">{{ user.username }}</a> - {{ user.email}} - User Level: {{ user.user_level }}</p>
-        <a href="{{ url_for('admin_update_user', id=user.id) }}">Update</a> <a href="{{ url_for('delete_user', id=user.id) }}" class="delete_button">Delete</a>
+        <div class="box">
+        <p>UserID: {{user.id }} - <a href="{{url_for('user',id=user.id)}}">{{ user.username }} </a> - {{ user.email}} - User Level: {{ user.user_level }} <a href="{{ url_for('admin_update_user', id=user.id) }}">Update</a> <a href="{{ url_for('delete_user', id=user.id) }}" class="delete_button">Delete</a></p>
+        </div>
         {% endif %}
-        {% endfor %} 
-    </div>
-    <div class="venue-wrapper">
-        <h3>VENUES</h3>
-        <a href="/admin/add_venue">Add A Venue</a>
+        {% endfor %}
+    <p class="has-text-centered">VENUES - <a href="/admin/add_venue">Add A Venue</a></p>
         {% for venue in venues %}
-        <p><a href="{{url_for('venue',id=venue.id)}}">{{ venue.name }}</a>, id: {{ venue.id }}</p>
-        <a href="{{ url_for('admin_update_venue', id=venue.id) }}">Update</a> <a href="{{ url_for('delete_venue', id=venue.id) }}" class="delete_button">Delete</a> <a href="{{ url_for('update_venue_img', id=venue.id)}}">Img</a>
+        <div class="box">
+        <p><a href="{{url_for('venue',id=venue.id)}}">{{ venue.name }}</a>, id: {{ venue.id }} <a href="{{ url_for('admin_update_venue', id=venue.id) }}">Update</a> <a href="{{ url_for('delete_venue', id=venue.id) }}" class="delete_button">Delete</a> <a href="{{ url_for('update_venue_img', id=venue.id)}}">Img</a></p>
+        </div>
         {% endfor %}
-    </div>
-    <div class="band-wrapper">
-        <h3>BANDS</h3>
-        <a href="/admin/add_band">Add A Band</a>
+    <p class="has-text-centered">BANDS - <a href="/admin/add_band">Add A Band</a></p>
         {% for band in bands %}
-        <p><a href="{{url_for('band',id=band.id)}}">{{ band.name }}</a>, id: {{ band.id }}</p>
-        <a href="{{ url_for('admin_update_band', id=band.id) }}">Update</a> <a href="{{ url_for('delete_band', id=band.id) }}" class="delete_button">Delete</a> <a href="{{ url_for('update_band_img', id=band.id)}}">Img</a>
+        <div class="box">
+        <p><a href="{{url_for('band',id=band.id)}}">{{ band.name }}</a>, id: {{ band.id }} <a href="{{ url_for('admin_update_band', id=band.id) }}">Update</a> <a href="{{ url_for('delete_band', id=band.id) }}" class="delete_button">Delete</a> <a href="{{ url_for('update_band_img', id=band.id)}}">Img</a></p>
+        </div>
         {% endfor %}
-    </div>
 
     
 {% endblock %}
 
 {% block main_header %}
     {% if users and venues and bands %}
+    <div class="venue-img-wrapper">
+            <img class="venue_img" src="{{ url_for('static', filename='images/beavisandbutthead.gif')}}" alt="">
+    </div>
     {% else %}
         {% if users %}
             {% if user %}
-            <h3>Updating {{ user.email }}</h3>
+            <h3 class="title is-6 has-text-centered">Updating {{ user.email }}</h3>
             {% else %}
-            <h3>Creating New User</h3>
+            <h3 class="title is-6 has-text-centered">Creating New User</h3>
             {% endif %}
         {% endif %}
         {% if venues %}
             {% if venue %}
-            <h3>Updating {{ venue.name }}</h3>
+            <h3 class="title is-6 has-text-centered">Updating {{ venue.name }}</h3>
             {% else %}
-            <h3>Creating New venue</h3>
+            <h3 class="title is-6 has-text-centered">Creating New Venue</h3>
             {% endif %}
         {% endif %}
         {% if bands %}
             {% if band %}
-            <h3>Updating {{ band.name }}</h3>
+            <h3 class="title is-6 has-text-centered">Updating {{ band.name }}</h3>
             {% else %}
-            <h3>Creating New band</h3>
+            <h3 class="title is-6 has-text-centered">Creating New Band</h3>
             {% endif %}
-        {% endif %}
-        {% if events %}
-            {% if event %}
-            <h3>Updating {{ event.name }}</h3>
-            {% else %}
-            <h3>Creating New event</h3>
-            {% endif %}
+        {% else %}
         {% endif %}
     {% endif %}
 {% endblock %}

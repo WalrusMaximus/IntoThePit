@@ -8,13 +8,17 @@
 <div class="venues-container">
         <h2 class="title is-5 has-text-centered">VENUES</h2>
         {% for venue in venues %}
-        <p class="has-text-centered"><a href="{{ url_for('venue', id=venue.id) }}">{{venue.name}}</a></p>
+        <div class="box">
+            <p class="has-text-centered"><a href="{{ url_for('venue', id=venue.id) }}">{{venue.name}}</a></p>
+        </div>
         {% endfor %}
 </div class="bands-container">
 <div>
         <h2 class="title is-5 has-text-centered">BANDS</h2>
         {% for band in bands %}
-        <p class="has-text-centered"><a href="{{ url_for('band', id=band.id) }}">{{band.name}}</a></p>
+        <div class="box">
+            <p class="has-text-centered"><a href="{{ url_for('band', id=band.id) }}">{{band.name}}</a></p>
+        </div>
         {% endfor %}
 </div>
 {% endblock %}
