@@ -53,6 +53,8 @@ This is a project I plan to continue working on and improve. Some features I wil
 3: Rating/comment voting
 4: Top rated positive and negative comment display for each venue
 5: Improved image uploading, fixing form issues on initial venue/band creation
+6: Search and filtering of results
+7: pagination of results
 
 
 
