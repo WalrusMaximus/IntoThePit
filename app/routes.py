@@ -540,7 +540,7 @@ def delete_user(id):
         else:
             user_deletion = models.User.delete().where(models.User.id == user.id)
             user_deletion.execute()
-            ratings_deletion = models.Rating.delete().where(models.Rating.venue_fk == user.id)
+            ratings_deletion = models.Rating.delete().where(models.Rating.user_fk == user.id)
             ratings_deletion.execute()
             flash(f"Deleted {user.username}")
             return redirect(url_for('admin'))

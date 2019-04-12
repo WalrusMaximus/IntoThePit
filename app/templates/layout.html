@@ -8,28 +8,17 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css">
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/styles.css') }}">
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='css/rating_form.css') }}">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <style>
+    html, body {background-image: url({{url_for('static', filename="images/intothepit.jpg")}});}
+    html, body {background-repeat: no-repeat;}
+    html, body {background-attachment: fixed;}
+    html, body {background-size: cover;}
+    </style>
 </head>
 <body>
     <header>
-        {% include '/header-test.html' %}
-        <!-- <div class="logo-wrapper">
-            <h1 id="headline-logo">INTO THE PIT</h1>
-        </div>
-        <div>
-            <img class="sk_logo" src="{{url_for('static',filename='api_attribution/powered-by-songkick-black.png')}}" alt="">
-        </div>
-        <div class="flash-messages"> -->
-        {# with messages = get_flashed_messages(with_categories=True) #}
-        {# if messages #}
-            {# for category, message in messages #}
-                <!-- <div class={{category}}>{{ message }}</div> -->
-            {# endfor #}
-        {# endif #}
-        {# endwith #}
-        <!-- </div>
-        <div> -->
-        {# include '/header.html' #}
-        <!-- </div> -->
+        {% include '/header.html' %}
     </header>
     <section class="section">
         <div class="columns is-desktop left-column">

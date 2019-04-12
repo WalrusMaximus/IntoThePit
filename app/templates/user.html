@@ -3,14 +3,18 @@
 
 {% block sidebar %}
 
-<h4>{{user.username}}</h4>
-<img class="user_profile_avatar" src="{{ url_for('static', filename=user.avatar.decode('utf-8'))}}" alt="profile image">
+<h4 class="title has-text-centered is-6 is-uppercase">{{user.username}}</h4>
+<div class="venue-img-wrapper">
+    <img class="user_profile_avatar" src="{{ url_for('static', filename=user.avatar.decode('utf-8'))}}" alt="profile image">
+</div>
 
 {% if img_updating and current_user == user %}
-<a href="{{url_for('user',id=user.id)}}">Nevermind, don't change my image</a>
+<p class="has-text-centered"><a href="{{url_for('user',id=user.id)}}">Nevermind, don't change my image</a></p>
 {% elif current_user == user %}
-<a href="{{url_for('update_user',id=user.id)}}">Change Profile Image</a>
+<p class="has-text-centered"><a href="{{url_for('update_user',id=user.id)}}">Change Profile Image</a></p>
 {% endif %}
+
+<br>
 
 {% if img_updating %}
     <form method="POST" enctype="multipart/form-data" action="" class="form">
@@ -20,6 +24,31 @@
         {% endfor %}
     </form>
 {% endif %}
+
+<br>
+
+{% if favorite_bands %}
+<h4 class="title has-text-centered is-6 is-uppercase">Favorite Bands</h4>
+{% for favorite_band in favorite_bands %}
+<div class="box"><a href="{{url_for('band',id=favorite_band.band_fk)}}">{{favorite_band.band_fk.name}}</a></div>
+{% endfor %}
+{% elif no_favorites %}
+{% else %}
+<p class="has-text-centered">Looks like {{ user.username }} doesn't have any favorite bands...</p>
+{% endif %}
+
+<br>
+
+{% if favorite_venues %}
+    <h4 class="title has-text-centered is-6 is-uppercase">Favorite Venues</h4>
+{% for favorite_venue in favorite_venues %}
+    <div class="box"><a href="{{url_for('venue',id=favorite_venue.venue_fk)}}"><img src>{{favorite_venue.venue_fk.name}}</a></div>
+{% endfor %}
+{% elif no_favorites %}
+{% else %}
+<p class="has-text-centered">Looks like {{ user.username }} doesn't have any favorite venues...</p>
+{% endif %}
+
 {% endblock %}
 
 {% block main_header %}
@@ -31,7 +60,7 @@
 
 {% block main %}
 {% set img_url = user.avatar.decode('utf-8') %}
-<h4>Ratings</h4>
+<h4 class="title has-text-centered is-6 is-uppercase">Ratings</h4>
     {% if rating %}
     <h4>Updating Post:</h4>
     <img class="inline-avatar" src="{{ url_for('static', filename=img_url)}}" alt=""><p>{{ rating.user_fk.username }} says: {{ rating.message }} about the {{ rating.rating_type }} at <a href="{{url_for('venue',id=rating.venue_fk)}}">{{ rating.venue_fk.name }}</a> and gave it a rating of {{ rating.rating }}/5</p>
@@ -47,41 +76,21 @@
         {% endif %}
     {% endif %}
     {% for rating in ratings %}
-    <img class="inline-avatar" src="{{ url_for('static', filename=img_url)}}" alt=""><p>{{ rating.user_fk.username }} says: {{ rating.message }} about the {{ rating.rating_type }} at <a href="{{url_for('venue',id=rating.venue_fk)}}">{{ rating.venue_fk.name }}</a> and gave it a rating of {{ rating.rating }}/5</p>
-        {% if user == current_user %}
-        <a href="{{ url_for('user_update_rating', id=rating.id)}}">Update</a> <a href="{{ url_for('delete_rating', id=rating.id, profile=True)}}">Delete</a>
-        {% endif %}
+    {% include "ratings.html" %}
     {% else %}
     <p>Looks like there are no ratings here..</p>
     {% endfor %}
-    {% if favorite_bands %}
-    <h5>Favorite Bands</h5>
-    {% for favorite_band in favorite_bands %}
-    <a href="{{url_for('band',id=favorite_band.band_fk)}}">{{favorite_band.band_fk.name}}</a>
-    {% endfor %}
-    {% elif no_favorites %}
-    {% else %}
-    <p>Looks like {{ user.username }} doesn't have any favorite bands...</p>
-    {% endif %}
-
-    {% if favorite_venues %}
-    <h5>Favorite Venues</h5>
-    {% for favorite_venue in favorite_venues %}
-    <a href="{{url_for('venue',id=favorite_venue.venue_fk)}}">{{favorite_venue.venue_fk.name}}</a>
-    {% endfor %}
-    {% elif no_favorites %}
-    {% else %}
-    <p>Looks like {{ user.username }} doesn't have any favorite venues...</p>
-    {% endif %}
+    <br>
 
 
     {% if bands_query and current_user == user %}
-        <h4>Upcoming Events by Favorite Artists...</h4>
+        <h4 class="title has-text-centered is-6 is-uppercase">Upcoming Events by Favorite Artists...</h4>
         <div id="favorite-band-events">
         </div>
+        <br>
     {% endif %}
     {% if venues_query and current_user == user %}
-        <h4>Upcoming Events at Favorite Venues...</h4>
+        <h4 class="title has-text-centered is-6 is-uppercase">Upcoming Events at Favorite Venues...</h4>
         <div id="favorite-venue-events">
         </div>
     {% endif %}

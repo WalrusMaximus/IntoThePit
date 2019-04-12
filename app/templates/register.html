@@ -1,6 +1,9 @@
 {% from 'macros.html' import render_field %}
 
 {% extends "layout.html" %}
+{% block sidebar %}
+{% include "/about.html" %}
+{% endblock %}
 {% block main %}
 
 <form method="POST" action="" class="form">

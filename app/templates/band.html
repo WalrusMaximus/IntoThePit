@@ -2,13 +2,18 @@
 
 
 {% block sidebar %}
-<h2>{{band.name}}</h2>
-<img class="band_img" src="{{ url_for('static', filename=band.img.decode('utf-8'))}}" alt="">
-<p>{{band.about}}</p>
+<h2 class="title is-4 has-text-centered is-uppercase">{{band.name}}</h2>
+<div class="venue-img-wrapper">
+    <img class="band_img" src="{{ url_for('static', filename=band.img.decode('utf-8'))}}" alt="">
+</div>
+<br>
+<p class="has-text-centered">{{band.about}}</p>
 {% if current_user.is_anonymous == false %}
 
+<br>
+
     {% if is_favorite %}
-    <p>This is one of your favorite bands!</p><a href="{{url_for('delete_favorite_band',id=band.id)}}">Unfavorite?</a>
+    <p class="has-text-centered">This is one of your favorite bands! <a href="{{url_for('delete_favorite_band',id=band.id)}}">Unfavorite?</a></p>
     {% else %}
     <a href="{{url_for('add_favorite_band', id=band.id)}}">Add To Favorites</a>
     {% endif %} 
@@ -18,7 +23,7 @@
 
 
 {% block main_header %}
-<h3>Upcoming Events</h3>
+<h3 class="title is-4 has-text-centered is-uppercase">Upcoming Events</h3>
 {% endblock %}
 
 {% block main %}

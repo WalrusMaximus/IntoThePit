@@ -22,7 +22,7 @@
                 })
                 let bandEvents = Array.from(result)
                 for(let i=0;i<bandEvents.length;i++){
-                    $('#band-events').append(`<div class="event"><p>${bandEvents[i].displayName}</p><a href=${bandEvents[i].uri}>More Info</a></div>`)
+                    $('#band-events').append(`<div class="box"><p>${bandEvents[i].displayName}</p><a href=${bandEvents[i].uri}>More Info</a></div>`)
                 }
             },
             error: function(err) {                
@@ -47,7 +47,7 @@
                     })
                     let bandEvents = Array.from(result)
                     for(let i=0;i<bandEvents.length;i++){
-                        $('#favorite-band-events').append(`<div class="event"><p>${bandEvents[i].displayName}</p><a href=${bandEvents[i].uri}>More Info</a></div>`)
+                        $('#favorite-band-events').append(`<div class="box"><p>${bandEvents[i].displayName}</p><a href=${bandEvents[i].uri}>More Info</a></div>`)
                     }
                 },
                 error: function(err) {                    
@@ -75,7 +75,7 @@
             }
                 let event = Array.from(result)                
                 for(let i=0;i<event.length;i++){
-                    $('#favorite-venue-events').append(`<div class="event"><p>${event[i].displayName}</p><a href=${event[i].uri}>More Info</a></div>`)
+                    $('#favorite-venue-events').append(`<div class="box"><p>${event[i].displayName}</p><a href=${event[i].uri}>More Info</a></div>`)
             }
             },
             error: function(err) {                
@@ -102,7 +102,7 @@
             }
                 let event = Array.from(result)                
                 for(let i=0;i<event.length;i++){
-                    $('#venue-events').append(`<div class="event"><p>${event[i].displayName}</p><a href=${event[i].uri}>More Info</a></div>`)
+                    $('#venue-events').append(`<div class="box"><p>${event[i].displayName}</p><a href=${event[i].uri}>More Info</a></div>`)
             }
             },
             error: function(err) {                

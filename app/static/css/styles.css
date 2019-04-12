@@ -6,8 +6,16 @@
     width: auto;
 }
 
+html, body {
+    background-color: rgb(50, 50, 50);
+}
+
 .column {
-    border: 1px solid black;
+    background-color: rgba(255, 255, 255,.8);
+}
+
+.right-column {
+    border-left: 4px solid rgba(255,0,0,.7);
 }
 
 .recent-comments {
@@ -17,12 +25,31 @@
     margin: 1em 0 0 0;
     padding: 0;
     display: flex;
+}
 
+.box {
+    padding: .5rem !important;
+    margin: .25rem !important;
 }
 
 .about-venue {
     display: flex;
     flex-direction: column;
+}
+
+.about-img {
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    background-color: rgb(50, 50, 50);
+    border: 4px solid rgba(100,100,100,.5)
+}
+
+
+.about-img img {
+    max-width: 100%;
+    margin: 0 auto;
+    max-height: 250px;
 }
 
 .recent-comments div {
@@ -31,6 +58,7 @@
     width: 50%;
     border: 1px solid black;
     height: 100%;
+    background-color: rgba(255,255,255,.8);
 }
 
 footer {
@@ -44,21 +72,25 @@ footer {
     text-align: center;
 }
 
-.venue_img, .band_img {
-    max-width: 100%;
-    margin: 0 auto;
-}
-
 .footer-bg {
     height: auto;
     width: 100%;
     background-color: white;
 }
 
+.bands-container, .venues-container {
+    height: 50%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+
 .user_profile_avatar {
     border-radius: 50%;
     width: 256px;
     height: 256px;
+    margin: 0 auto;
 }
 
 .inline-avatar {
@@ -79,13 +111,19 @@ footer {
     margin: 0;
     padding: 0;
     text-align: center;
+    background-color: rgba(255,255,255,.8);
 }
 
 .venue-img-wrapper {
-    width: 100%;
-    height: auto;
-    max-height: 50%;
+    max-width: 100%;
+    max-height: 32vh;
     display: flex;
+}
+
+.venue_img, .band_img {
+    max-width: 100%;
+    max-height: 100%;
+    margin: 0 auto;
 }
 
 .navbar-image {

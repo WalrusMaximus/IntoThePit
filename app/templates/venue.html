@@ -3,7 +3,7 @@
 
 {% block sidebar %}
 
-    <h4 class="title has-text-centered">{{venue.name}}</h4>
+    <h4 class="title has-text-centered is-uppercase">{{venue.name}}</h4>
     <div class="venue-img-wrapper">
     <img class="venue_img" src="{{ url_for('static', filename=venue.img.decode('utf-8'))}}" alt="">
     </div>
@@ -33,57 +33,13 @@
 {% endblock %}
 
 {% block main_header %}
-
-{% if rating %}
-<h4>Updating Rating:</h4>
-<p><a href="{{url_for('user',id=rating.user_fk)}}">{{ rating.user_fk.username }}</a> says: {{ rating.message }}. {{rating.rating_type}} {{ rating.rating }}/5</p>
-<img class="inline-avatar" src="{{ url_for('static', filename=rating.user_fk.avatar.decode('utf-8'))}}" alt="">
-{% elif show_ratings %}
-<h4>Add new Rating:</h4>
-{% endif %}
-
-{% if event %}
-{% elif show_events %}
-<h4>Add new Event:</h4>
-{% endif %}
-
-
-
-
-
 {% endblock%}
 
 {% block main %}
     <div>
-        <h4 class="title has-text-centered">Ratings</h4>
+        <h4 class="title is-5 has-text-centered is-uppercase">Ratings</h4>
         {% for rating in ratings %}
-
-        <!-- Main container -->
-        <nav class="level">
-                <!-- Left side -->
-                <div class="level-left">
-                <div class="level-item">
-                    <img class="inline-avatar" src="{{ url_for('static', filename=rating.user_fk.avatar.decode('utf-8'))}}" alt="">
-                </div>
-                <div class="level-item">
-                    <p class="level-text"><a href="{{url_for('user',id=rating.user_fk)}}">{{ rating.user_fk.username }}</a> says: {{ rating.message }}.</p>
-                </div>
-                </div>
-            
-                <!-- Right side -->
-                <div class="level-right">
-                    <div class="level-item">
-                        <p>{{rating.rating_type}} {{ rating.rating }}/5</p>
-                    </div>
-                    <div class="level-item">
-                    {% if rating.user_fk.id == current_user.id %}
-                    <a href="{{ url_for('venue_update_rating', id=rating.id)}}">Update</a> <a href="{{ url_for('delete_rating', id=rating.id, profile=False)}}">Delete</a>
-                    {% endif %}
-                    </div> 
-                </div>
-            </nav>
-        
-
+        {% include "ratings.html" %}
         {% endfor %}
         {% if current_user.is_anonymous == false %}
         {# include 'rating_form.html' #}
@@ -103,23 +59,30 @@
             {% endfor %}
         </form>
         {% endif %}
+
+    {% if rating %}
+    <div class="box">
+    <h4 class="title has-text-centered is-6 is-uppercase">Updating Rating:</h4>
+    <p><a href="{{url_for('user',id=rating.user_fk)}}">{{ rating.user_fk.username }}</a>: {{ rating.message }}. {{rating.rating_type}} {{ rating.rating }}/5</p>
+    <img class="inline-avatar" src="{{ url_for('static', filename=rating.user_fk.avatar.decode('utf-8'))}}" alt="">
+    {% elif show_ratings %}
+    <h4>Add new Rating:</h4>
+    {% endif %}
+    
+    {% if event %}
+    {% elif show_events %}
+    <h4>Add new Event:</h4>
+    {% endif %}
         
     {% endif %}
     {% if rating %}
     <a href="{{ url_for('venue', id=rating.venue_fk.id)}}">Changed my mind, I don't want to Update</a>
     {% endif %}
     </div>
+    <br>
 
     <div>
-        <h4 class="title has-text-centered is-small">Events</h4>
-        {% for event in events %}
-            <img class="inline-avatar" src="{{ url_for('static', filename=event.band_fk.img.decode('utf-8'))}}" alt="">
-            <p><a href="{{url_for('band',id=event.band_fk)}}">{{ event.band_fk.name }}</a> is playing on {{ event.date }} at {{ event.venue_fk.name}}</p>
-            {% if current_user.user_level == "walrus" %}
-            <a href="{{ url_for('update_event', id=event.id)}}">Update</a> <a href="{{ url_for('delete_event', id=event.id)}}">Delete</a>
-            {% endif %}
-
-        {% endfor %}
+        <h4 class="title has-text-centered is-5 is-uppercase">Events</h4>
         <div class="venue-events" id="venue-events">
         </div>
     </div>
@@ -135,9 +98,7 @@
         bands.push("{{band}}")
     </script>
 {% endfor %}
-{#
 <script>
     venueApi()
 </script>
-#}
 {% endblock %}

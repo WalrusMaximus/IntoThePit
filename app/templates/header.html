@@ -1,17 +1,49 @@
-{% block header %}
-<nav>
-{% if g.user.is_authenticated %}
-<a  href={{url_for('logout')}}>LOGOUT</a>
-<a href={{url_for('user',id=current_user.id)}}>PROFILE</a>
-{% else %}
-<a  href={{url_for('login')}}>LOGIN</a>
-<a href={{url_for('register')}}>REGISTER</a>
-{% endif %}
-{% if g.user.user_level == "walrus" %}
-<a href={{url_for('admin')}}>ADMIN</a>
-{% endif %}
-<a href={{url_for('index')}}>VENUES</a>
+  <nav class="navbar is-black" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a class="navbar-item " href={{url_for('index')}}>
+        <img class="navbar-image " src="{{url_for('static',filename='images/intothepit-horizontal.png')}}" alt="">
+      </a>
+      <a class="navbar-item" href="http://www.songkick.com">
+        <img class="navbar-image" src="{{url_for('static',filename='api_attribution/powered-by-songkick-white.png')}}" alt="" width="90" height="60">
+      </a>
 
+      <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
 
-</nav>
-{% endblock %}
+      
+    <div class="navbar-item">
+        {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class={{category}}>{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+        </div>
+
+      <div class="navbar-end">
+          <div id="navbar-area" class="navbar-menu">
+            <div class="navbar-start">
+              {% if g.user.user_level == "walrus" %}
+              <a class="navbar-item" href={{url_for('admin')}}>ADMIN</a>
+              {% endif %}
+              <a class="navbar-item" href={{url_for('index')}}>HOME</a>
+            </div>  
+        <div class="navbar-item">
+          <div class="buttons">
+              {% if g.user.is_authenticated %}
+              <a class="button is-dark" href={{url_for('user',id=current_user.id)}}>PROFILE</a>
+              <a class="button is-danger" href={{url_for('logout')}}>LOGOUT</a>
+              {% else %}
+              <a class="button is-danger" href={{url_for('register')}}>REGISTER</a>
+              <a class="button is-dark" href={{url_for('login')}}>LOGIN</a>
+              {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
