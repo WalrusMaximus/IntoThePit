@@ -139,7 +139,7 @@ def user_update_rating(id):
             message=form.message.data
         ).where(models.Rating.id == id)
         rating_update.execute()
-        flash(f"Updated comment on {rating.venue_fk.name}.")
+        flash(f"Updated comment on {rating.venue_fk.name}.","success")
         return redirect(url_for('user',id=current_user.id))
 
     return render_template('user.html', user=user, form=form, record=record, rating=rating, ratings=ratings, show_ratings=show_ratings, no_favorites=no_favorites)

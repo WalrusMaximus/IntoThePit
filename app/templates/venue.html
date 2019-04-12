@@ -3,18 +3,19 @@
 
 {% block sidebar %}
 
-<h4>{{venue.name}}</h4>
-<p>{{venue.about}}</p>
-<img class="venue_img" src="{{ url_for('static', filename=venue.img.decode('utf-8'))}}" alt="">
-
-{% if current_user.is_anonymous %}
-{% else %}
-    {% if is_favorite %}
-    <p>This is one of your favorite venues!</p><a href="{{url_for('delete_favorite_venue',id=venue.id)}}">Unfavorite?</a>
+    <h4 class="title has-text-centered">{{venue.name}}</h4>
+    <div class="venue-img-wrapper">
+    <img class="venue_img" src="{{ url_for('static', filename=venue.img.decode('utf-8'))}}" alt="">
+    </div>
+    <blockquote class="has-text-centered" >{{venue.about}}</blockquote>
+    {% if current_user.is_anonymous %}
     {% else %}
-    <a href="{{url_for('add_favorite_venue', id=venue.id)}}">Add To Favorites</a>
+        {% if is_favorite %}
+        <p class="has-text-centered">This is one of your favorite venues! <a href="{{url_for('delete_favorite_venue',id=venue.id)}}">Unfavorite?</a></p>
+        {% else %}
+        <p class="has-text-centered"><a href="{{url_for('add_favorite_venue', id=venue.id)}}">Add To Favorites</a></p>
+        {% endif %}
     {% endif %}
-{% endif %}
 
 <div class="rating-container">
     <div id="overall-rating">Overall<p>{{overall_rating}}</p></div>
@@ -22,6 +23,12 @@
     <div id="sound-rating">Sound<p>{{sound_rating}}</p></div>
     <div id="facility-rating">Facility<p>{{facility_rating}}</p></div>
 </div>
+
+<div class="recent-comments">
+    <div class="recent-good"></div>
+    <div class="recent-bad"></div>
+</div>
+
 
 {% endblock %}
 
@@ -42,35 +49,13 @@
 
 
 
-{% if current_user.is_anonymous == false %}
-    {# include 'rating_form.html' #}
-    {% if record %}
-    <form method="POST" action="" class="form">
-        {{ form.hidden_tag() }}
-        {% for field in form %}
-            {{ render_edit_field(field, record) }}
-        {% endfor %}
-        <input type="submit" name="submit" placeholder="Submit">
-    </form>
-    {% else %}
-    <form method="POST" action="" class="form">
-        {{ form.hidden_tag() }}
-        {% for field in form %}
-            {{ render_field(field) }}
-        {% endfor %}
-    </form>
-    {% endif %}
-    
-{% endif %}
-{% if rating %}
-<a href="{{ url_for('venue', id=rating.venue_fk.id)}}">Changed my mind, I don't want to Update</a> %}
-{% endif %}
+
 
 {% endblock%}
 
 {% block main %}
-    <div class="venue-ratings">
-        <h4>Ratings</h4>
+    <div>
+        <h4 class="title has-text-centered">Ratings</h4>
         {% for rating in ratings %}
 
         <!-- Main container -->
@@ -100,10 +85,33 @@
         
 
         {% endfor %}
+        {% if current_user.is_anonymous == false %}
+        {# include 'rating_form.html' #}
+        {% if record %}
+        <form method="POST" action="" class="form">
+            {{ form.hidden_tag() }}
+            {% for field in form %}
+                {{ render_edit_field(field, record) }}
+            {% endfor %}
+            <input type="submit" name="submit" placeholder="Submit">
+        </form>
+        {% else %}
+        <form method="POST" action="" class="form">
+            {{ form.hidden_tag() }}
+            {% for field in form %}
+                {{ render_field(field) }}
+            {% endfor %}
+        </form>
+        {% endif %}
+        
+    {% endif %}
+    {% if rating %}
+    <a href="{{ url_for('venue', id=rating.venue_fk.id)}}">Changed my mind, I don't want to Update</a>
+    {% endif %}
     </div>
 
     <div>
-        <h4>Events</h4>
+        <h4 class="title has-text-centered is-small">Events</h4>
         {% for event in events %}
             <img class="inline-avatar" src="{{ url_for('static', filename=event.band_fk.img.decode('utf-8'))}}" alt="">
             <p><a href="{{url_for('band',id=event.band_fk)}}">{{ event.band_fk.name }}</a> is playing on {{ event.date }} at {{ event.venue_fk.name}}</p>
@@ -127,8 +135,9 @@
         bands.push("{{band}}")
     </script>
 {% endfor %}
-
+{#
 <script>
     venueApi()
 </script>
+#}
 {% endblock %}

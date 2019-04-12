@@ -31,22 +31,25 @@
         {# include '/header.html' #}
         <!-- </div> -->
     </header>
-    <main class="columns">
-        <div class="column is-half">
-            {% block sidebar %}
-            {% endblock %}
+    <section class="section">
+        <div class="columns is-desktop left-column">
+            <div class="column is-half">
+                {% block sidebar %}
+                {% endblock %}
+            </div>
+            <div class="column is-half right-column">
+                {% block main_header %}
+                {% endblock %}
+                {% block main %}
+                {% endblock %}
+            </div>
         </div>
-        <div class="column is-half">
-            {% block main_header %}
-            {% endblock %}
-            {% block main %}
-            {% endblock %}
-        </div>
-    </main>
+    </section>
     <footer>
         {% include '/footer.html' %}
     </footer>
     <script type=text/javascript src="{{url_for('static', filename='jquery-3.3.1.min.js') }}"></script>
+    <script type=text/javascript src="{{url_for('static', filename='app.js') }}"></script>
     {% include '/script.html' %}
     {% block script %}
     {% endblock %}
