@@ -700,6 +700,8 @@ def delete_band(id):
     if g.user.user_level == "walrus":
         band_deletion = models.Band.delete().where(models.Band.id == band.id)
         band_deletion.execute()
+        favorite_deletion = models.Favorite.delete().where(models.Favorite.band_fk == band.id)
+        favorite_deletion.execute()
         flash(f"Deleted {band.name}")
         return redirect(url_for('admin'))
     else: 
