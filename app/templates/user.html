@@ -86,12 +86,14 @@
     {% if bands_query and current_user == user %}
         <h4 class="title has-text-centered is-6 is-uppercase">Upcoming Events by Favorite Artists...</h4>
         <div id="favorite-band-events">
+            <p id="favorite-band-null" class="has-text-centered">Looks like none of your favorite bands are going to be in town...</p>
         </div>
         <br>
     {% endif %}
     {% if venues_query and current_user == user %}
         <h4 class="title has-text-centered is-6 is-uppercase">Upcoming Events at Favorite Venues...</h4>
         <div id="favorite-venue-events">
+            <p id="favorite-venue-null" class="has-text-centered">Looks like no shows are coming up at your favorite venues...</p>
         </div>
     {% endif %}
 

@@ -21,6 +21,9 @@
                     }
                 })
                 let bandEvents = Array.from(result)
+                if (bandEvents.length == 0) {
+                    $('#band-events').append(`<p class="has-text-centered">Looks like they aren't in town any time soon...</p>`)
+                }
                 for(let i=0;i<bandEvents.length;i++){
                     $('#band-events').append(`<div class="box"><p>${bandEvents[i].displayName} <a href=${bandEvents[i].uri}>More Info</a></p></div>`)
                 }
@@ -47,6 +50,7 @@
                     })
                     let bandEvents = Array.from(result)
                     for(let i=0;i<bandEvents.length;i++){
+                        $('#favorite-band-null').remove()
                         $('#favorite-band-events').append(`<div class="box"><p>${bandEvents[i].displayName} <a href=${bandEvents[i].uri}>More Info</a></p></div>`)
                     }
                 },
@@ -75,8 +79,9 @@
             }
                 let event = Array.from(result)                
                 for(let i=0;i<event.length;i++){
+                    $('#favorite-venue-null').remove()
                     $('#favorite-venue-events').append(`<div class="box"><p>${event[i].displayName} <a href=${event[i].uri}>More Info</a></p></div>`)
-            }
+                }
             },
             error: function(err) {                
             }
@@ -103,7 +108,10 @@
                 let event = Array.from(result)                
                 for(let i=0;i<event.length;i++){
                     $('#venue-events').append(`<div class="box"><p>${event[i].displayName} <a href=${event[i].uri}>More Info</a></p></div>`)
-            }
+                }
+                if (event.length == 0) {
+                    $('#venue-events').append(`<p class="has-text-centered">Looks like they don't have any pits coming up...</p>`)
+                }
             },
             error: function(err) {                
             }

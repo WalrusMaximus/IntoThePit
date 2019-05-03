@@ -18,7 +18,7 @@
                     {% if rating.user_fk.id == current_user.id %}
                     <a href="{{ url_for('venue_update_rating', id=rating.id)}}" aria-label="fa-cog">
                       <span class="icon is-medium">
-                        <i class="fas fa-cog" aria-hidden="true"></i>
+                        <i class="fas fa-edit" aria-hidden="true"></i>
                       </span>
                     </a>
                     <p></p>

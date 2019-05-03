@@ -41,7 +41,6 @@
         {% for rating in ratings %}
         {% include "ratings.html" %}
         {% endfor %}
-        <div class="box">
             {% if current_user.is_anonymous == false %}
                 {% if record %}
                     {% if rating %}
@@ -84,7 +83,6 @@
                 </form>
                 {% endif %}
             {% endif %}
-    </div>
 
     </div>
     <br>
