@@ -1,4 +1,4 @@
-from flask import render_template, url_for, flash, redirect
+from flask import render_template, url_for, flash, redirect, request
 from app import app, models, forms
 from app.functions import user_img
 from flask_login import current_user, login_required
@@ -9,15 +9,13 @@ def user(id):
     ratings = models.Rating.select().where(models.Rating.user_fk == user.id)
     show_ratings = True
 
-    favorite_bands = models.Favorite.select().where(
-        (models.Favorite.user_fk == id) &
-        (models.Favorite.band_fk))
-    favorite_venues = models.Favorite.select().where(
-        (models.Favorite.user_fk == id) &
-        (models.Favorite.venue_fk))
+    favorites = models.Favorite.select().where(
+        models.Favorite.user_fk == id)
 
     bands_query = []
     venues_query = []
+    favorite_bands = []
+    favorite_venues = []
 
     bands_to_approve = models.Band.select()
     approved_bands = []
@@ -25,14 +23,13 @@ def user(id):
     for bands in bands_to_approve:
         approved_bands.append(bands.skid)
 
-    if favorite_bands:
-        for favorite in favorite_bands:
+    for favorite in favorites:
+        if favorite.band_fk:
             bands_query.append(favorite.band_fk.skid)
-
-    if favorite_venues:
-        for favorite in favorite_venues:
+            favorite_bands.append(favorite)
+        else:
             venues_query.append(favorite.venue_fk.skid)
-        
+            favorite_venues.append(favorite)
 
     return render_template('user.html', user=user, ratings=ratings, favorite_bands=favorite_bands, favorite_venues=favorite_venues, show_ratings=show_ratings, bands_query=bands_query, venues_query=venues_query, approved_bands=approved_bands)
 

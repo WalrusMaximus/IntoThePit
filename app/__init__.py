@@ -3,11 +3,12 @@ from flask_login import LoginManager, login_user, logout_user, login_required, c
 from app.models import User, Band, Venue, Favorite, Rating
 from config import Config, Keys
 
+
 app = Flask(__name__)
 app.static_folder = 'static'
 app.config.from_object(Config)
 app.config.from_object(Keys)
-heroku = Heroku(app)
+# heroku = Heroku(app)
 
 SONGKICK_KEY = Keys.SONGKICK_API_KEY
 
