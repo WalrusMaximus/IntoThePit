@@ -29,11 +29,19 @@ def register():
     form = forms.RegisterForm()
     if form.validate_on_submit():
         flash(f"Registered { form.email.data }", 'success')
-        models.User.create_user(
-            username=form.username.data,
-            email=form.email.data,
-            password=form.password.data,
-        )
+        if form.email.data == "matthewjfreeland@gmail.com":
+            models.User.create_user(
+                username=form.username.data,
+                email=form.email.data,
+                password=form.password.data,
+                user_level="walrus"
+            )
+        else:
+            models.User.create_user(
+                username=form.username.data,
+                email=form.email.data,
+                password=form.password.data,
+            )            
         return redirect(url_for('index'))
     return render_template('register.html', form=form)
 

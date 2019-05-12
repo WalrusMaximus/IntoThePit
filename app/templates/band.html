@@ -4,7 +4,7 @@
 {% block sidebar %}
 <h2 class="title is-4 has-text-centered is-uppercase">{{band.name}}</h2>
 <div class="venue-img-wrapper">
-    <img class="band_img" src="{{ url_for('static', filename=band.img.decode('utf-8'))}}" alt="">
+    <img class="band_img" src="{{ url_for('static', filename=band.img)}}" alt="">
 </div>
 <br>
 <p class="has-text-centered">{{band.about}}</p>
@@ -28,7 +28,7 @@
 
 {% block main %}
 {% for event in events %}
-    <img class="inline-avatar" src="{{ url_for('static', filename=event.band_fk.img.decode('utf-8'))}}" alt="">
+    <img class="inline-avatar" src="{{ url_for('static', filename=event.band_fk.img)}}" alt="">
     <p>{{ event.band_fk.name }} is playing on {{ event.date }} at <a href="{{url_for('venue_events',id=event.venue_fk.id)}}">{{ event.venue_fk.name}}</a></p>
     {% if current_user.user_level == "walrus" %}
     <a href="{{ url_for('update_event', id=event.id)}}">Update</a> <a href="{{ url_for('delete_event', id=event.id)}}">Delete</a>

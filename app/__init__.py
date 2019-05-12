@@ -20,8 +20,8 @@ login_manager.login_view = 'login'
 def load_user(userid):
     try:
         return User.get(User.id == userid)
-    except DoesNotExist:
-        return None
+    except:
+        return None;
 
 # Connect to database before request
 @app.before_request

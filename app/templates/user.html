@@ -5,7 +5,7 @@
 
 <h4 class="title has-text-centered is-6 is-uppercase">{{user.username}}</h4>
 <div class="venue-img-wrapper">
-    <img class="user_profile_avatar" src="{{ url_for('static', filename=user.avatar.decode('utf-8'))}}" alt="profile image">
+    <img class="user_profile_avatar" src="{{ url_for('static', filename=user.avatar)}}" alt="profile image">
 </div>
 <br>
 {% if img_updating and current_user == user %}
@@ -59,7 +59,7 @@
 {% endblock %}
 
 {% block main %}
-{% set img_url = user.avatar.decode('utf-8') %}
+{% set img_url = user.avatar %}
 <h4 class="title has-text-centered is-6 is-uppercase">Ratings</h4>
     {% if rating %}
     <h4>Updating Post:</h4>

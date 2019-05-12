@@ -1,10 +1,14 @@
 from peewee import *
 import datetime, time, moment
+import os
 
 from flask_login import UserMixin
 from flask_bcrypt import generate_password_hash
 
-DATABASE = SqliteDatabase('intothepit.db')
+# DATABASE = SqliteDatabase('intothepit.db')
+
+# DATABASE = PostgresqlDatabase('intothepit')
+DATABASE = connect(os.environ.get('DATABASE_URL'))
 
 #--------------# PRIMARY MODELS #--------------#
 
@@ -12,7 +16,7 @@ class User(UserMixin, Model):
     username = CharField(unique=True)
     email = CharField(unique=True, max_length=256)
     password = CharField(max_length=128)
-    avatar = BlobField(default="images/user_default.png")
+    avatar = CharField(default="images/user_default.png")
     user_level = CharField(default="user")
 
     class Meta:
@@ -36,7 +40,7 @@ class Band(Model):
     about = CharField()
     genre = CharField(null=True)
     themes = CharField(null=True, default="music")
-    img = BlobField(default="images/band_default.jpg")
+    img = CharField(default="images/band_default.jpg")
     skid = CharField()
 
     class Meta:
@@ -58,7 +62,7 @@ class Band(Model):
 
 class Venue(Model):
     name = CharField()
-    img = BlobField(default="images/venue_default.jpg")
+    img = CharField(default="images/venue_default.jpg")
     about = CharField()
     skid = CharField()
 
@@ -144,10 +148,10 @@ class Favorite(Model):
             raise
 
 
-def initialize():
-    DATABASE.connect()
-    DATABASE.create_tables([User, Band, Venue, Favorite, Rating], safe=True)
-    DATABASE.close()
+# def initialize():
+#     DATABASE.connect()
+#     DATABASE.create_tables([User, Band, Venue, Favorite, Rating], safe=True)
+#     DATABASE.close()
 
 
 
