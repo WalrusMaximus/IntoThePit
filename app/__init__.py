@@ -5,10 +5,10 @@ from config import Config, Keys
 
 
 app = Flask(__name__)
+app.template_folder = 'templates'
 app.static_folder = 'static'
 app.config.from_object(Config)
 app.config.from_object(Keys)
-# heroku = Heroku(app)
 
 SONGKICK_KEY = Keys.SONGKICK_API_KEY
 
@@ -23,7 +23,7 @@ def load_user(userid):
     try:
         return User.get(User.id == userid)
     except:
-        return None
+        return None;
 
 # Connect to database before request
 @app.before_request
