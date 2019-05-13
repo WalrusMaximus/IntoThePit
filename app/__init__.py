@@ -23,7 +23,7 @@ def load_user(userid):
     try:
         return User.get(User.id == userid)
     except:
-        return None;
+        return None
 
 # Connect to database before request
 @app.before_request
