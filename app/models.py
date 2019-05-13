@@ -8,7 +8,7 @@ from flask_bcrypt import generate_password_hash
 # DATABASE = SqliteDatabase('intothepit.db')
 
 # DATABASE = PostgresqlDatabase('intothepit')
-DATABASE = connect(os.environ.get('DATABASE_URL'))
+DATABASE = os.environ.get('DATABASE_URL')
 
 #--------------# PRIMARY MODELS #--------------#
 
