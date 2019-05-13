@@ -25,17 +25,17 @@ def load_user(userid):
     except:
         return None;
 
-# # Connect to database before request
-# @app.before_request
-# def before_request():
-#     g.db = DATABASE
-#     g.db.connect()
-#     g.user = current_user
+# Connect to database before request
+@app.before_request
+def before_request():
+    g.db = DATABASE
+    g.db.connect()
+    g.user = current_user
 
-# # Close database after request
-# @app.after_request
-# def after_request(response):
-#     g.db.close()
-#     return response
+# Close database after request
+@app.after_request
+def after_request(response):
+    g.db.close()
+    return response
 
 from app import routes
