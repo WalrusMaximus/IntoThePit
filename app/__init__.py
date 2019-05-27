@@ -35,4 +35,4 @@ def after_request(response):
     g.db.close()
     return response
 
-from app import routes
+from app.routes import admin, auth, band, main, user, venue
