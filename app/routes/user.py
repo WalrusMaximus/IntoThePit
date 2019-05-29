@@ -9,12 +9,18 @@ def user(id):
     ratings = models.Rating.select().where(models.Rating.user_fk == user.id)
     show_ratings = True
 
-    favorite_bands = models.Favorite.select().where(
-        (models.Favorite.user_fk == id) &
-        (models.Favorite.band_fk))
-    favorite_venues = models.Favorite.select().where(
-        (models.Favorite.user_fk == id) &
-        (models.Favorite.venue_fk))
+    favorites = models.Favorite.select().where(models.Favorite.user_fk == id)
+    favorite_bands = []
+    favorite_venues = []
+
+    for band in favorites:
+        if band.band_fk:
+            favorite_bands.append(band)
+
+    for venue in favorites:
+        if venue.venue_fk:
+            favorite_venues.append(venue)
+
 
     bands_query = []
     venues_query = []
@@ -25,12 +31,12 @@ def user(id):
     for bands in bands_to_approve:
         approved_bands.append(bands.skid)
 
-    if favorite_bands:
-        for favorite in favorite_bands:
+    for favorite in favorite_bands:
+        if favorite.band_fk.skid:
             bands_query.append(favorite.band_fk.skid)
 
-    if favorite_venues:
-        for favorite in favorite_venues:
+    for favorite in favorite_venues:
+        if favorite.venue_fk.skid:
             venues_query.append(favorite.venue_fk.skid)
         
 
@@ -68,12 +74,18 @@ def update_user(id):
     img_updating = True
     show_ratings = True
 
-    favorite_bands = models.Favorite.select().where(
-        (models.Favorite.user_fk == id) &
-        (models.Favorite.band_fk))
-    favorite_venues = models.Favorite.select().where(
-        (models.Favorite.user_fk == id) &
-        (models.Favorite.venue_fk))
+    favorites = models.Favorite.select().where(models.Favorite.user_fk == id)
+    favorite_bands = []
+    favorite_venues = []
+
+    for band in favorites:
+        if band.band_fk:
+            favorite_bands.append(band)
+
+    for venue in favorites:
+        if venue.venue_fk:
+            favorite_venues.append(venue)
+
 
     bands_query = []
     venues_query = []
@@ -84,13 +96,14 @@ def update_user(id):
     for bands in bands_to_approve:
         approved_bands.append(bands.skid)
 
-    if favorite_bands:
-        for favorite in favorite_bands:
+    for favorite in favorite_bands:
+        if favorite.band_fk.skid:
             bands_query.append(favorite.band_fk.skid)
 
-    if favorite_venues:
-        for favorite in favorite_venues:
+    for favorite in favorite_venues:
+        if favorite.venue_fk.skid:
             venues_query.append(favorite.venue_fk.skid)
+        
 
     if form.validate_on_submit():
         avatar = user_img(form.avatar.data, user.username)
