@@ -154,7 +154,6 @@ dmypy.json
 # Django stuff:
 
 # Flask stuff:
-config.py
 
 # Scrapy stuff:
 
