@@ -6,7 +6,6 @@ from flask_login import UserMixin
 from flask_bcrypt import generate_password_hash
 
 # DATABASE = SqliteDatabase('intothepit.db')
-
 DATABASE = PostgresqlDatabase('intothepit')
 # DATABASE = connect(os.environ.get('DATABASE_URL'))
 

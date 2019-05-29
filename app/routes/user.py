@@ -93,8 +93,6 @@ def update_user(id):
             venues_query.append(favorite.venue_fk.skid)
 
     if form.validate_on_submit():
-        # breakpoint()
-        # print(form.avatar.data.filename)
         avatar = user_img(form.avatar.data, user.username)
         user_update = models.User.update(
             avatar=user_img(form.avatar.data, user.username)
