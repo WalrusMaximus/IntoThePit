@@ -7,7 +7,7 @@ app = Flask(__name__)
 app.static_folder = 'static'
 app.config.from_object(Config)
 app.config.from_object(Keys)
-heroku = Heroku(app)
+# heroku = Heroku(app)
 
 SONGKICK_KEY = Keys.SONGKICK_API_KEY
 
@@ -37,4 +37,4 @@ def after_request(response):
     g.db.close()
     return response
 
-from app import routes
+from app.routes import admin, auth, band, main, user, venue
