@@ -4,8 +4,8 @@ import os
 
 from flask_login import UserMixin
 from flask_bcrypt import generate_password_hash
+from playhouse.db_url import connect
 
-# DATABASE = SqliteDatabase('intothepit.db')
 DATABASE = PostgresqlDatabase('intothepit')
 # DATABASE = connect(os.environ.get('DATABASE_URL'))
 
@@ -147,10 +147,10 @@ class Favorite(Model):
             raise
 
 
-# def initialize():
-#     DATABASE.connect()
-#     DATABASE.create_tables([User, Band, Venue, Favorite, Rating], safe=True)
-#     DATABASE.close()
+def initialize():
+    DATABASE.connect()
+    DATABASE.create_tables([User, Band, Venue, Favorite, Rating], safe=True)
+    DATABASE.close()
 
 
 
