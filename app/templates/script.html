@@ -1,10 +1,8 @@
 <script>
-
-    var apiKey = "{{ config['SONGKICK_API_KEY'] }}";
     let metro = "26330"
     var bands = []
-    var bandQuery = "https://api.songkick.com/api/3.0/artists/" + {{bandskid}} + "/calendar.json?apikey=" + apiKey
-    var venueQuery = "https://api.songkick.com/api/3.0/venues/" + {{venueskid}} + "/calendar.json?apikey=" + apiKey
+    var bandQuery = "https://api.songkick.com/api/3.0/artists/" + {{bandskid}} + "/calendar.json?apikey=" + "{{ config['SONGKICK_API_KEY'] }}"
+    var venueQuery = "https://api.songkick.com/api/3.0/venues/" + {{venueskid}} + "/calendar.json?apikey=" + "{{ config['SONGKICK_API_KEY'] }}"
 
 
     function bandApi() {
@@ -33,7 +31,7 @@
         })
     }
         function favBand(favorite) {
-            query = "https://api.songkick.com/api/3.0/artists/" + favorite + "/calendar.json?apikey=" + apiKey
+            query = "https://api.songkick.com/api/3.0/artists/" + favorite + "/calendar.json?apikey=" + "{{ config['SONGKICK_API_KEY'] }}"
             $.ajax({
                 method: 'GET',
                 url: query,
@@ -60,7 +58,7 @@
         }
 
     function favVenue(favorite) {
-        query = "https://api.songkick.com/api/3.0/venues/" + favorite + "/calendar.json?apikey=" + apiKey
+        query = "https://api.songkick.com/api/3.0/venues/" + favorite + "/calendar.json?apikey=" + "{{ config['SONGKICK_API_KEY'] }}"
         $.ajax({
             method: 'GET',
             url: query,
