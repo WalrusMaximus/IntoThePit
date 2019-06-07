@@ -1,34 +1,33 @@
+<!-- Reusable ratings template for user profile and venue pages -->
+<div class="box">
+<article class="media">
+  <figure class="media-left">
+    <p class="image is-48x48">
+      <img class="inline-avatar" src="{{ url_for('static', filename=rating.user_fk.avatar)}}" alt="">
+    </p>
+  </figure>
+  <div class="media-content">
+    <div class="content">
+      <p class="level-text"><a href="{{url_for('user',id=rating.user_fk)}}">{{ rating.user_fk.username }}</a>: {{rating.rating_type}} {{ rating.rating }}/5:
+        {{ rating.message }}
+      </p>
+    </div>
+  </div>
 
-        <!-- Main container -->
-        <div class="box">
-                <nav class="level">
-                <!-- Left side -->
-                <div class="level-left">
-                <div class="level-item">
-                    <img class="inline-avatar" src="{{ url_for('static', filename=rating.user_fk.avatar)}}" alt="">
-                </div>
-                <div class="level-item">
-                    <p class="level-text"><a href="{{url_for('user',id=rating.user_fk)}}">{{ rating.user_fk.username }}</a>: {{rating.rating_type}} {{ rating.rating }}/5: {{ rating.message }}.</p>
-                </div>
-                </div>
-            
-                <!-- Right side -->
-                <div class="level-right">
-                    <div class="level-item">
-                    {% if rating.user_fk.id == current_user.id %}
-                    <a href="{{ url_for('venue_update_rating', id=rating.id)}}" aria-label="fa-cog">
-                      <span class="icon is-medium">
-                        <i class="fas fa-edit" aria-hidden="true"></i>
-                      </span>
-                    </a>
-                    <p></p>
-                    <a href="{{ url_for('delete_rating', id=rating.id, profile=False)}}" class="level-item" aria-label="remove">
-                      <span class="icon is-medium">
-                        <i class="fas fa-times" aria-hidden="true"></i>
-                      </span>
-                    </a>
-                    {% endif %}
-                    </div> 
-                </div>
-                </nav>
-            </div>
+  <!-- Right side -->
+    {% if rating.user_fk.id == current_user.id %}
+    <div class="level-right">
+      <span class="icon is-medium">
+        <a href="{{ url_for('venue_update_rating', id=rating.id)}}" aria-label="fa-cog">
+          <i class="fas fa-edit" aria-hidden="true"></i>
+        </a>
+      </span>
+      <span class="icon is-medium">
+        <a href="{{ url_for('delete_rating', id=rating.id, profile=False)}}" class="level-item" aria-label="remove">
+          <i class="fas fa-times" aria-hidden="true"></i>
+        </a>
+      </span>
+    </div>
+      {% endif %}
+  </article>
+</div>

@@ -150,10 +150,12 @@ def admin_update_venue(id):
 def delete_venue(id):
     venue = models.Venue.get(models.Venue.id == id)
     if g.user.user_level == "walrus":
-        venue_deletion = models.Venue.delete().where(models.Venue.id == venue.id)
-        venue_deletion.execute()
+        favorite_deletion = models.Favorite.delete().where(models.Favorite.venue_fk == venue.id)
+        favorite_deletion.execute()
         ratings_deletion = models.Rating.delete().where(models.Rating.venue_fk == venue.id)
         ratings_deletion.execute()
+        venue_deletion = models.Venue.delete().where(models.Venue.id == venue.id)
+        venue_deletion.execute()
         flash(f"Deleted {venue.name}")
         return redirect(url_for('admin'))
     else: 
@@ -229,10 +231,10 @@ def admin_update_band(id):
 def delete_band(id):
     band = models.Band.get(models.Band.id == id)
     if g.user.user_level == "walrus":
-        band_deletion = models.Band.delete().where(models.Band.id == band.id)
-        band_deletion.execute()
         favorite_deletion = models.Favorite.delete().where(models.Favorite.band_fk == band.id)
         favorite_deletion.execute()
+        band_deletion = models.Band.delete().where(models.Band.id == band.id)
+        band_deletion.execute()
         flash(f"Deleted {band.name}")
         return redirect(url_for('admin'))
     else: 
