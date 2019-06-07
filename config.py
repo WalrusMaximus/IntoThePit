@@ -17,3 +17,6 @@ class Keys(object):
 # https://api.songkick.com/api/3.0/artists/527207/calendar.json?apikey={KEY}
 # results.event.venue.metroArea to filter by sf bay area
 # 
+
+# AWSAKI c66089a527315dedf6411a8d80e55852daaf8078c64bd6605cda607f2dde2757
+# AWSAK a18423d73f1d46018c50233af27297e481075171fd9c054fd89cd988003bd5c2
