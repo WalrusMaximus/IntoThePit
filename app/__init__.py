@@ -2,25 +2,40 @@ from flask import Flask, url_for, g, send_from_directory, request
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from app.models import User, Band, Venue, Favorite, Rating
 from config import Config, Keys
-import os, json, boto3
+import cloudinary as Cloud
+import os
 
 app = Flask(__name__)
 app.static_folder = 'static'
 app.config.from_object(Config)
 app.config.from_object(Keys)
-# heroku = Heroku(app)
 
-S3_BUCKET = os.environ.get('S3_BUCKET')
+if os.environ['ENV'] == 'prod':
+    SONGKICK_KEY = os.environ.get('SONGKICK_KEY')
+    CLOUDINARY_API_SECRET = os.environ.get('CLOUDINARY_API_SECRET')
+    CLOUDINARY_API_KEY = os.environ.get('CLOUDINARY_API_KEY')
+    CLOUDINARY_CLOUD_NAME = os.environ.get('CLOUDINARY_CLOUD_NAME')
+else:
+    SONGKICK_KEY = Keys.SONGKICK_API_KEY
+    CLOUDINARY_API_SECRET = Keys.CLOUDINARY_API_SECRET
+    CLOUDINARY_API_KEY = Keys.CLOUDINARY_API_KEY
+    CLOUDINARY_CLOUD_NAME = Keys.CLOUDINARY_CLOUD_NAME
 
-file_name = request.args.get('file_name')
-file_type = request.args.get('file_type')
-
-s3 = boto3.client('s3')
-
-
-SONGKICK_KEY = Keys.SONGKICK_API_KEY
+Cloud.config.update = ({
+    'cloud_name':CLOUDINARY_CLOUD_NAME,
+    'api_key':CLOUDINARY_API_KEY,
+    'api_secret':CLOUDINARY_API_SECRET
+})
+# 
 
 from app.models import DATABASE
+
+# Create production/development conditional CHECK
+# add cloudinary functionality
+# add email confirmation
+# add password forget function
+# add password change function
+# update database to include user confirmation, user creation date 
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -45,31 +60,6 @@ def before_request():
 def after_request(response):
     g.db.close()
     return response
-
-@app.route('/sign_s3/')
-def sign_s3():
-    S3_BUCKET = os.environ.get('S3_BUCKET')
-
-    file_name = request.args.get('file_name')
-    file_type = request.args.get('file_type')
-
-    s3 = boto3.client('s3')
-
-    presigned_post = s3.generate_presigned_post(
-        Bucket = S3_BUCKET,
-        Key = file_name,
-        Fields = {"acl": "public-read", "Content-Type": file_type},
-        Conditions = [
-        {"acl": "public-read"},
-        {"Content-Type": file_type}
-        ],
-        ExpiresIn = 3600
-    )
-
-    return json.dumps({
-        'data': presigned_post,
-        'url': 'https://%s.s3.amazonaws.com/%s' % (S3_BUCKET, file_name)
-    })
 
 @app.route("/submit_form/", methods = ["POST"])
 def submit_form():
