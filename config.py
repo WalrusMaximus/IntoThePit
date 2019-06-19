@@ -7,8 +7,9 @@ class Config(object):
 
 class Keys(object):
     SONGKICK_API_KEY = os.environ.get('SONGKICK_API_KEY') or 'a5ClIZJ5AtwYU8SR'
-
-
+    CLOUDINARY_API_SECRET = os.environ.get('CLOUDINARY_API_SECRET') or 'NPI2KPBytqfcT-_9qhGcQ96HRc4'
+    CLOUDINARY_API_KEY = os.environ.get('CLOUDINARY_API_KEY') or '626474955394754'
+    CLOUDINARY_CLOUD_NAME = os.environ.get('CLOUDINARY_CLOUD_NAME') or 'intothepit'
 
 # standard API query = https://api.songkick.com/api/3.0/artists/379603/gigography.json?apikey={KEY}
 # venue query = https://api.songkick.com/api/3.0/venues/7516/calendar.json?apikey={KEY}
