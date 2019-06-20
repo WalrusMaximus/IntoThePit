@@ -3,8 +3,13 @@ from app import app, models, forms
 from flask_bcrypt import check_password_hash, generate_password_hash
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from app.functions import user_img, band_img, venue_img
+from config import Keys
+import os
+import cloudinary, cloudinary.uploader, cloudinary.api
+from cloudinary.uploader import upload
+from cloudinary.utils import cloudinary_url
 
-# MAIN ADMIN PAGE
+# MAIN
 
 @app.route('/admin')
 @login_required
@@ -19,6 +24,7 @@ def admin():
 
     return render_template('admin.html', users=users, venues=venues, bands=bands)
 
+
 # USER PAGES
 
 @app.route('/admin/add_user', methods=('GET', 'POST'))
@@ -26,6 +32,10 @@ def admin():
 def add_user():
     form = forms.AddUserForm()
     users = models.User.select()
+    cloudinary.uploader.upload("static/images/band_default.jpg",
+        folder = "samples/",
+        public_id = "sample",
+    )
     if current_user.user_level != "walrus":
         flash("Not authorized to access this page", "error")
         return redirect(url_for('index'))
@@ -118,6 +128,26 @@ def update_venue_img(id):
         venue_img_update.execute()
         return redirect(url_for('admin'))
     return render_template('admin_with_form.html', form=form, venues=venues, venue=venue, img_updating=img_updating)
+
+# TEST IMG FOR CLOUDINARY
+
+@app.route('/admin/imgtest/<id>', methods=('GET','POST'))
+@login_required
+def imgtest(id):
+    form = forms.ImgForm()
+    venues = models.Venue.select()
+    img_updating = True
+    venue = models.Venue.get(models.Venue.id == id)
+    if current_user.user_level != "walrus":
+        flash("Not authorized to access this page", "error")
+        return redirect(url_for('index'))
+    if form.validate_on_submit():
+        flash(f"Image for {venue.name} updated","success")
+        img = form.img.data
+        uploading = upload(img, public_id='testimgwalrus', folder='test')
+        return redirect(url_for('admin'))
+    return render_template('admin_with_form.html', form=form, venues=venues, venue=venue, img_updating=img_updating)
+
 
 @app.route('/admin/venue/update/<id>', methods=['GET','POST'])
 @login_required

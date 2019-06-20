@@ -2,6 +2,7 @@
 import os
 from app import app, models
 from PIL import Image
+import cloudinary
 
 def user_img(form_picture, user_name):
     _, f_ext = os.path.splitext(form_picture.filename)
