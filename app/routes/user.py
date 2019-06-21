@@ -2,12 +2,18 @@ from flask import render_template, url_for, flash, redirect
 from app import app, models, forms
 from app.functions import user_img
 from flask_login import current_user, login_required
+import cloudinary, cloudinary.uploader, cloudinary.api
+from cloudinary.uploader import upload
+from cloudinary.utils import cloudinary_url
 
 @app.route("/user/<id>")
 def user(id):
     user = models.User.get(models.User.id == id)
     ratings = models.Rating.select().where(models.Rating.user_fk == user.id)
     show_ratings = True
+
+    image_query = cloudinary.api.resource(f"user/{user.username}")
+    avatar = image_query['url']
 
     favorites = models.Favorite.select().where(models.Favorite.user_fk == id)
     favorite_bands = []
@@ -38,10 +44,19 @@ def user(id):
     for favorite in favorite_venues:
         if favorite.venue_fk.skid:
             venues_query.append(favorite.venue_fk.skid)
-        
 
-    return render_template('user.html', user=user, ratings=ratings, favorite_bands=favorite_bands, favorite_venues=favorite_venues, show_ratings=show_ratings, bands_query=bands_query, venues_query=venues_query, approved_bands=approved_bands)
-
+    return render_template(
+        'user.html',
+        user=user,
+        ratings=ratings,
+        favorite_bands=favorite_bands,
+        favorite_venues=favorite_venues,
+        show_ratings=show_ratings,
+        bands_query=bands_query,
+        venues_query=venues_query,
+        approved_bands=approved_bands,
+        avatar=avatar,
+    )
 
 @app.route('/user/update_rating/<id>', methods=['GET','POST'])
 @login_required
@@ -64,7 +79,16 @@ def user_update_rating(id):
         flash(f"Updated comment on {rating.venue_fk.name}.","success")
         return redirect(url_for('user',id=current_user.id))
 
-    return render_template('user.html', user=user, form=form, record=record, rating=rating, ratings=ratings, show_ratings=show_ratings, no_favorites=no_favorites)
+    return render_template(
+        'user.html',
+        user=user,
+        form=form,
+        record=record,
+        rating=rating,
+        ratings=ratings,
+        show_ratings=show_ratings,
+        no_favorites=no_favorites
+    )
 
 @app.route("/user/update_img/<id>", methods=["POST","GET"])
 def update_user(id):
@@ -73,6 +97,9 @@ def update_user(id):
     form = forms.UpdateUserForm()
     img_updating = True
     show_ratings = True
+
+    image_query = cloudinary.api.resource(f"user/{user.username}")
+    avatar = image_query['url']
 
     favorites = models.Favorite.select().where(models.Favorite.user_fk == id)
     favorite_bands = []
@@ -85,7 +112,6 @@ def update_user(id):
     for venue in favorites:
         if venue.venue_fk:
             favorite_venues.append(venue)
-
 
     bands_query = []
     venues_query = []
@@ -106,15 +132,34 @@ def update_user(id):
         
 
     if form.validate_on_submit():
-        avatar = user_img(form.avatar.data, user.username)
-        user_update = models.User.update(
-            avatar=user_img(form.avatar.data, user.username)
-        ).where(models.User.id == id)
-        user_update.execute()
-        flash(f"Updated your profile information.")
+        flash(f"Image for {user.username} updated","success")
+        img = form.avatar.data
+        try:
+            uploading = upload(img, overwrite=True, version=1, public_id=user.username, folder='user', format="png", width=256, height=255, crops="fill")
+            image_query = cloudinary.api.resource(f"user/{user.username}")
+            avatar = image_query['url']
+            user_update = models.User.update(
+                avatar=avatar
+            ).where(models.User.id == id)
+            user_update.execute()
+        except:
+            flash(f"Couldn't connect to server.. try again.","error")
         return redirect(url_for('user',id=id))
         
-    return render_template('user.html', user=user, form=form, img_updating=img_updating, ratings=ratings, favorite_bands=favorite_bands, favorite_venues=favorite_venues, show_ratings=show_ratings, bands_query=bands_query, venues_query=venues_query, approved_bands=approved_bands)
+    return render_template(
+        'user.html',
+        user=user,
+        form=form,
+        img_updating=img_updating,
+        ratings=ratings,
+        favorite_bands=favorite_bands,
+        favorite_venues=favorite_venues,
+        show_ratings=show_ratings,
+        bands_query=bands_query,
+        venues_query=venues_query,
+        approved_bands=approved_bands,
+        avatar=avatar
+    )
 
     # ########## COMMENTS ########## #
 

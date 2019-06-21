@@ -12,6 +12,7 @@ class Keys(object):
     CLOUDINARY_URL = 'CLOUDINARY_URL=cloudinary://626474955394754:NPI2KPBytqfcT-_9qhGcQ96HRc4@intothepit'
 
 
+
 # standard API query = https://api.songkick.com/api/3.0/artists/379603/gigography.json?apikey={KEY}
 # venue query = https://api.songkick.com/api/3.0/venues/7516/calendar.json?apikey={KEY}
 
