@@ -10,25 +10,16 @@ app.static_folder = 'static'
 app.config.from_object(Config)
 app.config.from_object(Keys)
 
-# CLOUDINARY = {
-#     'cloud_name' = os.environ.get('CLOUDINARY_CLOUD_NAME'),
-#     'api_key' = os.environ.get('CLOUDINARY_API_KEY'),
-#     'api_secret' = os.environ.get('CLOUDINARY_API_SECRET'),
-# }
-
 cloudinary.config(
     cloud_name = os.environ.get('CLOUDINARY_CLOUD_NAME') or Keys.CLOUDINARY_CLOUD_NAME,
     api_key = os.environ.get('CLOUDINARY_API_KEY') or Keys.CLOUDINARY_API_KEY,
     api_secret = os.environ.get('CLOUDINARY_API_SECRET') or Keys.CLOUDINARY_API_SECRET,
 )
 
-
-# 
-
 from app.models import DATABASE
 
 # Create production/development conditional CHECK
-# add cloudinary functionality
+# add cloudinary functionality CHECK
 # add email confirmation
 # add password forget function
 # add password change function
