@@ -3,14 +3,24 @@
 <article class="media">
   <figure class="media-left">
     <p class="image is-32x32">
+      {% if rating.user_fk.avatar == "images/user_default.png" %}
+      <img class="inline-avatar" src="{{url_for('static',filename='images/user_default.png')}}" alt="">
+      {% else %}
       <img class="inline-avatar" src="{{rating.user_fk.avatar}}" alt="">
+      {% endif %}
     </p>
   </figure>
   <div class="media-content">
     <div class="content">
+      {% if venue %}
       <p class="level-text"><a href="{{url_for('user',id=rating.user_fk)}}">{{ rating.user_fk.username }}</a>: {{rating.rating_type}} {{ rating.rating }}/5:
         {{ rating.message }}
       </p>
+      {% else %}
+      <p class="level-text"><a href="{{url_for('user',id=rating.user_fk)}}">{{ rating.user_fk.username }}</a> - <a href="{{url_for('venue',id=rating.venue_fk)}}">{{rating.venue_fk.name}}</a>: {{rating.rating_type}} {{ rating.rating }}/5:
+        {{ rating.message }}
+      </p>
+      {% endif%}
     </div>
   </div>
 
