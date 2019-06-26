@@ -1,4 +1,4 @@
-from flask import render_template, url_for, flash, redirect, jsonify
+from flask import render_template, url_for, flash, redirect, request
 from app import app, models, forms
 from app.functions import user_img
 from flask_login import current_user, login_required
@@ -138,7 +138,6 @@ def update_user(id):
         
 
     if form.validate_on_submit():
-        flash(f"Image for {user.username} updated","success")
         img = form.avatar.data
         try:
             uploading = upload(img, overwrite=True, version=1, public_id=user.username, folder='user', format="png", width=256, height=255, crops="fill")
@@ -148,6 +147,7 @@ def update_user(id):
                 avatar=avatar
             ).where(models.User.id == id)
             user_update.execute()
+            flash(f"Image for {user.username} updated","success")
         except:
             flash(f"Couldn't connect to server.. try again.","error")
         return redirect(url_for('user',id=id))
