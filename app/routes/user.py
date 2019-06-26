@@ -1,4 +1,4 @@
-from flask import render_template, url_for, flash, redirect
+from flask import render_template, url_for, flash, redirect, jsonify
 from app import app, models, forms
 from app.functions import user_img
 from flask_login import current_user, login_required
@@ -12,8 +12,11 @@ def user(id):
     ratings = models.Rating.select().where(models.Rating.user_fk == user.id)
     show_ratings = True
 
-    image_query = cloudinary.api.resource(f"user/{user.username}")
-    avatar = image_query['url']
+    try:
+        image_query = cloudinary.api.resource(f"user/{user.username}")
+        avatar = image_query['url']
+    except:
+        avatar = False
 
     favorites = models.Favorite.select().where(models.Favorite.user_fk == id)
     favorite_bands = []
@@ -98,8 +101,11 @@ def update_user(id):
     img_updating = True
     show_ratings = True
 
-    image_query = cloudinary.api.resource(f"user/{user.username}")
-    avatar = image_query['url']
+    try:
+        image_query = cloudinary.api.resource(f"user/{user.username}")
+        avatar = image_query['url']
+    except:
+        avatar = False
 
     favorites = models.Favorite.select().where(models.Favorite.user_fk == id)
     favorite_bands = []

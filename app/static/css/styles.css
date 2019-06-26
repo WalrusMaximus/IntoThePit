@@ -160,6 +160,12 @@ footer {
     background-color: rgb(214, 98, 98);
 }
 
+@media only screen and (max-width : 1100px) {
+    #section div {
+        width: 100%;
+    }
+}
+
 @media only screen and (max-width : 820px) {
   footer {
       display: none;

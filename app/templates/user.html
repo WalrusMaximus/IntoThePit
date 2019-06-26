@@ -5,7 +5,11 @@
 
 <h4 class="title has-text-centered is-6 is-uppercase">{{user.username}}</h4>
 <div class="venue-img-wrapper">
+    {% if avatar != False %}
     <img class="user_profile_avatar" src="{{avatar}}"/>
+    {% else %}
+    <img class="user_profile_avatar" src="{{url_for('static',filename='images/user_default.png')}}"/>
+    {% endif %}
 </div>
 <br>
 {% if img_updating and current_user == user %}
@@ -59,12 +63,16 @@
 {% endblock %}
 
 {% block main %}
-{% set img_url = avatar %}
 <h4 class="title has-text-centered is-6 is-uppercase">Ratings</h4>
     {% if rating %}
     <h4>Updating Post:</h4>
-    <img class="inline-avatar" src="{{ url_for('static', filename=img_url)}}" alt=""><p>{{ rating.user_fk.username }} says: {{ rating.message }} about the {{ rating.rating_type }} at <a href="{{url_for('venue',id=rating.venue_fk)}}">{{ rating.venue_fk.name }}</a> and gave it a rating of {{ rating.rating }}/5</p>
-        
+    
+    {% if avatar %}
+    <img class="inline_avatar" src="{{avatar}}"/>
+    {% else %}
+    <img class="inline_avatar" src="{{url_for('static',filename='images/user_default.png')}}"/>
+    {% endif %}
+    
         {% if form %}
         <form method="POST" action="" class="form">
             {{ form.hidden_tag() }}
