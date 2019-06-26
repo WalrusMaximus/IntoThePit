@@ -1,7 +1,7 @@
 from flask import Flask, url_for, g, send_from_directory, request
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from app.models import User, Band, Venue, Favorite, Rating
-from config import Config, Keys
+from app.config import Config, Keys
 import cloudinary
 import os
 

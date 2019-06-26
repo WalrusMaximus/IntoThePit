@@ -8,4 +8,14 @@ $(document).ready(function() {
         $(".navbar-menu").toggleClass("is-active");
   
     });
+    
   });
+
+const confirmRatingDelete = () => {
+    $('.modal').toggleClass("is-active")
+}
+
+const cancelRatingDelete = () => {
+    $('.modal').toggleClass("is-active")
+
+}

@@ -2,6 +2,8 @@ from flask import render_template, url_for, flash, redirect
 from flask_bcrypt import check_password_hash, generate_password_hash
 from flask_login import current_user, login_required, login_user, logout_user 
 from app import app, models, forms
+from app.config import Keys
+import os
 
 @app.route('/login', methods=('GET', 'POST'))
 def login():
@@ -29,19 +31,23 @@ def register():
     form = forms.RegisterForm()
     if form.validate_on_submit():
         flash(f"Registered { form.email.data }", 'success')
-        if form.email.data == "matthewjfreeland@gmail.com":
+        if form.email.data == os.environ.get('ADMIN') or Keys.ADMIN :
             models.User.create_user(
                 username=form.username.data,
                 email=form.email.data,
                 password=form.password.data,
                 user_level="walrus"
             )
+            user = models.User.get(models.User.email == form.email.data)
+            login_user(user)
         else:
             models.User.create_user(
                 username=form.username.data,
                 email=form.email.data,
                 password=form.password.data,
-            )            
+            )
+            user = models.User.get(models.User.email == form.email.data)
+            login_user(user)
         return redirect(url_for('index'))
     return render_template('register.html', form=form)
 
