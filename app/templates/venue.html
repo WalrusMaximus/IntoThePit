@@ -3,9 +3,13 @@
 
 {% block sidebar %}
 
-    <h4 class="title has-text-centered is-uppercase">{{venue.name}}</h4>
+    <h4 class="title has-text-centered is-uppercase">{{venue.display_name}}</h4>
     <div class="venue-img-wrapper">
-    <img class="venue_img" src="{{ url_for('static', filename=venue.img)}}" alt="">
+    {% if venue.img != "images/venue_default.jpg" %}
+    <img class="venue_img" src="{{venue.img}}" alt="venue">
+    {% else %}
+    <img class="venue_img" src="{{url_for('static', filename=venue.img)}}" alt="venue">
+    {% endif %}
     </div>
     <blockquote class="has-text-centered" >{{venue.about}}</blockquote>
     {% if current_user.is_anonymous %}

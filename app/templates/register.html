@@ -7,7 +7,7 @@
 {% block main %}
 
 <div class="box little-more-padding">
-<form method="POST" action="" class="form">
+    <form method="POST" enctype="multipart/form-data" action="" class="form">
     {{ form.hidden_tag() }}
     {% for field in form %}
         {{ render_field(field) }}

@@ -11,11 +11,18 @@ $(document).ready(function() {
     
   });
 
-const confirmRatingDelete = () => {
-    $('.modal').toggleClass("is-active")
+const confirmRatingDelete = (ratingNum) => {
+    $(`#rating-modal-${ratingNum}`).toggleClass("is-active")
 }
 
-const cancelRatingDelete = () => {
-    $('.modal').toggleClass("is-active")
+const cancelRatingDelete = (ratingNum) => {
+    $(`#rating-modal-${ratingNum}`).toggleClass("is-active")
+}
 
+const confirmAdminDelete = (ratingNum) => {
+    $(`#admin-modal-${ratingNum}`).toggleClass("is-active")
+}
+
+const cancelAdminDelete = (ratingNum) => {
+    $(`#admin-modal-${ratingNum}`).toggleClass("is-active")
 }

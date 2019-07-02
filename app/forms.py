@@ -64,7 +64,8 @@ class AddUserForm(FlaskForm):
     )
     password = PasswordField('Password', validators=[DataRequired()])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
-    submit = SubmitField('Create')
+    avatar = FileField('Update Profile Picture', validators=[DataRequired(),FileAllowed(['jpg', 'png'])])
+    submit = SubmitField('Commit')
 
 class AdminUpdateUserForm(FlaskForm):
     user_level = SelectField(
@@ -86,9 +87,16 @@ class VenueForm(FlaskForm):
             ),
             Length(min=2, max=128),
         ])
+    display_name = StringField('Display Name', validators=[
+            DataRequired(),  
+            Regexp(r'^[a-zA-Z0-9 ]+$',
+                message=("Name cannot contain symbols or special characters")
+            ),
+        ])
     about = StringField("About", validators=[DataRequired()])
     skid = StringField("Songkick ID", validators=[DataRequired()])
-    submit = SubmitField('Create')
+    img = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png'])])
+    submit = SubmitField('Commit')
 
 class BandForm(FlaskForm):
     name = StringField('Name', validators=[
@@ -97,10 +105,16 @@ class BandForm(FlaskForm):
                 message=("Name cannot contain symbols or special characters")
             ),
         ])
+    display_name = StringField('Display Name', validators=[
+            DataRequired(),  
+            Regexp(r'^[a-zA-Z0-9 ]+$',
+                message=("Name cannot contain symbols or special characters")
+            ),
+        ])
     about = StringField("About", validators=[DataRequired()])
-    genre = StringField("Genre", validators=[DataRequired()])
     skid = StringField("Songkick ID", validators=[DataRequired()])
-    submit = SubmitField('Create')
+    img = FileField('Update Profile Picture', validators=[DataRequired(),FileAllowed(['jpg', 'png'])])
+    submit = SubmitField('Commit')
 
 class RatingForm(FlaskForm):
     rating = SelectField(

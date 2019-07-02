@@ -1,4 +1,5 @@
 {% extends "layout.html" %}
+{% from 'macros.html' import render_field, render_edit_field %}
 {% block sidebar %}
     <p class="has-text-centered">USERS - <a href="/admin/add_user">Add A User</a></p>
         {% for user in users %}
@@ -9,33 +10,64 @@
             </div>
             {% else %}
             <div class="box">
-            <p class="admin">UserID: {{user.id }} - <a href="{{url_for('user',id=user.id)}}">{{ user.username }} </a> - {{ user.email}} - User Level: {{ user.user_level }} <a href="{{ url_for('admin_update_user', id=user.id) }}">Update</a> <a href="{{ url_for('delete_user', id=user.id) }}" class="delete_button">Delete</a></p>
+            <p class="admin">UserID: {{user.id }} - <a href="{{url_for('user',id=user.id)}}">{{ user.username }} </a> - {{ user.email}} - User Level: {{ user.user_level }} <a href="{{ url_for('admin_update_user', id=user.id) }}" class="update_button">Update</a> <span onclick=confirmAdminDelete() class="delete_button">Delete</span></p>
             </div>
             {%endif%}
         {% endif %}
         {% if user.user_level != "walrus" %}
         <div class="box">
-        <p>UserID: {{user.id }} - <a href="{{url_for('user',id=user.id)}}">{{ user.username }} </a> - {{ user.email}} - User Level: {{ user.user_level }} <a href="{{ url_for('admin_update_user', id=user.id) }}">Update</a> <a href="{{ url_for('delete_user', id=user.id) }}" class="delete_button">Delete</a></p>
+        <p>UserID: {{user.id }} - <a href="{{url_for('user',id=user.id)}}">{{ user.username }} </a> - {{ user.email}} - User Level: {{ user.user_level }} <a href="{{ url_for('admin_update_user', id=user.id) }}" class="update_button">Update</a> <a href="{{ url_for('delete_user', id=user.id) }}" class="delete_button">Delete</a></p>
         </div>
         {% endif %}
         {% endfor %}
     <p class="has-text-centered">VENUES - <a href="/admin/add_venue">Add A Venue</a></p>
         {% for venue in venues %}
         <div class="box">
-        <p><a href="{{url_for('venue',id=venue.id)}}">{{ venue.name }}</a>, id: {{ venue.id }} <a href="{{ url_for('admin_update_venue', id=venue.id) }}">Update</a> <a href="{{ url_for('delete_venue', id=venue.id) }}" class="delete_button">Delete</a> <a href="{{ url_for('update_venue_img', id=venue.id)}}">Img</a></p>
+        <p><a href="{{url_for('venue',id=venue.id)}}">{{ venue.name }}</a> / {{venue.display_name}}, id: {{ venue.id }} <a href="{{ url_for('admin_update_venue', id=venue.id) }}" class="update_button">Update</a> <a href="{{ url_for('delete_venue', id=venue.id) }}" class="delete_button">Delete</a></p>
         </div>
         {% endfor %}
     <p class="has-text-centered">BANDS - <a href="/admin/add_band">Add A Band</a></p>
         {% for band in bands %}
         <div class="box">
-        <p><a href="{{url_for('band',id=band.id)}}">{{ band.name }}</a>, id: {{ band.id }} <a href="{{ url_for('admin_update_band', id=band.id) }}">Update</a> <a href="{{ url_for('delete_band', id=band.id) }}" class="delete_button">Delete</a> <a href="{{ url_for('update_band_img', id=band.id)}}">Img</a></p>
+        <p><a href="{{url_for('band',id=band.id)}}">{{ band.name }}</a>, / {{venue.display_name}} id: {{ band.id }} <a href="{{ url_for('admin_update_band', id=band.id) }}" class="update_button">Update</a> <a href="{{ url_for('delete_band', id=band.id) }}" class="delete_button">DeleteH</a></p>
         </div>
         {% endfor %}
 
-    
 {% endblock %}
 
-{% block main_header %}
+
+{% block main %}
+{% if form %}    
+
+    <div class="box little-more-padding">
+        {% if img_updating %}
+        <form method="POST" enctype="multipart/form-data" action="" class="form">
+            {{ form.hidden_tag() }}
+            {% for field in form %}
+                {{ render_field(field) }}
+            {% endfor %}
+        </form>
+        {% elif record %}
+        <form method="POST" enctype="multipart/form-data" action="" class="form">
+            {{ form.hidden_tag() }}
+            {% for field in form %}
+                {{ render_edit_field(field, record) }}
+            {% endfor %}
+            <input type="submit" name="submit" placeholder="Submit">
+        </form>
+        {% else %}
+        <form method="POST" enctype="multipart/form-data" action="" class="form">
+            {{ form.hidden_tag() }}
+            {% for field in form %}
+                {{ render_field(field) }}
+            {% endfor %}
+        </form>
+        {% endif %}
+    </div>
+
+{% else %}
+
+
     {% if users and venues and bands %}
     <div class="venue-img-wrapper">
             <img class="venue_img" src="{{ url_for('static', filename='images/beavisandbutthead.gif')}}" alt="">
@@ -64,4 +96,31 @@
         {% else %}
         {% endif %}
     {% endif %}
+
+{% endif %}
 {% endblock %}
+
+
+<div class="modal" id="admin-modal">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+          <header class="modal-card-head">
+            <p class="modal-card-title">Confirm Deletion</p>
+          </header>
+          <section class="modal-card-body">
+            <p>Are you sure you want to delete this entity?</p>
+          </section>
+          <section class="modal-card-body">
+    
+          </section>
+          <footer class="modal-card-foot">
+            <span>
+              <form action="{{ url_for('delete_venue', id=venue.id, profile=False)}}">
+                <button class="button is-danger">Delete</button>
+              </form>
+              <button class="button" onclick=cancelRatingDelete()>Cancel</button>
+            </span>
+          </footer>
+        </div>
+      </div>
+

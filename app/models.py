@@ -6,6 +6,7 @@ from flask_login import UserMixin
 from flask_bcrypt import generate_password_hash
 from playhouse.db_url import connect
 
+
 # if os.environ.get('IS_HEROKU') == True:
 # DATABASE = connect(os.environ.get('DATABASE_URL'))
 # else:
@@ -19,6 +20,7 @@ class User(UserMixin, Model):
     password = CharField(max_length=128)
     avatar = CharField(default="images/user_default.png")
     user_level = CharField(default="user")
+    creation_date = DateTimeField(default=datetime.datetime.now)
 
     class Meta:
         database = DATABASE
@@ -31,16 +33,16 @@ class User(UserMixin, Model):
                 email=email,
                 password=generate_password_hash(password),
                 avatar=avatar,
-                user_level=user_level
+                user_level=user_level,
+                creation_date=datetime.datetime.now()
             )
         except IntegrityError:
             raise ValueError("User already exists")
 
 class Band(Model):
     name = CharField()
+    display_name = CharField()
     about = CharField()
-    genre = CharField(null=True)
-    themes = CharField(null=True, default="music")
     img = CharField(default="images/band_default.jpg")
     skid = CharField()
 
@@ -48,14 +50,13 @@ class Band(Model):
         database = DATABASE
 
     @classmethod
-    def create_band(cls, name, about, genre, skid, themes="music", img="images/band_default.jpg", bg_img="images/band_bg_default"):
+    def create_band(cls, name, display_name, about, skid, themes="music", img="images/band_default.jpg"):
         try:
             cls.create(
                 name=name,
+                display_name=display_name,
                 about=about,
-                genre=genre,
                 img=img,
-                bg_img=bg_img,
                 skid=skid
             )
         except IntegrityError:
@@ -63,6 +64,7 @@ class Band(Model):
 
 class Venue(Model):
     name = CharField()
+    display_name = CharField()
     img = CharField(default="images/venue_default.jpg")
     about = CharField()
     skid = CharField()
@@ -71,10 +73,11 @@ class Venue(Model):
         database = DATABASE
 
     @classmethod
-    def create_venue(cls, name, about, skid, img="images/venue_default.jpg"):
+    def create_venue(cls, name, display_name, about, skid, img="images/venue_default.jpg"):
         try:
             cls.create(
                 name=name,
+                display_name=display_name,
                 img=img,
                 about=about,
                 skid=skid

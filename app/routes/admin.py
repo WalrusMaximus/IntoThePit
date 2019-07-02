@@ -48,7 +48,7 @@ def add_user():
             password=form.password.data
         )
         return redirect(url_for('add_user'))
-    return render_template('admin_with_form.html',
+    return render_template('admin.html',
         form=form,
         users=users
     )
@@ -71,7 +71,7 @@ def admin_update_user(id):
         flash(f"Updated information for {user.email}.")
         return redirect(url_for('admin'))
 
-    return render_template('admin_with_form.html',
+    return render_template('admin.html',
         form=form,
         users=users,
         user=user
@@ -107,50 +107,40 @@ def add_venue():
         flash("Not authorized to access this page", "error")
         return redirect(url_for('index'))
     if form.validate_on_submit():
-        flash(f"Created venue - { form.name.data }", 'success')
-        models.Venue.create_venue(
-            name=form.name.data,
-            about=form.about.data,
-            skid=form.skid.data
-        )
-        return redirect(url_for('add_venue'))
-    return render_template('admin_with_form.html', form=form, venues=venues)
-
-@app.route('/admin/venue_img/<id>', methods=('GET','POST'))
-@login_required
-def update_venue_img(id):
-    form = forms.ImgForm()
-    venues = models.Venue.select()
-    img_updating = True
-    venue = models.Venue.get(models.Venue.id == id)
-    if current_user.user_level != "walrus":
-        flash("Not authorized to access this page", "error")
-        return redirect(url_for('index'))
-    if form.validate_on_submit():
         img = form.img.data
-        venue_name = venue.name.split(" ")
+        venue_name = form.name.data.split(" ")
         converted_name = "".join(venue_name)
         try:
-            uploading = upload(img, overwrite=True, public_id=converted_name, folder='venue', format="png", width=256, height=255, crops="fill")
-            image_query = cloudinary.api.resource(f"venue/{venue.name}")
-            img = image_query['url']
-            venue_update = models.Venue.update(
-                img=img
-            ).where(models.Venue.id == id)
-            venue_update.execute()
-            flash(f"Image for {venue.name} updated","success")
-            print(img)
-            return redirect(url_for('admin'))
+            if form.img.data:
+                img = form.img.data
+                venue_name = form.name.data.split(" ")
+                converted_name = "".join(venue_name)
+                uploading = upload(img, overwrite=True, public_id=converted_name, folder='venue', format="png", width=512, height=512, crops="lfill")
+                image_query = cloudinary.api.resource(f"venue/{converted_name}")
+                img = image_query['url']
+                models.Venue.create_venue(
+                    name=form.name.data,
+                    display_name=form.display_name.data,
+                    img=img,
+                    about=form.about.data,
+                    skid=form.skid.data
+                )
+                flash(f"Created new venue {form.name.data}","success")
+                return redirect(url_for('admin'))
+            else:
+                models.Venue.create_venue(
+                    name=form.name.data,
+                    display_name=form.display_name.data,
+                    about=form.about.data,
+                    skid=form.skid.data
+                )
+                flash(f"Created new venue {form.name.data}","success")
+                return redirect(url_for('admin'))
         except:
             flash(f"Couldn't connect to server... try again.","error")
-            return redirect(url_for('update_venue_img',id=id))
-    return render_template(
-        'admin_with_form.html',
-        form=form,
-        venues=venues,
-        venue=venue,
-        img_updating=img_updating
-    )
+            return redirect(url_for('add_venue'))
+        return redirect(url_for('add_venue'))
+    return render_template('admin.html', form=form, venues=venues)
 
 @app.route('/admin/venue/update/<id>', methods=['GET','POST'])
 @login_required
@@ -176,7 +166,7 @@ def admin_update_venue(id):
         flash(f"Updated information for {venue.name}.")
         return redirect(url_for('admin'))
 
-    return render_template('admin_with_form.html', form=form, venues=venues, venue=venue)
+    return render_template('admin.html', form=form, venues=venues, venue=venue)
 
 @app.route('/admin/venue/delete/<id>')
 @login_required
@@ -206,35 +196,40 @@ def add_band():
         flash("Not authorized to access this page", "error")
         return redirect(url_for('index'))
     if form.validate_on_submit():
-        flash(f"Created band - { form.name.data }", 'success')
-        models.Band.create_band(
-            name=form.name.data,
-            about=form.about.data,
-            genre=form.genre.data,
-            skid=form.skid.data
-        )
+        img = form.img.data
+        band_name = form.name.data.split(" ")
+        converted_name = "".join(band_name)
+        try:
+            if form.img.data:
+                img = form.img.data
+                band_name = form.name.data.split(" ")
+                converted_name = "".join(band_name)
+                uploading = upload(img, overwrite=True, public_id=converted_name, folder='band', format="png", width=512, height=512, crops="lfill")
+                image_query = cloudinary.api.resource(f"band/{converted_name}")
+                img = image_query['url']
+                models.band.create_band(
+                    name=form.name.data,
+                    display_name=form.display_name.data,
+                    img=img,
+                    about=form.about.data,
+                    skid=form.skid.data
+                )
+                flash(f"Created new band {form.name.data}","success")
+                return redirect(url_for('admin'))
+            else:
+                models.band.create_band(
+                    name=form.name.data,
+                    display_name=form.display_name.data,
+                    about=form.about.data,
+                    skid=form.skid.data
+                )
+                flash(f"Created new band {form.name.data}","success")
+                return redirect(url_for('admin'))
+        except:
+            flash(f"Couldn't connect to server... try again.","error")
+            return redirect(url_for('add_band'))
         return redirect(url_for('add_band'))
-    return render_template('admin_with_form.html', form=form, bands=bands)
-
-@app.route('/admin/band_img/<id>', methods=('GET','POST'))
-@login_required
-def update_band_img(id):
-    form = forms.ImgForm()
-    bands = models.Band.select()
-    img_updating = True
-    band = models.Band.get(models.Band.id == id)
-    if current_user.user_level != "walrus":
-        flash("Not authorized to access this page", "error")
-        return redirect(url_for('index'))
-    if form.validate_on_submit():
-        flash(f"Image for {band.name} updated","success")
-        img = band_img(form.img.data, band.name)
-        band_img_update = models.Band.update(
-            img=band_img(form.img.data, band.name)
-        ).where(models.Band.id == id)
-        band_img_update.execute()
-        return redirect(url_for('admin'))
-    return render_template('admin_with_form.html', form=form, bands=bands, band=band, img_updating=img_updating)
+    return render_template('admin.html', form=form, bands=bands)
 
 @app.route('/admin/band/update/<id>', methods=['GET','POST'])
 @login_required
@@ -257,7 +252,7 @@ def admin_update_band(id):
         flash(f"Updated information for {band.name}.")
         return redirect(url_for('admin'))
 
-    return render_template('admin_with_form.html', form=form, bands=bands, band=band, record=record)
+    return render_template('admin.html', form=form, bands=bands, band=band, record=record)
 
 @app.route('/admin/band/delete/<id>')
 @login_required
