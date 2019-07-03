@@ -1,6 +1,3 @@
-@import url(//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);
-
-
 #headline-logo {
     font-size: 48px;
     width: auto;
@@ -152,7 +149,16 @@ footer {
     display: none;
 }
 
+.admin-tab {
+    background-color: darkgray;
+    border: 3px solid gray;
+    text-align: center;
+    margin: .1rem 1em;
+}
 
+.admin-control span {
+    margin: 0 .2em
+}
 
 .message, .success, .error {
     padding: .5rem 1rem;

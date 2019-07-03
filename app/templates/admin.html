@@ -1,7 +1,23 @@
 {% extends "layout.html" %}
 {% from 'macros.html' import render_field, render_edit_field %}
 {% block sidebar %}
-    <p class="has-text-centered">USERS - <a href="/admin/add_user">Add A User</a></p>
+    <div class="columns admin-tab-container">
+        <a class="column admin-tab" href="{{url_for('add_user')}}">
+            <div>USERS</div>
+        </a>
+        <a class="column admin-tab" href="{{url_for('add_venue')}}">
+            <div>VENUES</div>
+        </a>
+        <a class="column admin-tab" href="{{url_for('add_band')}}">
+            <div>BANDS</div>
+        </a>
+    </div>
+    {% if landing %}
+        <p class="has-text-centered">Press one of the buttons above to view the entries in that category and bring up a form to add a new instance</p>
+    {% endif %}
+
+    {% if users %}
+    <p class="has-text-centered">USERS</p>
         {% for user in users %}
         {% with admin_user=True %}
             {% include "confirm_modal.html" %}
@@ -9,54 +25,103 @@
         {% if user.user_level == "walrus" %}
             {% if user == current_user %}
             <div class="box">
-            <p class="current_admin">UserID: {{user.id }} - <a href="{{url_for('user',id=user.id)}}">{{ user.username }} </a> - {{ user.email}} - User Level: {{ user.user_level }} / Hey, that's you!</p>
+                <div class="level">
+                    <p class="current_admin">Admin ID: {{user.id }} - <a href="{{url_for('user',id=user.id)}}">{{ user.username }} </a> - {{ user.email}}</p>
+                    <p class="level-right">(Current User)</p>
+                </div>
             </div>
             {% else %}
             <div class="box">
-            <p class="admin">UserID: {{user.id }} - <a href="{{url_for('user',id=user.id)}}">{{ user.username }} </a> - {{ user.email}} - User Level: {{ user.user_level }} <a href="{{ url_for('admin_update_user', id=user.id) }}" class="update_button">Update</a> <span onclick=confirmModal("user",{{user.id}}) class="delete_button">Delete</span></p>
+                <div class="level">
+                    <p class="admin">Admin ID: {{user.id }} - <a href="{{url_for('user',id=user.id)}}">{{ user.username }} </a> - {{ user.email}}</p>
+                    <span class="admin-control level-right">
+                        <a href="{{ url_for('admin_update_user', id=user.id) }}" class="icon update_button">
+                            <img class="icon is-small" src={{url_for('static',filename="pen.png")}}>
+                        </a>
+                        <a href="#" onclick=confirmModal("user",{{user.id}}) class="icon delete_button">
+                            <img class="icon is-small" src={{url_for('static',filename="cross.png")}}>
+                        </a>
+                    </span>
+                </div>
             </div>
             {%endif%}
         {% endif %}
         {% if user.user_level != "walrus" %}
-        <div class="box">
-        <p>UserID: {{user.id }} - <a href="{{url_for('user',id=user.id)}}">{{ user.username }} </a> - {{ user.email}} - User Level: {{ user.user_level }} <a href="{{ url_for('admin_update_user', id=user.id) }}" class="update_button">Update</a> <span onclick=confirmModal("user",{{user.id}}) class="delete_button">Delete</span></p>
-        </div>
+            <div class="box">
+                <div class="level">
+                    <p>User ID: {{user.id }} - <a href="{{url_for('user',id=user.id)}}">{{ user.username }} </a> - {{ user.email}}</p>
+                    <span class="admin-control level-right">
+                        <a href="{{ url_for('admin_update_user', id=user.id) }}" class="icon update_button">
+                            <img class="icon is-small" src={{url_for('static',filename="pen.png")}}>
+                        </a>
+                        <a href="#" onclick=confirmModal("user",{{user.id}}) class="icon delete_button">
+                            <img class="icon is-small" src={{url_for('static',filename="cross.png")}}>
+                        </a>
+                    </span>
+                </div>
+            </div>
         {% endif %}
         {% endfor %}
-    <p class="has-text-centered">VENUES - <a href="/admin/add_venue">Add A Venue</a></p>
+    {% elif venues %}
+    <p class="has-text-centered">VENUES</p>
         {% for venue in venues %}
         {% with admin_venue=True %}
             {% include "confirm_modal.html" %}
         {% endwith %}
-        <div class="box">
-        <p><a href="{{url_for('venue',id=venue.id)}}">{{ venue.name }}</a> / {{venue.display_name}} id: {{ venue.id }} <a href="{{ url_for('admin_update_venue', id=venue.id) }}" class="update_button">Update</a> <span onclick=confirmModal("venue",{{venue.id}}) class="delete_button">Delete</span></p>
-        </div>
+            <div class="box">
+                <div class="level">
+                    <p>ID: {{venue.id}} - <a href="{{url_for('venue',id=venue.id)}}">{{ venue.name }}</a>/{{venue.display_name}}</p>
+                    <span class="admin-control level-right">
+                        <a href="{{ url_for('admin_update_venue', id=venue.id) }}" class="icon update_button">
+                            <img class="icon is-small" src={{url_for('static',filename="pen.png")}}>
+                        </a>
+                        <a href="#" onclick=confirmModal("venue",{{venue.id}}) class="icon delete_button">
+                            <img class="icon is-small" src={{url_for('static',filename="cross.png")}}>
+                        </a>
+                    </span>
+                </div>
+            </div>
         {% endfor %}
-    <p class="has-text-centered">BANDS - <a href="/admin/add_band">Add A Band</a></p>
+    {% elif bands %}
+    <p class="has-text-centered">BANDS</p>
         {% for band in bands %}
         {% with admin_band=True %}
             {% include "confirm_modal.html" %}
         {% endwith %}
-        <div class="box">
-        <p><a href="{{url_for('band',id=band.id)}}">{{ band.name }}</a> / {{band.display_name}} id: {{ band.id }} <a href="{{ url_for('admin_update_band', id=band.id) }}" class="update_button">Update</a> <span onclick=confirmModal("band",{{band.id}}) class="delete_button">Delete</span></p>
-        </div>
+            <div class="box">
+                <div class="level">
+                    <p>ID: {{band.id}} - <a href="{{url_for('band',id=band.id)}}">{{ band.name }}</a>/{{band.display_name}}</p>
+                    <span class="admin-control level-right">
+                        <a href="{{ url_for('admin_update_band', id=band.id) }}" class="icon update_button">
+                            <img class="icon is-small" src={{url_for('static',filename="pen.png")}}>
+                        </a>
+                        <a href="#" onclick=confirmModal("band",{{band.id}}) class="icon delete_button">
+                            <img class="icon is-small" src={{url_for('static',filename="cross.png")}}>
+                        </a>
+                    </span>
+                </div>
+            </div>
         {% endfor %}
+    {% endif %}
 
 {% endblock %}
 
 
 {% block main %}
-{% if form %}    
+{% if form %}
+    {% if record %}
+    {% else %}
+        {% if users %}
+            <h2 class="has-text-centered">Adding User</h2>
+        {% elif venues %}
+            <h2 class="has-text-centered">Adding Venue</h2>
+        {% elif bands %}
+            <h2 class="has-text-centered">Adding Band</h2>
+        {% endif %}
+    {% endif %}
 
     <div class="box little-more-padding">
-        {% if img_updating %}
-        <form method="POST" enctype="multipart/form-data" action="" class="form">
-            {{ form.hidden_tag() }}
-            {% for field in form %}
-                {{ render_field(field) }}
-            {% endfor %}
-        </form>
-        {% elif record %}
+        {% if record %}
         <form method="POST" enctype="multipart/form-data" action="" class="form">
             {{ form.hidden_tag() }}
             {% for field in form %}
@@ -77,7 +142,8 @@
 {% else %}
 
 
-    {% if users and venues and bands %}
+    {% if landing %}
+    <p class="has-text-centered">You got this, you're the best!</p>
     <div class="venue-img-wrapper">
             <img class="venue_img" src="{{ url_for('static', filename='images/beavisandbutthead.gif')}}" alt="">
     </div>

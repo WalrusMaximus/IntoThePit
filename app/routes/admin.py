@@ -17,16 +17,8 @@ def admin():
     if current_user.user_level != "walrus":
         flash("Not authorized to access this page", "error")
         return redirect(url_for('index'))
-    
-    users = models.User.select()
-    venues = models.Venue.select().order_by(models.Venue.name)
-    bands = models.Band.select().order_by(models.Band.name)
 
-    return render_template('admin.html',
-        users=users,
-        venues=venues,
-        bands=bands
-    )
+    return render_template('admin.html', landing=True)
 
 
 # USER PAGES
@@ -110,13 +102,14 @@ def delete_user(id):
             user_deletion = models.User.delete().where(models.User.id == user.id)
             try:
                 result = cloudinary.uploader.destroy(f"user/{user.username}")
-                flash(f"Deleted image for {user.username}","success")
+                ratings_deletion.execute()  
+                user_deletion.execute()
+                flash(f"Deleted image and account for {user.username}","success")
             except:
+                ratings_deletion.execute()  
+                user_deletion.execute()
                 flash(f"Couldn't reach Cloudinary, image remains for {user.username}","error")
-            ratings_deletion.execute()  
-            user_deletion.execute()
-            flash(f"Account deleted for {user.username}")
-        return redirect(url_for('admin'))
+        return redirect(url_for('add_user'))
     else: 
         flash("Not authorized to access this page", "error")
         return redirect(url_for('index'))
@@ -196,18 +189,20 @@ def delete_venue(id):
     venue = models.Venue.get(models.Venue.id == id)
     if g.user.user_level == "walrus":
         favorite_deletion = models.Favorite.delete().where(models.Favorite.venue_fk == venue.id)
-        favorite_deletion.execute()
         ratings_deletion = models.Rating.delete().where(models.Rating.venue_fk == venue.id)
-        ratings_deletion.execute()
         venue_deletion = models.Venue.delete().where(models.Venue.id == venue.id)
-        venue_deletion.execute()
         try:
             result = cloudinary.uploader.destroy(f"venue/{venue.name}")
-            flash(f"Deleted image for {venue.name}","success")
+            favorite_deletion.execute()
+            ratings_deletion.execute()
+            venue_deletion.execute()
+            flash(f"Deleted account and image for {venue.name}","success")
         except:
+            favorite_deletion.execute()
+            ratings_deletion.execute()
+            venue_deletion.execute()
             flash(f"Couldn't reach Cloudinary, image remains for {venue.name}","error")
-        flash(f"Deleted {venue.name}")
-        return redirect(url_for('admin'))
+        return redirect(url_for('add_venue'))
     else: 
         flash("Not authorized to access this page", "error")
         return redirect(url_for('index'))
@@ -287,11 +282,17 @@ def delete_band(id):
     band = models.Band.get(models.Band.id == id)
     if g.user.user_level == "walrus":
         favorite_deletion = models.Favorite.delete().where(models.Favorite.band_fk == band.id)
-        favorite_deletion.execute()
         band_deletion = models.Band.delete().where(models.Band.id == band.id)
-        band_deletion.execute()
-        flash(f"Deleted {band.name}")
-        return redirect(url_for('admin'))
+        try:
+            result = cloudinary.uploader.destroy(f"band/{band.name}")
+            favorite_deletion.execute()
+            band_deletion.execute()
+            flash(f"Deleted {band.name} and CDN image","success")
+        except:
+            favorite_deletion.execute()
+            band_deletion.execute()
+            flash(f"Deleted {band.name} - Couldn't connect to server to delete image")
+        return redirect(url_for('add_band'))
     else: 
         flash("Not authorized to access this page", "error")
         return redirect(url_for('index'))
