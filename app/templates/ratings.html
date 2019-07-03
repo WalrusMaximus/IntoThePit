@@ -26,17 +26,16 @@
 
   <!-- Right side -->
     {% if rating.user_fk.id == current_user.id %}
-    {% include "rating_modal.html" %}
+    {# Check if user owns rating, construct modal and full rating #}
+    {% include "confirm_modal.html" %}
       <div class="level-right">
         <span class="icon is-medium">
-          <a href="{{ url_for('venue_update_rating', id=rating.id)}}" aria-label="fa-cog">
-            <i class="fas fa-edit" aria-hidden="true"></i>
-            <p>Edit</p>
+          <a class="icon is-small" href="{{ url_for('venue_update_rating', id=rating.id)}}" aria-label="fa-cog">
+            <img class="icon is-small" src="{{url_for('static',filename='pen.png')}}">
           </a>
         </span>
-        <span class="icon is-medium" onclick=confirmRatingDelete({{rating.id}}) aria-label="remove">
-          <i class="fas fa-times" aria-hidden="true"></i>
-          <p>X</p>
+        <span class="icon is-medium" onclick=confirmModal("rating",{{rating.id}}) aria-label="remove">
+            <img class="icon is-small" src="{{url_for('static',filename='cross.png')}}">
         </span>
       </div>
     {% endif %}

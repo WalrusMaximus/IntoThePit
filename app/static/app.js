@@ -8,21 +8,18 @@ $(document).ready(function() {
         $(".navbar-menu").toggleClass("is-active");
   
     });
+
+    $(".modal-background").click(function() {
+        $(`.is-active`).removeClass("is-active")
+    })
+
+    $(".modal-clear").click(function() {
+        $(`.is-active`).removeClass("is-active")
+    })
     
   });
 
-const confirmRatingDelete = (ratingNum) => {
-    $(`#rating-modal-${ratingNum}`).toggleClass("is-active")
-}
-
-const cancelRatingDelete = (ratingNum) => {
-    $(`#rating-modal-${ratingNum}`).toggleClass("is-active")
-}
-
-const confirmAdminDelete = (ratingNum) => {
-    $(`#admin-modal-${ratingNum}`).toggleClass("is-active")
-}
-
-const cancelAdminDelete = (ratingNum) => {
-    $(`#admin-modal-${ratingNum}`).toggleClass("is-active")
+const confirmModal = (type, id) => {
+    $(`#${type}-modal-${id}`).toggleClass("is-active")
+    console.log(`${type}-modal-${id}`)
 }

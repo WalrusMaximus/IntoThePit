@@ -64,7 +64,7 @@ class AddUserForm(FlaskForm):
     )
     password = PasswordField('Password', validators=[DataRequired()])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
-    avatar = FileField('Update Profile Picture', validators=[DataRequired(),FileAllowed(['jpg', 'png'])])
+    avatar = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png'])])
     submit = SubmitField('Commit')
 
 class AdminUpdateUserForm(FlaskForm):
@@ -113,7 +113,7 @@ class BandForm(FlaskForm):
         ])
     about = StringField("About", validators=[DataRequired()])
     skid = StringField("Songkick ID", validators=[DataRequired()])
-    img = FileField('Update Profile Picture', validators=[DataRequired(),FileAllowed(['jpg', 'png'])])
+    img = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png'])])
     submit = SubmitField('Commit')
 
 class RatingForm(FlaskForm):

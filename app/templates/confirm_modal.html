@@ -1,0 +1,42 @@
+{% if admin_user %}
+    {% set type = "user" %}
+    {% set content = user.username %}
+    {% set route = "delete_user" %}
+    {% set id = user %}
+{% elif admin_venue %}
+    {% set type = "venue" %}
+    {% set content = venue.name %}
+    {% set route = "delete_venue" %}
+    {% set id = venue %}
+{% elif admin_band %}
+    {% set type = "band" %}
+    {% set content = band.name %}
+    {% set route = "delete_band" %}
+    {% set id = band %}
+{% else %}
+    {% set type = "rating" %}
+    {% set content = rating.message %}
+    {% set route = "delete_rating" %}
+    {% set id = rating %}
+{% endif %}
+
+<div class="modal" id="{{type}}-modal-{{id}}">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+            <p class="modal-card-title">Confirm Deletion</p>
+            <button class="delete modal-clear" aria-label="close"></button>
+            </header>
+            <section class="modal-card-body has-text-centered">
+                <p>Are you sure you want to delete this {{type}}?</p>
+            </section>
+            <section class="modal-card-body has-text-centered">
+                <p>{{content}}</p>
+            </section>
+            <footer class="modal-card-foot">
+                <form action="{{ url_for(route, id=id, profile=False)}}">
+                <button class="button is-danger">Delete</button>
+                </form>
+            </footer>
+        </div>
+    </div>

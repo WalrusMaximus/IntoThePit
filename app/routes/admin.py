@@ -6,7 +6,7 @@ from app.functions import user_img, band_img, venue_img
 from app.config import Keys
 import os
 import cloudinary, cloudinary.uploader, cloudinary.api
-from cloudinary.uploader import upload
+from cloudinary.uploader import upload, destroy
 from cloudinary.utils import cloudinary_url
 
 # MAIN
@@ -86,12 +86,17 @@ def delete_user(id):
             flash("We don't condone seppuku here, get someone else to kill your account","error")
             return redirect(url_for('admin'))
         else:
-            user_deletion = models.User.delete().where(models.User.id == user.id)
-            user_deletion.execute()
             ratings_deletion = models.Rating.delete().where(models.Rating.user_fk == user.id)
-            ratings_deletion.execute()
-            flash(f"Deleted {user.username}")
-            return redirect(url_for('admin'))
+            user_deletion = models.User.delete().where(models.User.id == user.id)
+            try:
+                result = cloudinary.uploader.destroy(f"user/{user.username}")
+                flash(f"Deleted image for {user.username}","success")
+            except:
+                flash(f"Couldn't reach Cloudinary, image remains for {user.username}","error")
+            ratings_deletion.execute()  
+            user_deletion.execute()
+            flash(f"Account deleted for {user.username}")
+        return redirect(url_for('admin'))
     else: 
         flash("Not authorized to access this page", "error")
         return redirect(url_for('index'))
@@ -179,6 +184,11 @@ def delete_venue(id):
         ratings_deletion.execute()
         venue_deletion = models.Venue.delete().where(models.Venue.id == venue.id)
         venue_deletion.execute()
+        try:
+            result = cloudinary.uploader.destroy(f"venue/{venue.name}")
+            flash(f"Deleted image for {venue.name}","success")
+        except:
+            flash(f"Couldn't reach Cloudinary, image remains for {venue.name}","error")
         flash(f"Deleted {venue.name}")
         return redirect(url_for('admin'))
     else: 
@@ -199,15 +209,16 @@ def add_band():
         img = form.img.data
         band_name = form.name.data.split(" ")
         converted_name = "".join(band_name)
-        try:
-            if form.img.data:
+        
+        if form.img.data:
+            try:
                 img = form.img.data
                 band_name = form.name.data.split(" ")
                 converted_name = "".join(band_name)
                 uploading = upload(img, overwrite=True, public_id=converted_name, folder='band', format="png", width=512, height=512, crops="lfill")
                 image_query = cloudinary.api.resource(f"band/{converted_name}")
                 img = image_query['url']
-                models.band.create_band(
+                models.Band.create_band(
                     name=form.name.data,
                     display_name=form.display_name.data,
                     img=img,
@@ -216,18 +227,18 @@ def add_band():
                 )
                 flash(f"Created new band {form.name.data}","success")
                 return redirect(url_for('admin'))
-            else:
-                models.band.create_band(
-                    name=form.name.data,
-                    display_name=form.display_name.data,
-                    about=form.about.data,
-                    skid=form.skid.data
-                )
-                flash(f"Created new band {form.name.data}","success")
-                return redirect(url_for('admin'))
-        except:
-            flash(f"Couldn't connect to server... try again.","error")
-            return redirect(url_for('add_band'))
+            except:
+                flash(f"Couldn't connect to server... try again.","error")
+                return redirect(url_for('add_band'))
+        else:
+            models.Band.create_band(
+                name=form.name.data,
+                display_name=form.display_name.data,
+                about=form.about.data,
+                skid=form.skid.data
+            )
+            flash(f"Created new band {form.name.data}","success")
+            return redirect(url_for('admin'))
         return redirect(url_for('add_band'))
     return render_template('admin.html', form=form, bands=bands)
 
