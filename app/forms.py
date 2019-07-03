@@ -65,7 +65,7 @@ class AddUserForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     avatar = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png'])])
-    submit = SubmitField('Commit')
+    submit = SubmitField('Submit')
 
 class AdminUpdateUserForm(FlaskForm):
     user_level = SelectField(
@@ -73,11 +73,11 @@ class AdminUpdateUserForm(FlaskForm):
         choices=[("user", 'user'), ("walrus", 'walrus')],
         default="user"
     )
-    submit = SubmitField('Commit Changes')
+    submit = SubmitField('Submit Changes')
 
 class UpdateUserForm(FlaskForm):
     avatar = FileField('Update Profile Picture', validators=[DataRequired(),FileAllowed(['jpg', 'png'])])
-    submit = SubmitField('Commit Changes')
+    submit = SubmitField('Submit Changes')
 
 class VenueForm(FlaskForm):
     name = StringField('Name', validators=[
@@ -96,7 +96,7 @@ class VenueForm(FlaskForm):
     about = StringField("About", validators=[DataRequired()])
     skid = StringField("Songkick ID", validators=[DataRequired()])
     img = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png'])])
-    submit = SubmitField('Commit')
+    submit = SubmitField('Submit')
 
 class BandForm(FlaskForm):
     name = StringField('Name', validators=[
@@ -114,7 +114,7 @@ class BandForm(FlaskForm):
     about = StringField("About", validators=[DataRequired()])
     skid = StringField("Songkick ID", validators=[DataRequired()])
     img = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png'])])
-    submit = SubmitField('Commit')
+    submit = SubmitField('Submit')
 
 class UpdateVenueForm(FlaskForm):
     display_name = StringField('Display Name', validators=[
@@ -126,7 +126,7 @@ class UpdateVenueForm(FlaskForm):
     about = StringField("About", validators=[DataRequired()])
     skid = StringField("Songkick ID", validators=[DataRequired()])
     img = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png'])])
-    submit = SubmitField('Commit')
+    submit = SubmitField('Submit')
 
 class UpdateBandForm(FlaskForm):
     display_name = StringField('Display Name', validators=[
@@ -138,7 +138,7 @@ class UpdateBandForm(FlaskForm):
     about = StringField("About", validators=[DataRequired()])
     skid = StringField("Songkick ID", validators=[DataRequired()])
     img = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png'])])
-    submit = SubmitField('Commit')    
+    submit = SubmitField('Submit')    
 
 class RatingForm(FlaskForm):
     rating = SelectField(

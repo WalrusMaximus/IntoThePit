@@ -149,6 +149,10 @@ footer {
     display: none;
 }
 
+.field {
+    width: 90%;
+}
+
 .admin-tab {
     background-color: darkgray;
     border: 3px solid gray;
