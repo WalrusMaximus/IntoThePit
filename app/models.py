@@ -6,7 +6,10 @@ from flask_login import UserMixin
 from flask_bcrypt import generate_password_hash
 from playhouse.db_url import connect
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1b656d5a6e6c7e57dae2d8dab271e82a0d73990d
 # if os.environ.get('IS_HEROKU') == True:
 # DATABASE = connect(os.environ.get('DATABASE_URL'))
 # else:

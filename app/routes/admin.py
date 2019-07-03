@@ -6,7 +6,11 @@ from app.functions import user_img, band_img, venue_img
 from app.config import Keys
 import os
 import cloudinary, cloudinary.uploader, cloudinary.api
+<<<<<<< HEAD
 from cloudinary.uploader import upload, destroy
+=======
+from cloudinary.uploader import upload
+>>>>>>> 1b656d5a6e6c7e57dae2d8dab271e82a0d73990d
 from cloudinary.utils import cloudinary_url
 
 # MAIN
@@ -48,7 +52,11 @@ def add_user():
             password=form.password.data
         )
         return redirect(url_for('add_user'))
+<<<<<<< HEAD
     return render_template('admin.html',
+=======
+    return render_template('admin_with_form.html',
+>>>>>>> 1b656d5a6e6c7e57dae2d8dab271e82a0d73990d
         form=form,
         users=users
     )
@@ -71,7 +79,11 @@ def admin_update_user(id):
         flash(f"Updated information for {user.email}.")
         return redirect(url_for('admin'))
 
+<<<<<<< HEAD
     return render_template('admin.html',
+=======
+    return render_template('admin_with_form.html',
+>>>>>>> 1b656d5a6e6c7e57dae2d8dab271e82a0d73990d
         form=form,
         users=users,
         user=user
@@ -145,7 +157,47 @@ def add_venue():
             flash(f"Couldn't connect to server... try again.","error")
             return redirect(url_for('add_venue'))
         return redirect(url_for('add_venue'))
+<<<<<<< HEAD
     return render_template('admin.html', form=form, venues=venues)
+=======
+    return render_template('admin_with_form.html', form=form, venues=venues)
+
+@app.route('/admin/venue_img/<id>', methods=('GET','POST'))
+@login_required
+def update_venue_img(id):
+    form = forms.ImgForm()
+    venues = models.Venue.select()
+    img_updating = True
+    venue = models.Venue.get(models.Venue.id == id)
+    if current_user.user_level != "walrus":
+        flash("Not authorized to access this page", "error")
+        return redirect(url_for('index'))
+    if form.validate_on_submit():
+        img = form.img.data
+        venue_name = venue.name.split(" ")
+        converted_name = "".join(venue_name)
+        try:
+            uploading = upload(img, overwrite=True, public_id=converted_name, folder='venue', format="png", width=256, height=255, crops="fill")
+            image_query = cloudinary.api.resource(f"venue/{venue.name}")
+            img = image_query['url']
+            venue_update = models.Venue.update(
+                img=img
+            ).where(models.Venue.id == id)
+            venue_update.execute()
+            flash(f"Image for {venue.name} updated","success")
+            print(img)
+            return redirect(url_for('admin'))
+        except:
+            flash(f"Couldn't connect to server... try again.","error")
+            return redirect(url_for('update_venue_img',id=id))
+    return render_template(
+        'admin_with_form.html',
+        form=form,
+        venues=venues,
+        venue=venue,
+        img_updating=img_updating
+    )
+>>>>>>> 1b656d5a6e6c7e57dae2d8dab271e82a0d73990d
 
 @app.route('/admin/venue/update/<id>', methods=['GET','POST'])
 @login_required
@@ -184,11 +236,14 @@ def delete_venue(id):
         ratings_deletion.execute()
         venue_deletion = models.Venue.delete().where(models.Venue.id == venue.id)
         venue_deletion.execute()
+<<<<<<< HEAD
         try:
             result = cloudinary.uploader.destroy(f"venue/{venue.name}")
             flash(f"Deleted image for {venue.name}","success")
         except:
             flash(f"Couldn't reach Cloudinary, image remains for {venue.name}","error")
+=======
+>>>>>>> 1b656d5a6e6c7e57dae2d8dab271e82a0d73990d
         flash(f"Deleted {venue.name}")
         return redirect(url_for('admin'))
     else: 
