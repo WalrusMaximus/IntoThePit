@@ -30,7 +30,6 @@ def login():
 def register():
     form = forms.RegisterForm()
     if form.validate_on_submit():
-<<<<<<< HEAD
         admin_access = False
         print("Env", os.environ.get('ADMIN'))
         print(Keys.ADMIN)
@@ -40,10 +39,6 @@ def register():
         if Keys.ADMIN == form.email.data:
             admin_access = True
         if admin_access:
-=======
-        flash(f"Registered { form.email.data }", 'success')
-        if form.email.data == os.environ.get('ADMIN') or Keys.ADMIN :
->>>>>>> 1b656d5a6e6c7e57dae2d8dab271e82a0d73990d
             models.User.create_user(
                 username=form.username.data,
                 email=form.email.data,
@@ -51,25 +46,17 @@ def register():
                 user_level="walrus"
             )
             user = models.User.get(models.User.email == form.email.data)
-<<<<<<< HEAD
             flash(f"Registered Admin { form.email.data }", 'success')
-=======
->>>>>>> 1b656d5a6e6c7e57dae2d8dab271e82a0d73990d
             login_user(user)
         else:
             models.User.create_user(
                 username=form.username.data,
                 email=form.email.data,
                 password=form.password.data,
-<<<<<<< HEAD
                 user_level="user"
             )
             user = models.User.get(models.User.email == form.email.data)
             flash(f"Registered { form.email.data }", 'success')
-=======
-            )
-            user = models.User.get(models.User.email == form.email.data)
->>>>>>> 1b656d5a6e6c7e57dae2d8dab271e82a0d73990d
             login_user(user)
         return redirect(url_for('index'))
     return render_template('register.html', form=form)
