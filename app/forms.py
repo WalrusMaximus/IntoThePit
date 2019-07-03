@@ -116,6 +116,30 @@ class BandForm(FlaskForm):
     img = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png'])])
     submit = SubmitField('Commit')
 
+class UpdateVenueForm(FlaskForm):
+    display_name = StringField('Display Name', validators=[
+            DataRequired(),  
+            Regexp(r'^[a-zA-Z0-9 ]+$',
+                message=("Name cannot contain symbols or special characters")
+            ),
+        ])
+    about = StringField("About", validators=[DataRequired()])
+    skid = StringField("Songkick ID", validators=[DataRequired()])
+    img = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png'])])
+    submit = SubmitField('Commit')
+
+class UpdateBandForm(FlaskForm):
+    display_name = StringField('Display Name', validators=[
+            DataRequired(),  
+            Regexp(r'^[a-zA-Z0-9 ]+$',
+                message=("Name cannot contain symbols or special characters")
+            ),
+        ])
+    about = StringField("About", validators=[DataRequired()])
+    skid = StringField("Songkick ID", validators=[DataRequired()])
+    img = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png'])])
+    submit = SubmitField('Commit')    
+
 class RatingForm(FlaskForm):
     rating = SelectField(
         'Rating = 1-5',
@@ -129,7 +153,4 @@ class RatingForm(FlaskForm):
     message = StringField('Tell us what you think...', validators=[DataRequired(), Length(max=512)])
     submit = SubmitField("Submit")
 
-class ImgForm(FlaskForm):
-    img = FileField('Update Profile Picture', validators=[DataRequired(),FileAllowed(['jpg', 'png'])])
-    submit = SubmitField('Commit Changes')
     

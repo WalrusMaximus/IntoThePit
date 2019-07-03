@@ -49,12 +49,4 @@ def after_request(response):
     g.db.close()
     return response
 
-@app.route("/submit_form/", methods = ["POST"])
-def submit_form():
-    avatar_url = request.form["avatar-url"]
-
-    update_account(avatar_url)
-
-    return redirect(url_for('index'))
-
 from app.routes import admin, auth, band, main, user, venue

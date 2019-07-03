@@ -4,6 +4,13 @@ from app import app, models
 from PIL import Image
 import cloudinary
 
+
+def user_img_upload(img):
+    uploading = upload(img, overwrite=True, version=1, public_id=user.username, folder='user', format="png", width=256, height=255, crops="fill")
+    image_query = cloudinary.api.resource(f"user/{user.username}")
+    avatar = image_query['url']
+    return avatar
+
 def user_img(form_picture, user_name):
     _, f_ext = os.path.splitext(form_picture.filename)
     file_path = "images/user_"

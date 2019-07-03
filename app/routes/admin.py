@@ -2,7 +2,7 @@ from flask import render_template, url_for, flash, redirect, g, request
 from app import app, models, forms
 from flask_bcrypt import check_password_hash, generate_password_hash
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
-from app.functions import user_img, band_img, venue_img
+from app.functions import user_img_upload
 from app.config import Keys
 import os
 import cloudinary, cloudinary.uploader, cloudinary.api
@@ -40,14 +40,34 @@ def add_user():
         flash("Not authorized to access this page", "error")
         return redirect(url_for('index'))
     if form.validate_on_submit():
-        flash(f"Created user - { form.email.data }", 'success')
-        models.User.create_user(
-            username=form.username.data,
-            email=form.email.data,
-            user_level=form.user_level.data,
-            password=form.password.data
-        )
-        return redirect(url_for('add_user'))
+        if form.avatar.data:
+            img = form.avatar.data
+            try:
+                uploading = upload(img, overwrite=True, version=1, public_id=form.username.data, folder='user', format="png", width=256, height=255, crops="fill")
+                image_query = cloudinary.api.resource(f"user/{form.username.data}")
+                avatar = image_query['url']
+                models.User.create_user(
+                    username=form.username.data,
+                    email=form.email.data,
+                    user_level=form.user_level.data,
+                    password=form.password.data,
+                    avatar=avatar
+                )
+                flash(f"Created user - { form.email.data }", 'success')
+                return redirect(url_for('add_user'))
+            except:
+                flash(f"Couldn't connect to server.. try again later.","error")
+                return redirect(url_for('add_user'))
+   
+        else:
+            models.User.create_user(
+                username=form.username.data,
+                email=form.email.data,
+                user_level=form.user_level.data,
+                password=form.password.data
+            )
+            flash(f"Created user - { form.email.data }", 'success')
+        
     return render_template('admin.html',
         form=form,
         users=users
@@ -150,28 +170,25 @@ def add_venue():
 @app.route('/admin/venue/update/<id>', methods=['GET','POST'])
 @login_required
 def admin_update_venue(id):
-    form = forms.VenueForm()
+    form = forms.UpdateVenueForm()
     venues = models.Venue.select()
     venue = models.Venue.get(models.Venue.id == id)
-
-    form.name.data = venue.name
-    form.about.data = venue.about
-    form.skid.data = venue.skid
+    record = models.Venue.select().where(id == models.Venue.id).dicts().get()
 
     if current_user.user_level != "walrus":
         flash("Not authorized to access this page", "error")
         return redirect(url_for('index'))
     if form.validate_on_submit():
         venue_update = models.Venue.update(
-            name=form.name.data,
+            display_name=form.display_name.data,
             about=form.about.data,
             skid=form.skid.data
         ).where(models.Venue.id == id)
         venue_update.execute()
-        flash(f"Updated information for {venue.name}.")
+        flash(f"Updated information for {venue.display_name}.")
         return redirect(url_for('admin'))
 
-    return render_template('admin.html', form=form, venues=venues, venue=venue)
+    return render_template('admin.html', form=form, venues=venues, venue=venue, record=record)
 
 @app.route('/admin/venue/delete/<id>')
 @login_required
@@ -245,7 +262,7 @@ def add_band():
 @app.route('/admin/band/update/<id>', methods=['GET','POST'])
 @login_required
 def admin_update_band(id):
-    form = forms.BandForm()
+    form = forms.UpdateBandForm()
     bands = models.Band.select()
     band = models.Band.get(models.Band.id == id)
     record = models.Band.select().where(id == models.Band.id).dicts().get()
@@ -254,13 +271,12 @@ def admin_update_band(id):
         return redirect(url_for('index'))
     if form.validate_on_submit():
         band_update = models.Band.update(
-            name=form.name.data,
+            display_name=form.display_name.data,
             about=form.about.data,
-            genre=form.genre.data,
             skid=form.skid.data
         ).where(models.Band.id == id)
         band_update.execute()
-        flash(f"Updated information for {band.name}.")
+        flash(f"Updated information for {band.display_name}.")
         return redirect(url_for('admin'))
 
     return render_template('admin.html', form=form, bands=bands, band=band, record=record)
