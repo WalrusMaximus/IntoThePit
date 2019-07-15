@@ -2,7 +2,7 @@ from flask import render_template, url_for, flash, redirect
 from flask_bcrypt import check_password_hash, generate_password_hash
 from flask_login import current_user, login_required, login_user, logout_user 
 from app import app, models, forms
-from app.config import Keys
+# from app.config import Keys
 import os
 
 @app.route('/login', methods=('GET', 'POST'))

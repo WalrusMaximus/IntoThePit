@@ -16,6 +16,7 @@
         <p class="has-text-centered">Press one of the buttons above to view the entries in that category and bring up a form to add a new instance</p>
     {% endif %}
 
+    
     {% if users %}
     <p class="has-text-centered">USERS</p>
         {% for user in users %}
@@ -82,6 +83,9 @@
                 </div>
             </div>
         {% endfor %}
+    {% if venues|length > 25%}
+        {% include 'paginator.html' %}
+    {% endif %}
     {% elif bands %}
     <p class="has-text-centered">BANDS</p>
         {% for band in bands %}
@@ -102,9 +106,14 @@
                 </div>
             </div>
         {% endfor %}
+        {% if bands|length > 25%}
+            {% include 'paginator.html' %}
+        {% endif %}
     {% endif %}
 
-{% endblock %}
+
+
+{% endblock sidebar %}
 
 
 {% block main %}
@@ -172,5 +181,5 @@
     {% endif %}
 
 {% endif %}
-{% endblock %}
+{% endblock main %}
 

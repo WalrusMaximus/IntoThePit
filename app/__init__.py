@@ -1,14 +1,14 @@
 from flask import Flask, url_for, g, send_from_directory, request
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from app.models import User, Band, Venue, Favorite, Rating
-from app.config import Config, Keys
+# from app.config import Config, Keys
 import cloudinary
 import os
 
 app = Flask(__name__)
 app.static_folder = 'static'
-app.config.from_object(Config)
-app.config.from_object(Keys)
+# app.config.from_object(Config)
+# app.config.from_object(Keys)
 
 cloudinary.config(
     cloud_name = os.environ.get('CLOUDINARY_CLOUD_NAME') or Keys.CLOUDINARY_CLOUD_NAME,
@@ -16,14 +16,9 @@ cloudinary.config(
     api_secret = os.environ.get('CLOUDINARY_API_SECRET') or Keys.CLOUDINARY_API_SECRET,
 )
 
-from app.models import DATABASE
+app.secret_key = os.environ.get('SECRET_KEY')
 
-# Create production/development conditional CHECK
-# add cloudinary functionality CHECK
-# add email confirmation
-# add password forget function
-# add password change function
-# update database to include user confirmation, user creation date 
+from app.models import DATABASE
 
 login_manager = LoginManager()
 login_manager.init_app(app)

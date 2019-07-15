@@ -3,7 +3,7 @@ from app import app, models, forms
 from flask_bcrypt import check_password_hash, generate_password_hash
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from app.functions import user_img_upload
-from app.config import Keys
+# from app.config import Keys
 import os
 import cloudinary, cloudinary.uploader, cloudinary.api
 from cloudinary.uploader import upload, destroy
@@ -27,7 +27,7 @@ def admin():
 @login_required
 def add_user():
     form = forms.AddUserForm()
-    users = models.User.select()
+    users = models.User.select().order_by(models.User.id)
     if current_user.user_level != "walrus":
         flash("Not authorized to access this page", "error")
         return redirect(url_for('index'))
