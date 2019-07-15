@@ -6,10 +6,10 @@ from flask_login import UserMixin
 from flask_bcrypt import generate_password_hash
 from playhouse.db_url import connect
 
-if os.environ.get('IS_HEROKU'):
-    DATABASE = connect(os.environ.get('DATABASE_URL'))
-if os.environ.get('FLASK_ENV') == "development":
-    DATABASE = PostgresqlDatabase('intothepit')
+# if os.environ.get('IS_HEROKU'):
+DATABASE = connect(os.environ.get('DATABASE_URL'))
+# if os.environ.get('FLASK_ENV') == "development":
+# DATABASE = PostgresqlDatabase('intothepit')
 
 #--------------# PRIMARY MODELS #--------------#
 
