@@ -5,6 +5,7 @@ from app import app, models
 if __name__ == '__main__':
     if os.environ.get('IS_HEROKU'):
         print("Launching in Production Environment")
+        models.initialize()
         app.run(debug=False)
     else:
         models.initialize()
