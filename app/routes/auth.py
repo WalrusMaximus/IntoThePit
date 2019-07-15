@@ -31,13 +31,9 @@ def register():
     form = forms.RegisterForm()
     if form.validate_on_submit():
         admin_access = False
-        print("Env", os.environ.get('ADMIN'))
-        print(Keys.ADMIN)
         if os.environ.get('ADMIN'):
             if form.email.data == os.environ.get('ADMIN'):
                 admin_access = True
-        if Keys.ADMIN == form.email.data:
-            admin_access = True
         if admin_access:
             models.User.create_user(
                 username=form.username.data,

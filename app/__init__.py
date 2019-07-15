@@ -7,16 +7,16 @@ import os
 
 app = Flask(__name__)
 app.static_folder = 'static'
+app.secret_key = os.environ.get('SECRET_KEY')
 # app.config.from_object(Config)
 # app.config.from_object(Keys)
 
 cloudinary.config(
-    cloud_name = os.environ.get('CLOUDINARY_CLOUD_NAME') or Keys.CLOUDINARY_CLOUD_NAME,
-    api_key = os.environ.get('CLOUDINARY_API_KEY') or Keys.CLOUDINARY_API_KEY,
-    api_secret = os.environ.get('CLOUDINARY_API_SECRET') or Keys.CLOUDINARY_API_SECRET,
+    cloud_name = os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    api_key = os.environ.get('CLOUDINARY_API_KEY'),
+    api_secret = os.environ.get('CLOUDINARY_API_SECRET'),
 )
 
-app.secret_key = os.environ.get('SECRET_KEY')
 
 from app.models import DATABASE
 

@@ -35,14 +35,13 @@
       {% elif field.type == 'DateField' %}
         <label for="{{ field.id }}">{{field.label.text}}:</label>
         {{ field(type='date',value=value) }}
+      {% elif field.type == "SubmitField" %}
+      <button class="button is-info is-fullwidth">Submit</button>
       {% else %}
-        <label for="{{ field.id }}">{{field.label.text}}:</label>
-        {{ field(class='input', placeholder=field.label.text, value=value) }}
+      <label for="{{ field.id }}">{{field.label.text}}:</label>
+      {{ field(class='input', placeholder=field.label.text, value=value) }}
       {% endif %}
     {% endif %}
   {% endfor %}
-  {% if field.type == "SubmitField" %}
-  <button class="button is-info is-fullwidth">Submit</button>
-  {% endif %}
 </div>
 {% endmacro %}}
