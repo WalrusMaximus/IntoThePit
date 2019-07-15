@@ -34,6 +34,7 @@ def load_user(userid):
 # Connect to database before request
 @app.before_request
 def before_request():
+    g.db.close()
     g.db = DATABASE
     g.db.connect()
     g.user = current_user
