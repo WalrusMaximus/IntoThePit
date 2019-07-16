@@ -6,11 +6,11 @@ from flask_login import UserMixin
 from flask_bcrypt import generate_password_hash
 from playhouse.db_url import connect
 
-if os.environ.get('FLASK_ENV') == "production":
-    DATABASE = connect(os.environ.get('DATABASE_URL'
-    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-else:
-    DATABASE = PostgresqlDatabase('intothepit')
+# if os.environ.get('FLASK_ENV') == "production":
+DATABASE = connect(os.environ.get('DATABASE_URL'
+conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+# else:
+#     DATABASE = PostgresqlDatabase('intothepit')
 
 #--------------# PRIMARY MODELS #--------------#
 
