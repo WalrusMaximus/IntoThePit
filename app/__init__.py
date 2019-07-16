@@ -1,21 +1,21 @@
 from flask import Flask, url_for, g, send_from_directory, request
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from app.models import User, Band, Venue, Favorite, Rating
-# from app.config import Config, Keys
+from app.config import Keys
 import cloudinary
 import os
 
 app = Flask(__name__)
 app.static_folder = 'static'
 app.secret_key = os.environ.get('SECRET_KEY')
-# app.config.from_object(Config)
-# app.config.from_object(Keys)
+app.config.from_object(Keys)
 
 cloudinary.config(
     cloud_name = os.environ.get('CLOUDINARY_CLOUD_NAME'),
     api_key = os.environ.get('CLOUDINARY_API_KEY'),
     api_secret = os.environ.get('CLOUDINARY_API_SECRET'),
 )
+
 
 
 from app.models import DATABASE

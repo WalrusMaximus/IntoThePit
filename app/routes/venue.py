@@ -126,7 +126,20 @@ def venue(id):
         else:
             flash(f"You can only add one comment per category on each venue")
             return redirect(url_for('venue', id=venue.id))
-    return render_template('venue.html', venue=venue, approved_bands=approved_bands, ratings=ratings, form=form, id=id, is_favorite=is_favorite, venueskid=venueskid, overall_rating=overall_rating, pit_rating=pit_rating, sound_rating=sound_rating, facility_rating=facility_rating)
+    
+    return render_template('venue.html',
+        venue=venue,
+        approved_bands=approved_bands,
+        ratings=ratings,
+        form=form,
+        id=id,
+        is_favorite=is_favorite,
+        venueskid=venueskid,
+        overall_rating=overall_rating,
+        pit_rating=pit_rating,
+        sound_rating=sound_rating,
+        facility_rating=facility_rating,
+    )
     
 @app.route('/venue/update_rating/<id>', methods=('GET', 'POST'))
 def venue_update_rating(id):
