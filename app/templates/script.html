@@ -1,8 +1,8 @@
 <script>
     let metro = "26330"
     var bands = []
-    var bandQuery = "https://api.songkick.com/api/3.0/artists/" + {{bandskid}} + "/calendar.json?apikey=" + "{{ config['SONGKICK_API_KEY'] }}"
-    var venueQuery = "https://api.songkick.com/api/3.0/venues/" + {{venueskid}} + "/calendar.json?apikey=" + "{{ config['SONGKICK_API_KEY'] }}"
+    var bandQuery = "https://api.songkick.com/api/3.0/artists/" + {{bandskid}} + "/calendar.json?apikey=" + "{{ API_KEY }}"
+    var venueQuery = "https://api.songkick.com/api/3.0/venues/" + {{venueskid}} + "/calendar.json?apikey=" + "{{ API_KEY }}"
 
 
     function bandApi() {
