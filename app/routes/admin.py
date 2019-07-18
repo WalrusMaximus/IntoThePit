@@ -2,7 +2,7 @@ from flask import render_template, url_for, flash, redirect, g, request
 from app import app, models, forms
 from flask_bcrypt import check_password_hash, generate_password_hash
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
-from app.functions import user_img_upload
+from app.functions import user_img_upload, band_img
 # from app.config import Keys
 import os
 import cloudinary, cloudinary.uploader, cloudinary.api
@@ -81,7 +81,7 @@ def admin_update_user(id):
         ).where(models.User.id == id)
         user_update.execute()
         flash(f"Updated information for {user.email}.")
-        return redirect(url_for('admin'))
+        return redirect(url_for('add_user'))
 
     return render_template('admin.html',
         form=form,
@@ -179,7 +179,7 @@ def admin_update_venue(id):
         ).where(models.Venue.id == id)
         venue_update.execute()
         flash(f"Updated information for {venue.display_name}.")
-        return redirect(url_for('admin'))
+        return redirect(url_for('add_venue'))
 
     return render_template('admin.html', form=form, venues=venues, venue=venue, record=record)
 
@@ -265,14 +265,29 @@ def admin_update_band(id):
         flash("Not authorized to access this page", "error")
         return redirect(url_for('index'))
     if form.validate_on_submit():
-        band_update = models.Band.update(
-            display_name=form.display_name.data,
-            about=form.about.data,
-            skid=form.skid.data
-        ).where(models.Band.id == id)
-        band_update.execute()
-        flash(f"Updated information for {band.display_name}.")
-        return redirect(url_for('admin'))
+        if form.img.data:
+            img = form.img.data
+            try:
+                output = band_img(img)
+                flash("Uploaded to Cloudinary","success")
+                band_update = models.Band.update(
+                    display_name=form.display_name.data,
+                    about=form.about.data,
+                    skid=form.skid.data,
+                    img=output
+                ).where(models.Band.id == id)
+                band_update.execute()
+                flash(f"Updated information for {band.display_name}.")
+            except:
+                band_update = models.Band.update(
+                    display_name=form.display_name.data,
+                    about=form.about.data,
+                    skid=form.skid.data
+                ).where(models.Band.id == id)
+                band_update.execute()
+                flash("Couldn't Reach Cloudinary","error")  
+            flash(f"Band {band.display_name} updated","success") 
+        return redirect(url_for('add_band'))
 
     return render_template('admin.html', form=form, bands=bands, band=band, record=record)
 
