@@ -20,6 +20,8 @@ html, body {
     border-right: 2px solid rgba(0,0,0,.5);
 }
 
+/* MAIN COLUMN STYLING */
+
 .recent-comments {
     width: 100%;
     height: 200px;
@@ -35,13 +37,13 @@ html, body {
     margin: .25rem !important;
 }
 
-.little-more-padding {
-    padding: .75rem 1.25rem !important;
-}
-
 .about-venue {
     display: flex;
     flex-direction: column;
+}
+
+.little-more-padding {
+    padding: .75rem 1.25rem !important;
 }
 
 .about-img {
@@ -51,7 +53,6 @@ html, body {
     background-color: rgb(50, 50, 50);
     border: 4px solid rgba(100,100,100,.5)
 }
-
 
 .about-img img {
     max-width: 100%;
@@ -68,23 +69,6 @@ html, body {
     background-color: rgba(255,255,255,.8);
 }
 
-footer {
-    position: fixed;
-    display: flex;
-    flex-direction: column-reverse;
-    width: 100%;
-    left: 0;
-    bottom: 0;
-    margin: 0 auto;
-    text-align: center;
-}
-
-.footer-bg {
-    height: auto;
-    width: 100%;
-    background-color: white;
-}
-
 .bands-container, .venues-container {
     height: 50%;
     width: 100%;
@@ -92,13 +76,17 @@ footer {
     padding: 0;
 }
 
-
-.user_profile_avatar {
-    border-radius: 50%;
-    width: 256px;
-    height: 256px;
-    margin: 0 auto;
+.songkick-container {
+    display: flex;
 }
+
+.songkick {
+    height: 32px;
+}
+
+
+/* END MAIN */
+/* RATINGS */
 
 .inline-avatar {
     width: 32px;
@@ -121,6 +109,9 @@ footer {
     background-color: rgba(255,255,255,.8);
 }
 
+/* END RATINGS */
+/* VENUE AND BAND IMAGE STYLING */
+
 .venue-img-wrapper {
     max-width: 100%;
     max-height: 32vh;
@@ -133,12 +124,34 @@ footer {
     margin: 0 auto;
 }
 
+.user_profile_avatar {
+    border-radius: 50%;
+    width: 256px;
+    height: 256px;
+    margin: 0 auto;
+}
+
+/* HEADER IMAGE PLACEMENT CORRECTIONS */
+
 .navbar-image {
     max-height: 3rem !important;
 }
 
 .logo-spacer {
     margin-right: 1rem;
+}
+
+/* FOOTER CORRECTIONS */
+
+footer {
+    position: fixed;
+    display: flex;
+    flex-direction: column-reverse;
+    width: 100%;
+    left: 0;
+    bottom: 0;
+    margin: 0 auto;
+    text-align: center;
 }
 
 .footer-p1 {
@@ -149,6 +162,13 @@ footer {
     display: none;
 }
 
+.footer-bg {
+    height: auto;
+    width: 100%;
+    background-color: white;
+}
+
+/* ADMIN STYLING */
 .field {
     width: 90%;
 }
@@ -164,6 +184,7 @@ footer {
     margin: 0 .2em
 }
 
+/* FLASH MESSAGES */
 .message, .success, .error {
     padding: .5rem 1rem;
     background-color: white;

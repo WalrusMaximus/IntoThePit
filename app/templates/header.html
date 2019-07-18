@@ -1,10 +1,7 @@
   <nav class="navbar is-black" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
       <a class="navbar-item " href={{url_for('index')}}>
-        <img class="navbar-image " src="{{url_for('static',filename='images/intothepit-horizontal.png')}}" alt="">
-      </a>
-      <a class="navbar-item" href="http://www.songkick.com">
-        <img class="navbar-image" src="{{url_for('static',filename='api_attribution/powered-by-songkick-white.png')}}" alt="" width="90" height="60">
+        <img class="navbar-image " src="{{url_for('static',filename='images/intothepit-horizontal.png')}}" alt="into the pit logo">
       </a>
 
       <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="nav-area">
@@ -36,7 +33,7 @@
         <div class="navbar-item">
           <div class="buttons">
               {% if g.user.is_authenticated %}
-              <a class="button is-dark" href={{url_for('user',id=current_user.id)}}>PROFILE</a>
+              <a class="button is-dark" href={{url_for('user',id=current_user.id)}}>{{ current_user.username.upper() }}</a>
               <a class="button is-danger" href={{url_for('logout')}}>LOGOUT</a>
               {% else %}
               <a class="button is-danger" href={{url_for('register')}}>REGISTER</a>
