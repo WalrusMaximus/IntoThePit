@@ -113,9 +113,10 @@ html, body {
 /* VENUE AND BAND IMAGE STYLING */
 
 .venue-img-wrapper {
-    max-width: 100%;
+    max-width: 70%;
     max-height: 32vh;
     display: flex;
+    margin: 0 auto;
 }
 
 .venue_img, .band_img {
