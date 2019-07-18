@@ -4,9 +4,9 @@
   <figure class="media-left">
     <p class="image is-32x32">
       {% if rating.user_fk.avatar == "images/user_default.png" %}
-      <img class="inline-avatar" src="{{url_for('static',filename='images/user_default.png')}}" alt="">
+      <img class="inline-avatar" src="{{url_for('static',filename='images/user_default.png')}}" alt="user avatar">
       {% else %}
-      <img class="inline-avatar" src="{{rating.user_fk.avatar}}" alt="">
+      <img class="inline-avatar" src="{{rating.user_fk.avatar}}" alt="user avatar">
       {% endif %}
     </p>
   </figure>

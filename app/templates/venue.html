@@ -53,7 +53,7 @@
                         <nav class="level">
                             <div class="level-left">
                             <div class="level-item">
-                                <img class="inline-avatar" src="{{ url_for('static', filename=rating.user_fk.avatar)}}" alt="">
+                                <img class="inline-avatar" src="{{ url_for('static', filename=rating.user_fk.avatar)}}" alt="user avatar">
                             </div>
                             <div class="level-item">
                                 <p class="level-text"><a href="{{url_for('user',id=rating.user_fk)}}">{{ rating.user_fk.username }}</a>: {{rating.rating_type}} {{ rating.rating }}/5: {{ rating.message }}.</p>

@@ -2,8 +2,7 @@ from flask import render_template, url_for, flash, redirect, g, request
 from app import app, models, forms
 from flask_bcrypt import check_password_hash, generate_password_hash
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
-from app.functions import user_img_upload, band_img
-# from app.config import Keys
+from app.functions import user_img
 import os
 import cloudinary, cloudinary.uploader, cloudinary.api
 from cloudinary.uploader import upload, destroy
@@ -125,11 +124,11 @@ def add_venue():
         flash("Not authorized to access this page", "error")
         return redirect(url_for('index'))
     if form.validate_on_submit():
-        img = form.img.data
-        venue_name = form.name.data.split(" ")
-        converted_name = "".join(venue_name)
-        try:
-            if form.img.data:
+        if form.img.data:
+            img = form.img.data
+            venue_name = form.name.data.split(" ")
+            converted_name = "".join(venue_name)
+            try:
                 img = form.img.data
                 venue_name = form.name.data.split(" ")
                 converted_name = "".join(venue_name)
@@ -143,20 +142,26 @@ def add_venue():
                     about=form.about.data,
                     skid=form.skid.data
                 )
-                flash(f"Created new venue {form.name.data}","success")
-                return redirect(url_for('admin'))
-            else:
+                flash(f"Created new venue {form.name.data}. CDN Upload Successful","success")
+                return redirect(url_for('add_venue'))
+            except:
                 models.Venue.create_venue(
                     name=form.name.data,
                     display_name=form.display_name.data,
                     about=form.about.data,
                     skid=form.skid.data
                 )
-                flash(f"Created new venue {form.name.data}","success")
-                return redirect(url_for('admin'))
-        except:
-            flash(f"Couldn't connect to server... try again.","error")
-            return redirect(url_for('add_venue'))
+                flash(f"Created new venue {form.name.data}, Couldn't Upload to CDN")
+                return redirect(url_for('add_venue'))
+        else:
+            models.Venue.create_venue(
+                name=form.name.data,
+                display_name=form.display_name.data,
+                about=form.about.data,
+                skid=form.skid.data
+            )
+            flash(f"Created new venue - {form.name.data}","success")
+
         return redirect(url_for('add_venue'))
     return render_template('admin.html', form=form, venues=venues)
 
@@ -238,9 +243,16 @@ def add_band():
                     skid=form.skid.data
                 )
                 flash(f"Created new band {form.name.data}","success")
-                return redirect(url_for('admin'))
+                return redirect(url_for('add_band'))
             except:
-                flash(f"Couldn't connect to server... try again.","error")
+                models.Band.create_band(
+                    name=form.name.data,
+                    display_name=form.display_name.data,
+                    img=img,
+                    about=form.about.data,
+                    skid=form.skid.data
+                )
+                flash(f"Created new band {form.name.data}, no CDN access.")
                 return redirect(url_for('add_band'))
         else:
             models.Band.create_band(
@@ -250,7 +262,7 @@ def add_band():
                 skid=form.skid.data
             )
             flash(f"Created new band {form.name.data}","success")
-            return redirect(url_for('admin'))
+            return redirect(url_for('add_band'))
         return redirect(url_for('add_band'))
     return render_template('admin.html', form=form, bands=bands)
 
@@ -267,17 +279,20 @@ def admin_update_band(id):
     if form.validate_on_submit():
         if form.img.data:
             img = form.img.data
+            band_name = form.name.data.split(" ")
+            converted_name = "".join(band_name)
             try:
-                output = band_img(img)
-                flash("Uploaded to Cloudinary","success")
-                band_update = models.Band.update(
+                uploading = upload(img, overwrite=True, public_id=converted_name, folder='band', format="png", width=512, height=512, crops="lfill")
+                image_query = cloudinary.api.resource(f"band/{converted_name}")
+                img = image_query['url']
+                models.Band.create_band(
                     display_name=form.display_name.data,
+                    img=img,
                     about=form.about.data,
-                    skid=form.skid.data,
-                    img=output
-                ).where(models.Band.id == id)
-                band_update.execute()
-                flash(f"Updated information for {band.display_name}.")
+                    skid=form.skid.data
+                )
+                flash(f"Updated {form.name.data}","success")
+                return redirect(url_for('admin'))
             except:
                 band_update = models.Band.update(
                     display_name=form.display_name.data,
@@ -285,9 +300,16 @@ def admin_update_band(id):
                     skid=form.skid.data
                 ).where(models.Band.id == id)
                 band_update.execute()
-                flash("Couldn't Reach Cloudinary","error")  
-            flash(f"Band {band.display_name} updated","success") 
-        return redirect(url_for('add_band'))
+                flash(f"Updated {form.display_name.data}, couldn't update CDN","error")
+        else:
+            band_update = models.Band.update(
+                display_name=form.display_name.data,
+                about=form.about.data,
+                skid=form.skid.data
+            ).where(models.Band.id == id)
+            band_update.execute()
+            flash(f"Updated {form.display_name.data}","success")
+            return redirect(url_for('add_band'))
 
     return render_template('admin.html', form=form, bands=bands, band=band, record=record)
 

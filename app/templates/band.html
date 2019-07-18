@@ -7,7 +7,7 @@
     {% if band.img == "images/band_default.jpg" %}
     <img class="band_img" src={{url_for('static',filename='images/band_default.jpg')}}>
     {% else %}
-    <img class="band_img" src={{band.img}} alt="">
+    <img class="band_img" src={{band.img}} alt="{{event.band_fk.name}} image">
     {% endif %}
 </div>
 <br>
@@ -33,7 +33,7 @@
 
 {% block main %}
 {% for event in events %}
-    <img class="inline-avatar" src="{{ url_for('static', filename=event.band_fk.img)}}" alt="">
+    <img class="inline-avatar" src="{{ url_for('static', filename=event.band_fk.img)}}" alt="{{event.band_fk.name}} image">
     <p>{{ event.band_fk.name }} is playing on {{ event.date }} at <a href="{{url_for('venue_events',id=event.venue_fk.id)}}">{{ event.venue_fk.name}}</a></p>
     {% if current_user.user_level == "walrus" %}
     <a href="{{ url_for('update_event', id=event.id)}}">Update</a> <a href="{{ url_for('delete_event', id=event.id)}}">Delete</a>
