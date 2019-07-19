@@ -2,7 +2,7 @@ import datetime, time
 
 from flask_wtf import FlaskForm
 from app.models import User, Band, Venue, Favorite, Rating
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField, RadioField
 from wtforms.fields.html5 import DateField
 from flask_wtf.file import FileField, FileAllowed
 from wtforms.validators import DataRequired, ValidationError, Length, Email, EqualTo, Regexp
@@ -48,6 +48,11 @@ class RegisterForm(FlaskForm):
     submit = SubmitField('Register')
 
 class AddUserForm(FlaskForm):
+    user_level = RadioField(
+        'User Level',
+        choices=[("user", 'user'), ("walrus", 'walrus')],
+        default="user"
+    )
     username = StringField('Username', validators=[
             DataRequired(),  
             Regexp(r'^[a-zA-Z0-9 ]+$',
@@ -57,18 +62,13 @@ class AddUserForm(FlaskForm):
             name_exists
         ])
     email = StringField('Email', validators=[DataRequired(), Length(max=256), Email(), email_exists])
-    user_level = SelectField(
-        'User Level',
-        choices=[("user", 'user'), ("walrus", 'walrus')],
-        default="user"
-    )
     password = PasswordField('Password', validators=[DataRequired()])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     avatar = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png'])])
     submit = SubmitField('Submit')
 
 class AdminUpdateUserForm(FlaskForm):
-    user_level = SelectField(
+    user_level = RadioField(
         'User Level',
         choices=[("user", 'user'), ("walrus", 'walrus')],
         default="user"
@@ -141,12 +141,12 @@ class UpdateBandForm(FlaskForm):
     submit = SubmitField('Submit')    
 
 class RatingForm(FlaskForm):
-    rating = SelectField(
+    rating = RadioField(
         'Rating = 1-5',
         choices=[('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'), ('5', '5')],
         default="5"
     )
-    rating_type = SelectField(
+    rating_type = RadioField(
         'What are you Rating?',
         choices=[("Overall", 'Overall'), ("Mosh Pit", 'Mosh Pit'), ("Sound", 'Sound'), ("Facilities", 'Facilities')]
     )

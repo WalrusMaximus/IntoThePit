@@ -34,9 +34,9 @@
                                     eventName = artists.join(" / ")
                                 }
                             }
-                            $('#band-events').append(`<div class="box"><a href=${bandEvents[i].uri}>${eventName} @ ${bandEvents[i].venue.displayName} on ${bandEvents[i].start.date}</a></div>`)
+                            $('#band-events').append(`<div class="box has-text-centered"><a href=${bandEvents[i].uri}>${eventName}<br>${bandEvents[i].venue.displayName} on ${bandEvents[i].start.date}</a></div>`)
                         } else {
-                        $('#band-events').append(`<div class="box"><a href=${bandEvents[i].uri}>${bandEvents[i].performance[0].artist.displayName} @ ${bandEvents[i].venue.displayName} on ${bandEvents[i].start.date}</a></div>`)
+                        $('#band-events').append(`<div class="box has-text-centered"><a href=${bandEvents[i].uri}>${bandEvents[i].performance[0].artist.displayName}<br>${bandEvents[i].venue.displayName} on ${bandEvents[i].start.date}</a></div>`)
                         }
                     }
                 }
@@ -62,11 +62,11 @@
                         }
                     })
                     let bandEvents = Array.from(result)
-                    console.log(bandEvents)
+                    
                     if (bandEvents.length > 0) {
                         $('#favorite-band-null').remove()
                     }
-                    console.log(bandEvents)
+                    
                     for(let i=0;i<bandEvents.length;i++) {
                         if (bandEvents[i].performance.length > 1) {
                             for(let i=0;i<bandEvents.length;i++) {
@@ -79,9 +79,9 @@
                                     eventName = artists.join(" / ")
                                 }
                             }
-                            $('#favorite-band-events').append(`<div class="box"><a href=${bandEvents[i].uri}>${eventName} @ ${bandEvents[i].venue.displayName} on ${bandEvents[i].start.date}</a></div>`)
+                            $('#favorite-band-events').append(`<div class="box has-text-centered"><a href=${bandEvents[i].uri}>${eventName}<br>${bandEvents[i].venue.displayName} on ${bandEvents[i].start.date}</a></div>`)
                         } else {
-                        $('#favorite-band-events').append(`<div class="box"><a href=${bandEvents[i].uri}>${bandEvents[i].performance[0].artist.displayName} @ ${bandEvents[i].venue.displayName} on ${bandEvents[i].start.date}</a></div>`)
+                        $('#favorite-band-events').append(`<div class="box has-text-centered"><a href=${bandEvents[i].uri}>${bandEvents[i].performance[0].artist.displayName}<br>${bandEvents[i].venue.displayName} on ${bandEvents[i].start.date}</a></div>`)
                         }
                     }
                 },
@@ -109,11 +109,11 @@
                 })
             }
                 let event = Array.from(result) 
-                    console.log(event)
+                    
                     if (event.length > 0) {
                         $('#favorite-venue-null').remove()
                     }
-                    console.log(event)
+                    
                     for(let i=0;i<event.length;i++) {
                         if (event[i].performance.length > 1) {
                             for(let i=0;i<event.length;i++) {
@@ -126,9 +126,9 @@
                                     eventName = artists.join(" / ")
                                 }
                             }
-                            $('#favorite-venue-events').append(`<div class="box"><a href=${event[i].uri}>${eventName} @ ${event[i].venue.displayName} on ${event[i].start.date}</a></div>`)
+                            $('#favorite-venue-events').append(`<div class="box has-text-centered"><a href=${event[i].uri}>${eventName}<br>${event[i].venue.displayName} on ${event[i].start.date}</a></div>`)
                         } else {
-                        $('#favorite-venue-events').append(`<div class="box"><a href=${event[i].uri}>${event[i].performance[0].artist.displayName} @ ${event[i].venue.displayName} on ${event[i].start.date}</a></div>`)
+                        $('#favorite-venue-events').append(`<div class="box has-text-centered"><a href=${event[i].uri}>${event[i].performance[0].artist.displayName}<br>${event[i].venue.displayName} on ${event[i].start.date}</a></div>`)
                         }
                     }
                 },
@@ -170,9 +170,9 @@
                                     eventName = artists.join(" / ")
                                 }
                             }
-                            $('#venue-events').append(`<div class="box"><a href=${event[i].uri}>${eventName} on ${event[i].start.date}</a></div>`)
+                            $('#venue-events').append(`<div class="box has-text-centered"><a href=${event[i].uri}>${eventName} on ${event[i].start.date}</a></div>`)
                         } else {
-                        $('#venue-events').append(`<div class="box"><a href=${event[i].uri}>${event[i].performance[0].artist.displayName} on ${event[i].start.date}</a></div>`)
+                        $('#venue-events').append(`<div class="box has-text-centered"><a href=${event[i].uri}>${event[i].performance[0].artist.displayName} on ${event[i].start.date}</a></div>`)
                         }
                     }
                 }

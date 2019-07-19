@@ -63,6 +63,17 @@ a {
     display: none;
 }
 
+.radio {
+    display: flex !important;
+    align-content: space-between;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.radio li {
+    margin: 0 4px;
+}
+
 .box {
     padding: .25rem .5rem !important;
     margin: .25rem !important;
