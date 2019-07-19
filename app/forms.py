@@ -153,4 +153,9 @@ class RatingForm(FlaskForm):
     message = StringField('Tell us what you think...', validators=[DataRequired(), Length(max=512)])
     submit = SubmitField("Submit")
 
+class SearchForm(FlaskForm):
+    search = StringField('Search...', validators=[DataRequired(), Length(max=128)]
+    )
+    submit = SubmitField("Search")
+
     

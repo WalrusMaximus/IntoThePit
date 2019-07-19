@@ -7,7 +7,7 @@
     {% if band.img == "images/band_default.jpg" %}
     <img class="band_img" src={{url_for('static',filename='images/band_default.jpg')}}>
     {% else %}
-    <img class="band_img" src={{band.img}} alt="{{event.band_fk.name}} image">
+    <img class="band_img" src={{band.img}} alt="{{band.name}} image">
     {% endif %}
 </div>
 <br>
@@ -27,8 +27,8 @@
 
 
 {% block main_header %}
-<p class="has-text-centered"><img class="songkick" src="{{url_for('static',filename='api_attribution/by-songkick-black.png')}}" alt="by songkick logo"></p>
 <h3 class="title is-4 has-text-centered is-uppercase">Upcoming Events</h3>
+<p class="has-text-centered"><img class="songkick" src="{{url_for('static',filename='api_attribution/by-songkick-black.png')}}" alt="by songkick logo"></p>
 {% endblock %}
 
 {% block main %}

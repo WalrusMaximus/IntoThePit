@@ -20,6 +20,37 @@ html, body {
     border-right: 2px solid rgba(0,0,0,.5);
 }
 
+/* HEADER */
+
+.flash-messages {
+    width: 50%;
+    margin: auto;
+    margin-top: 6px;
+    
+}
+
+/* EVENTS / FAVORITES */
+
+.is-outlined {
+    margin: 6px !important;
+}
+
+.venue-events,
+.band-events,
+#favorite-band-events,
+#favorite-venue-events,
+.favorite-bands,
+.favorite-venues {
+    display: flex;
+    justify-content: center;
+    max-width: 100%;
+    flex-wrap: wrap;
+}
+
+a {
+    word-wrap: break-word;
+}
+
 /* MAIN COLUMN STYLING */
 
 .recent-comments {
@@ -82,6 +113,7 @@ html, body {
 
 .songkick {
     height: 32px;
+    margin-top: -16px;
 }
 
 

@@ -11,17 +11,6 @@
       </a>
     </div>
 
-      
-    <div class="navbar-item">
-        {% with messages = get_flashed_messages(with_categories=True) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class={{category}}>{{ message }}</div>
-            {% endfor %}
-        {% endif %}
-        {% endwith %}
-        </div>
-
       <div class="navbar-end">
           <div id="navbar-area" class="navbar-menu">
             <div class="navbar-start">
@@ -30,17 +19,32 @@
               {% endif %}
               <a class="navbar-item" href={{url_for('index')}}>HOME</a>
             </div>  
-        <div class="navbar-item">
-          <div class="buttons">
               {% if g.user.is_authenticated %}
-              <a class="button is-dark" href={{url_for('user',id=current_user.id)}}>{{ current_user.username.upper() }}</a>
-              <a class="button is-danger" href={{url_for('logout')}}>LOGOUT</a>
+              <div class="navbar-item">
+                <a class="button is-dark" href={{url_for('user',id=current_user.id)}}>{{ current_user.username.upper() }}</a>
+              </div>
+              <div class="navbar-item">
+                <a class="button is-danger" href={{url_for('logout')}}>LOGOUT</a>
+              </div>
               {% else %}
-              <a class="button is-danger" href={{url_for('register')}}>REGISTER</a>
-              <a class="button is-dark" href={{url_for('login')}}>LOGIN</a>
+              <div class="navbar-item">
+                <a class="button is-danger" href={{url_for('register')}}>REGISTER</a>
+              </div>
+              <div class="navbar-item">
+                <a class="button is-dark" href={{url_for('login')}}>LOGIN</a>
+              </div>
               {% endif %}
           </div>
         </div>
       </div>
     </div>
   </nav>
+  <div class="flash-messages has-text-centered">
+    {% with messages = get_flashed_messages(with_categories=True) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class={{category}}>{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
+  </div>

@@ -5,8 +5,8 @@
 
 {% block main %}
  
+<h2 class="title is-5 has-text-centered">VENUES</h2>
 <div class="venues-container">
-        <h2 class="title is-5 has-text-centered">VENUES</h2>
         {% if no_venues %}
         No Venues Found
         {% else %}
@@ -17,8 +17,8 @@
             {% endfor %}
         {% endif %}
 </div class="bands-container">
-<div>
-        <h2 class="title is-5 has-text-centered">BANDS</h2>
+<h2 class="title is-5 has-text-centered">BANDS</h2>
+<div class="bands-container">
         {% if no_bands %}
         No Bands Found
         {% else %}

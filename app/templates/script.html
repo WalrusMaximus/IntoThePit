@@ -21,9 +21,24 @@
                 let bandEvents = Array.from(result)
                 if (bandEvents.length == 0) {
                     $('#band-events').append(`<p class="has-text-centered">Looks like they aren't in town any time soon...</p>`)
-                }
-                for(let i=0;i<bandEvents.length;i++){
-                    $('#band-events').append(`<div class="box"><p>${bandEvents[i].displayName} <a href=${bandEvents[i].uri}>More Info</a></p></div>`)
+                } else {
+                    for(let i=0;i<bandEvents.length;i++) {
+                        if (bandEvents[i].performance.length > 1) {
+                            for(let i=0;i<bandEvents.length;i++) {
+                                let arrayOfArtists = bandEvents[i].performance
+                                if (arrayOfArtists.length > 1) {
+                                    let artists = []
+                                    for(let i=0; i<arrayOfArtists.length; i++) {
+                                        artists.push(arrayOfArtists[i].displayName)
+                                    }
+                                    eventName = artists.join(" / ")
+                                }
+                            }
+                            $('#band-events').append(`<div class="box"><a href=${bandEvents[i].uri}>${eventName} @ ${bandEvents[i].venue.displayName} on ${bandEvents[i].start.date}</a></div>`)
+                        } else {
+                        $('#band-events').append(`<div class="box"><a href=${bandEvents[i].uri}>${bandEvents[i].performance[0].artist.displayName} @ ${bandEvents[i].venue.displayName} on ${bandEvents[i].start.date}</a></div>`)
+                        }
+                    }
                 }
             },
             error: function(err) {                
@@ -47,9 +62,27 @@
                         }
                     })
                     let bandEvents = Array.from(result)
-                    for(let i=0;i<bandEvents.length;i++){
+                    console.log(bandEvents)
+                    if (bandEvents.length > 0) {
                         $('#favorite-band-null').remove()
-                        $('#favorite-band-events').append(`<div class="box"><p>${bandEvents[i].displayName} <a href=${bandEvents[i].uri}>More Info</a></p></div>`)
+                    }
+                    console.log(bandEvents)
+                    for(let i=0;i<bandEvents.length;i++) {
+                        if (bandEvents[i].performance.length > 1) {
+                            for(let i=0;i<bandEvents.length;i++) {
+                                let arrayOfArtists = bandEvents[i].performance
+                                if (arrayOfArtists.length > 1) {
+                                    let artists = []
+                                    for(let i=0; i<arrayOfArtists.length; i++) {
+                                        artists.push(arrayOfArtists[i].displayName)
+                                    }
+                                    eventName = artists.join(" / ")
+                                }
+                            }
+                            $('#favorite-band-events').append(`<div class="box"><a href=${bandEvents[i].uri}>${eventName} @ ${bandEvents[i].venue.displayName} on ${bandEvents[i].start.date}</a></div>`)
+                        } else {
+                        $('#favorite-band-events').append(`<div class="box"><a href=${bandEvents[i].uri}>${bandEvents[i].performance[0].artist.displayName} @ ${bandEvents[i].venue.displayName} on ${bandEvents[i].start.date}</a></div>`)
+                        }
                     }
                 },
                 error: function(err) {                    
@@ -75,12 +108,30 @@
                         }
                 })
             }
-                let event = Array.from(result)                
-                for(let i=0;i<event.length;i++){
-                    $('#favorite-venue-null').remove()
-                    $('#favorite-venue-events').append(`<div class="box"><p>${event[i].displayName} <a href=${event[i].uri}>More Info</a></p></div>`)
-                }
-            },
+                let event = Array.from(result) 
+                    console.log(event)
+                    if (event.length > 0) {
+                        $('#favorite-venue-null').remove()
+                    }
+                    console.log(event)
+                    for(let i=0;i<event.length;i++) {
+                        if (event[i].performance.length > 1) {
+                            for(let i=0;i<event.length;i++) {
+                                let arrayOfArtists = event[i].performance
+                                if (arrayOfArtists.length > 1) {
+                                    let artists = []
+                                    for(let i=0; i<arrayOfArtists.length; i++) {
+                                        artists.push(arrayOfArtists[i].displayName)
+                                    }
+                                    eventName = artists.join(" / ")
+                                }
+                            }
+                            $('#favorite-venue-events').append(`<div class="box"><a href=${event[i].uri}>${eventName} @ ${event[i].venue.displayName} on ${event[i].start.date}</a></div>`)
+                        } else {
+                        $('#favorite-venue-events').append(`<div class="box"><a href=${event[i].uri}>${event[i].performance[0].artist.displayName} @ ${event[i].venue.displayName} on ${event[i].start.date}</a></div>`)
+                        }
+                    }
+                },
             error: function(err) {                
             }
         })
@@ -103,12 +154,27 @@
                         }
                 })
             }
-                let event = Array.from(result)                
-                for(let i=0;i<event.length;i++){
-                    $('#venue-events').append(`<div class="box"><p>${event[i].displayName} <a href=${event[i].uri}>More Info</a></p></div>`)
-                }
+                let event = Array.from(result)
                 if (event.length == 0) {
-                    $('#venue-events').append(`<p class="has-text-centered">Looks like they don't have any pits coming up...</p>`)
+                    $('#venue-events').append(`<p class="has-text-centered">Looks like they aren't in town any time soon...</p>`)
+                } else {
+                    for(let i=0;i<event.length;i++) {
+                        if (event[i].performance.length > 1) {
+                            for(let i=0;i<event.length;i++) {
+                                let arrayOfArtists = event[i].performance
+                                if (arrayOfArtists.length > 1) {
+                                    let artists = []
+                                    for(let i=0; i<arrayOfArtists.length; i++) {
+                                        artists.push(arrayOfArtists[i].displayName)
+                                    }
+                                    eventName = artists.join(" / ")
+                                }
+                            }
+                            $('#venue-events').append(`<div class="box"><a href=${event[i].uri}>${eventName} on ${event[i].start.date}</a></div>`)
+                        } else {
+                        $('#venue-events').append(`<div class="box"><a href=${event[i].uri}>${event[i].performance[0].artist.displayName} on ${event[i].start.date}</a></div>`)
+                        }
+                    }
                 }
             },
             error: function(err) {                

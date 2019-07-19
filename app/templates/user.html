@@ -33,9 +33,11 @@
 
 {% if favorite_bands %}
 <h4 class="title has-text-centered is-6 is-uppercase">Favorite Bands</h4>
+<div class="favorite-bands">
 {% for favorite_band in favorite_bands %}
-<div class="box"><a href="{{url_for('band',id=favorite_band.band_fk)}}">{{favorite_band.band_fk.name}}</a></div>
+    <div class="button is-outlined button-centered"><a href="{{url_for('band',id=favorite_band.band_fk)}}">{{favorite_band.band_fk.name}}</a></div>
 {% endfor %}
+</div>
 {% elif no_favorites %}
 {% else %}
 <p class="has-text-centered">Looks like {{ user.username }} doesn't have any favorite bands...</p>
@@ -44,10 +46,12 @@
 <br>
 
 {% if favorite_venues %}
-    <h4 class="title has-text-centered is-6 is-uppercase">Favorite Venues</h4>
+<h4 class="title has-text-centered is-6 is-uppercase">Favorite Venues</h4>
+<div class="favorite-venues">
 {% for favorite_venue in favorite_venues %}
-    <div class="box"><a href="{{url_for('venue',id=favorite_venue.venue_fk)}}"><img src>{{favorite_venue.venue_fk.name}}</a></div>
+    <div class="button is-outlined button-centered"><a href="{{url_for('venue',id=favorite_venue.venue_fk)}}"><img src>{{favorite_venue.venue_fk.name}}</a></div>
 {% endfor %}
+</div>
 {% elif no_favorites %}
 {% else %}
 <p class="has-text-centered">Looks like {{ user.username }} doesn't have any favorite venues...</p>
@@ -89,18 +93,18 @@
     <p>Looks like there are no ratings here..</p>
     {% endfor %}
     <br>
-
-    <p class="has-text-centered"><img class="songkick" src="{{url_for('static',filename='api_attribution/by-songkick-black.png')}}" alt="by songkick logo"></p>
-        
+    
     {% if bands_query and current_user == user %}
-        <h4 class="title has-text-centered is-6 is-uppercase">Upcoming Events by Favorite Artists</h4>
+        <h4 class="title has-text-centered is-6 is-uppercase">Upcoming favorite bands nearby</h4>
+        <p class="has-text-centered"><img class="songkick" src="{{url_for('static',filename='api_attribution/by-songkick-black.png')}}" alt="by songkick logo"></p>    
         <div id="favorite-band-events">
             <p id="favorite-band-null" class="has-text-centered">Looks like none of your favorite bands are going to be in town...</p>
         </div>
         <br>
     {% endif %}
     {% if venues_query and current_user == user %}
-        <h4 class="title has-text-centered is-6 is-uppercase">Upcoming Events at Favorite Venues</h4>
+        <h4 class="title has-text-centered is-6 is-uppercase">Shows at your favorite venues</h4>
+        <p class="has-text-centered"><img class="songkick" src="{{url_for('static',filename='api_attribution/by-songkick-black.png')}}" alt="by songkick logo"></p>    
         <div id="favorite-venue-events">
             <p id="favorite-venue-null" class="has-text-centered">Looks like no shows are coming up at your favorite venues...</p>
         </div>
