@@ -7,10 +7,8 @@ from flask_bcrypt import generate_password_hash
 from playhouse.db_url import connect
 
 if os.environ.get('FLASK_ENV') == "production":
-    print(" * Activating PostgresDB in -PRODUCTION- Environment")
     DATABASE = connect(os.environ.get('DATABASE_URL'))
 else:
-    print(" * Activating PostgresDB intothepit in -DEVELOPMENT- environment" )
     DATABASE = PostgresqlDatabase('intothepit')
 
 #--------------# PRIMARY MODELS #--------------#
