@@ -35,7 +35,7 @@
 <h4 class="title has-text-centered is-6 is-uppercase">Favorite Bands</h4>
 <div class="favorite-bands">
 {% for favorite_band in favorite_bands %}
-    <div class="button is-outlined button-centered"><a href="{{url_for('band',id=favorite_band.band_fk)}}">{{favorite_band.band_fk.name}}</a></div>
+    <div class="button is-outlined button-centered"><a href="{{url_for('band',id=favorite_band.band_fk)}}">{{favorite_band.band_fk.display_name}}</a></div>
 {% endfor %}
 </div>
 {% elif no_favorites %}
@@ -49,7 +49,7 @@
 <h4 class="title has-text-centered is-6 is-uppercase">Favorite Venues</h4>
 <div class="favorite-venues">
 {% for favorite_venue in favorite_venues %}
-    <div class="button is-outlined button-centered"><a href="{{url_for('venue',id=favorite_venue.venue_fk)}}"><img src>{{favorite_venue.venue_fk.name}}</a></div>
+    <div class="button is-outlined button-centered"><a href="{{url_for('venue',id=favorite_venue.venue_fk)}}"><img src>{{favorite_venue.venue_fk.display_name}}</a></div>
 {% endfor %}
 </div>
 {% elif no_favorites %}
