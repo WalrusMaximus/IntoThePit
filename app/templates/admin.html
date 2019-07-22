@@ -71,7 +71,7 @@
         {% endwith %}
             <div class="box">
                 <div class="level">
-                    <p>ID: {{venue.id}} - <a href="{{url_for('venue',id=venue.id)}}">{{ venue.name }}</a>/{{venue.display_name}}</p>
+                    <p>ID: {{venue.id}} - <a href="{{url_for('venue',id=venue.id)}}">{{ venue.display_name }}</a>/{{venue.display_name}}</p>
                     <span class="admin-control level-right">
                         <a href="{{ url_for('admin_update_venue', id=venue.id) }}" class="icon update_button">
                             <img class="icon is-small" src={{url_for('static',filename="pen.png")}}>
@@ -165,14 +165,14 @@
         {% endif %}
         {% if venues %}
             {% if venue %}
-            <h3 class="title is-6 has-text-centered">Updating {{ venue.name }}</h3>
+            <h3 class="title is-6 has-text-centered">Updating {{ venue.display_name }}</h3>
             {% else %}
             <h3 class="title is-6 has-text-centered">Creating New Venue</h3>
             {% endif %}
         {% endif %}
         {% if bands %}
             {% if band %}
-            <h3 class="title is-6 has-text-centered">Updating {{ band.name }}</h3>
+            <h3 class="title is-6 has-text-centered">Updating {{ band.display_name }}</h3>
             {% else %}
             <h3 class="title is-6 has-text-centered">Creating New Band</h3>
             {% endif %}

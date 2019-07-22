@@ -5,12 +5,12 @@
     {% set id = user %}
 {% elif admin_venue %}
     {% set type = "venue" %}
-    {% set content = venue.name %}
+    {% set content = venue.display_name %}
     {% set route = "delete_venue" %}
     {% set id = venue %}
 {% elif admin_band %}
     {% set type = "band" %}
-    {% set content = band.name %}
+    {% set content = band.display_name %}
     {% set route = "delete_band" %}
     {% set id = band %}
 {% else %}
