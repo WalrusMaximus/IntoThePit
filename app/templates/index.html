@@ -20,9 +20,8 @@
         <p>No results found for "{{search_term}}"</p>
         {% else %}
             {% for venue in venues %}
-            <div class="button is-outlined">
-                <p class="has-text-centered"><a href="{{ url_for('venue', id=venue.id) }}">{{venue.display_name}}</a></p>
-            </div>
+                <a class="button is-outlined has-text-centered" href="{{ url_for('venue', id=venue.id) }}">{{venue.display_name}}</a>
+
             {% endfor %}
         {% endif %}
 </div class="bands-container">
@@ -35,9 +34,7 @@
         <p>No results found for "{{search_term}}"</p>
         {% else %}
             {% for band in bands %}
-            <div class="button is-outlined">
-                <p class="has-text-centered"><a href="{{ url_for('band', id=band.id) }}">{{band.display_name}}</a></p>
-            </div>
+                <a class="button is-outlined has-text-centered" href="{{ url_for('band', id=band.id) }}">{{band.display_name}}</a>
             {% endfor %}
         {% endif %}
 </div>

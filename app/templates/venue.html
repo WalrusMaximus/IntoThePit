@@ -53,7 +53,11 @@
                         <nav class="level">
                             <div class="level-left">
                             <div class="level-item">
-                                <img class="inline-avatar" src="{{ url_for('static', filename=rating.user_fk.avatar)}}" alt="user avatar">
+                                {% if rating.user_fk.avatar == "images/user_default.png" %}
+                                <img class="inline-avatar" src="{{url_for('static',filename='images/user_default.png')}}" alt="user avatar">
+                                {% else %}
+                                <img class="inline-avatar" src="{{rating.user_fk.avatar}}" alt="user avatar">
+                                {% endif %}
                             </div>
                             <div class="level-item">
                                 <p class="level-text"><a href="{{url_for('user',id=rating.user_fk)}}">{{ rating.user_fk.username }}</a>: {{rating.rating_type}} {{ rating.rating }}/5: {{ rating.message }}.</p>
@@ -73,9 +77,6 @@
                     {% for field in form %}
                         {{ render_edit_field(field, record) }}
                     {% endfor %}
-                    <div class="control">
-                      <button class="button is-link">Submit</button>
-                    </div>
                 </form>
                 {% else %}
                 <br>
@@ -92,13 +93,15 @@
     </div>
     <br>
 
-   
+   {% if record %}
+   {% else %}
     <div>
         <h4 class="title has-text-centered is-5 is-uppercase">Upcoming Shows</h4>
         <p class="has-text-centered"><img class="songkick" src="{{url_for('static',filename='api_attribution/by-songkick-black.png')}}" alt="by songkick logo"></p>    
         <div class="venue-events" id="venue-events">
         </div>
     </div>
+    {% endif %}
 
 
 
