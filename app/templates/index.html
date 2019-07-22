@@ -1,30 +1,42 @@
 {% extends "layout.html" %}
+{% from 'macros.html' import render_field %}
 {% block sidebar %}
 {% include "/about.html" %}
 {% endblock %}
 
 {% block main %}
- 
+<p class="title is-4 has-text-centered">Search</p>
+<form method="POST" enctype="multipart/form-data" action="" class="form">
+{{ form.hidden_tag() }}
+{% for field in form %}
+    {{ render_field(field) }}
+{% endfor %}
+<br>
 <h2 class="title is-5 has-text-centered">VENUES</h2>
 <div class="venues-container">
-        {% if no_venues %}
-        No Venues Found
+        {% if no_venues == "none" %}
+        <p>No Venues Found</p>
+        {% elif no_venues == "search_fail" %}
+        <p>No results found for "{{search_term}}"</p>
         {% else %}
             {% for venue in venues %}
-            <div class="box">
-                <p class="has-text-centered"><a href="{{ url_for('venue', id=venue.id) }}">{{venue.name}}</a></p>
+            <div class="button is-outlined">
+                <p class="has-text-centered"><a href="{{ url_for('venue', id=venue.id) }}">{{venue.display_name}}</a></p>
             </div>
             {% endfor %}
         {% endif %}
 </div class="bands-container">
+<br>
 <h2 class="title is-5 has-text-centered">BANDS</h2>
 <div class="bands-container">
-        {% if no_bands %}
-        No Bands Found
+        {% if no_bands == "none" %}
+        <p>No Bands Found</p>
+        {% elif no_bands == "search_fail" %}
+        <p>No results found for "{{search_term}}"</p>
         {% else %}
             {% for band in bands %}
-            <div class="box">
-                <p class="has-text-centered"><a href="{{ url_for('band', id=band.id) }}">{{band.name}}</a></p>
+            <div class="button is-outlined">
+                <p class="has-text-centered"><a href="{{ url_for('band', id=band.id) }}">{{band.display_name}}</a></p>
             </div>
             {% endfor %}
         {% endif %}

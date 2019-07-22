@@ -40,9 +40,12 @@ html, body {
 #favorite-band-events,
 #favorite-venue-events,
 .favorite-bands,
-.favorite-venues {
+.favorite-venues,
+.venues-container,
+.bands-container {
     display: flex;
     justify-content: center;
+    align-content: flex-start;
     max-width: 100%;
     flex-wrap: wrap;
 }

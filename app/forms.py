@@ -148,13 +148,13 @@ class RatingForm(FlaskForm):
     )
     rating_type = RadioField(
         'What are you Rating?',
-        choices=[("Overall", 'Overall'), ("Mosh Pit", 'Mosh Pit'), ("Sound", 'Sound'), ("Facilities", 'Facilities')]
+        choices=[("Overall", 'Overall'), ("Moshpit", 'Moshpit'), ("Sound", 'Sound'), ("Facilities", 'Facilities')]
     )
     message = StringField('Tell us what you think...', validators=[DataRequired(), Length(max=512)])
     submit = SubmitField("Submit")
 
 class SearchForm(FlaskForm):
-    search = StringField('Search...', validators=[DataRequired(), Length(max=128)]
+    search = StringField('Search for band or venue', validators=[Length(max=128)]
     )
     submit = SubmitField("Search")
 

@@ -16,7 +16,7 @@
     {{ field(type='date',placeholder=field.label.text) }}
   {% elif field.id == 'csrf_token' %}
   {% elif field.type == "SubmitField" %}
-    <button class="button is-info is-fullwidth">Submit</button>
+    <button class="button is-info">{{field.label.text}}</button>
   {% else %}
     {{ field(class='input', id=field.label.text, placeholder=field.label.text, placeholder=field.label.text) }}
   {% endif %}
@@ -48,7 +48,7 @@
     {% endif %}
   {% endfor %}
   {% if field.type == "SubmitField" %}
-  <button class="button is-info is-fullwidth">Submit</button>
+  <button class="button is-info">{{field.label.text}}</button>
   {% endif %}
 </div>
 {% endmacro %}}
