@@ -21,12 +21,23 @@ html, body {
 }
 
 /* HEADER */
-
+/* 
 .flash-messages {
-    width: 50%;
-    margin: auto;
-    margin-top: 6px;
     
+} */
+
+#wide-logo {
+    display: block;
+}
+
+#narrow-logo {
+    display: none;
+}
+
+.navbar {
+    position: fixed !important;
+    top: 0;
+    width: 100%;
 }
 
 /* EVENTS / FAVORITES */
@@ -55,6 +66,10 @@ a {
 }
 
 /* MAIN COLUMN STYLING */
+
+.section {
+    margin-top: 48px;
+}
 
 .recent-comments {
     width: 100%;
@@ -231,16 +246,22 @@ footer {
     margin: 0 .2em
 }
 
+
 /* FLASH MESSAGES */
 .message, .success, .error {
-    padding: .5rem 1rem;
+    padding: .33rem .66rem;
     background-color: white;
-    border-radius: .5rem;
+    border-radius: .33rem;
     color: black;
+    font-size: .9em
 }
 
+.flash-messages {
+    padding: 0;
+}
+
+
 .success {
-    padding: .5rem 1rem;
     background-color: rgb(156, 197, 122);
 }
 
@@ -264,4 +285,17 @@ footer {
   .footer-p2 {
       display: block;
   }
+}
+
+@media only screen and (max-width : 700px) {
+
+    #wide-logo {
+    display: none;
+    }
+    #narrow-logo {
+    display: block;
+    }
+    .flash-messages {
+        font-size: .75em
+    }
 }

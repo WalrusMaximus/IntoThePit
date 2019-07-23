@@ -1,8 +1,21 @@
   <nav class="navbar is-black" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
-      <a class="navbar-item " href={{url_for('index')}}>
+      <a class="navbar-item" id="wide-logo" href={{url_for('index')}}>
         <img class="navbar-image " src="{{url_for('static',filename='images/intothepit-horizontal.png')}}" alt="into the pit logo">
       </a>
+      <a class="navbar-item" id="narrow-logo" href={{url_for('index')}}>
+          <img class="navbar-image " src="{{url_for('static',filename='images/intothepit.png')}}" alt="into the pit logo">
+      </a>
+
+      <div class="flash-messages has-text-centered navbar-item">
+        {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class={{category}}>{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+      </div>
 
       <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="nav-area">
         <span aria-hidden="true"></span>
@@ -17,7 +30,6 @@
               {% if g.user.user_level == "walrus" %}
               <a class="navbar-item" href={{url_for('admin')}}>ADMIN</a>
               {% endif %}
-              <a class="navbar-item" href={{url_for('index')}}>HOME</a>
             </div>  
               {% if g.user.is_authenticated %}
               <div class="navbar-item">
@@ -39,12 +51,3 @@
       </div>
     </div>
   </nav>
-  <div class="flash-messages has-text-centered">
-    {% with messages = get_flashed_messages(with_categories=True) %}
-    {% if messages %}
-        {% for category, message in messages %}
-            <div class={{category}}>{{ message }}</div>
-        {% endfor %}
-    {% endif %}
-    {% endwith %}
-  </div>

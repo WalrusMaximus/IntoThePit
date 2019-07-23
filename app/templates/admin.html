@@ -71,7 +71,7 @@
         {% endwith %}
             <div class="box">
                 <div class="level">
-                    <p>ID: {{venue.id}} - <a href="{{url_for('venue',id=venue.id)}}">{{ venue.display_name }}</a>/{{venue.display_name}}</p>
+                    <p>ID: {{venue.id}} - <a href="{{url_for('venue',id=venue.id)}}">{{ venue.name }}</a>/{{venue.display_name}}</p>
                     <span class="admin-control level-right">
                         <a href="{{ url_for('admin_update_venue', id=venue.id) }}" class="icon update_button">
                             <img class="icon is-small" src={{url_for('static',filename="pen.png")}}>
