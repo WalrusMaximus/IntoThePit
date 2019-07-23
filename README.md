@@ -7,11 +7,7 @@ Into The Pit is a web application for finding upcoming moshpits in the San Franc
 
 Developed using Flask with images delivered by CDN Cloudinary and deployed to a heroku environment
 
-Microservices and Libraries:
-    jQuery
-    Bulma CSS
-    peewee ORM
-    WTForm
+Microservices and Libraries: jQuery, Bulma CSS, peeweeORM, WTForm
 
 ## About
 
