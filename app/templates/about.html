@@ -2,6 +2,7 @@
         <div class="about-img">
             <img class="intothepit-img" src="{{url_for('static', filename='images/intothepit.png')}}" alt="Logo">
         </div>
+        {% if current_user.is_anonymous %}
         <div class="about-text">
             <br>
             <h1 class="title is-6 has-text-centered">INTO THE PIT</h1>
@@ -19,4 +20,5 @@
             <br>
             <p class="subtitle is-6 has-text-centered">That's about it, see you in the circle...</b></p>
         </div>
+        {% endif %}
     </div>

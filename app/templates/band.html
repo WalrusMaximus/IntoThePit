@@ -2,7 +2,7 @@
 
 
 {% block sidebar %}
-<h2 class="title is-4 has-text-centered is-uppercase">{{band.name}}</h2>
+<h2 class="title is-4 has-text-centered is-uppercase">{{band.display_name}}</h2>
 <div class="venue-img-wrapper">
     {% if band.img == "images/band_default.jpg" %}
     <img class="band_img" src={{url_for('static',filename='images/band_default.jpg')}}>

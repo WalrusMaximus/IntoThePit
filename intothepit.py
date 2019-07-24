@@ -2,6 +2,7 @@ import os
 from peewee import *
 from app import app, models
 
+# Determines appropriate environment for application
 if __name__ == '__main__':
     if os.environ.get('FLASK_ENV') == "production":
         print("Launching in Production Environment")
