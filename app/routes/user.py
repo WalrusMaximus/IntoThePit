@@ -21,7 +21,6 @@ def user(id):
     favorites = models.Favorite.select().where(models.Favorite.user_fk == id)
     favorite_bands = []
     favorite_venues = []
-    asdqwe
 
     for band in favorites:
         if band.band_fk:
