@@ -152,7 +152,7 @@ class Favorite(Model):
 
 
 def initialize():
-    DATABASE.get_conn()
+    DATABASE.connect()
     DATABASE.create_tables([User, Band, Venue, Favorite, Rating], safe=True)
     DATABASE.close()
 
