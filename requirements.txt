@@ -22,7 +22,7 @@ MarkupSafe==1.1.1
 mock==3.0.5
 moment==0.8.2
 peewee==3.9.3
-Pillow==6.0.0
+Pillow==8.1.1
 postgres==2.2.2
 psycopg2-binary==2.8.2
 pycparser==2.19
